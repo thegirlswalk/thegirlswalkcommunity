@@ -1,4 +1,5 @@
 import { useState } from "react";
+import tgwLogo from "./assets/tgw-logo.png";
 import "./App.css";
 
 // Real photos from The Girls Walk Community
@@ -80,13 +81,7 @@ function NavBar({ page, setPage }) {
         background:"none", border:"none", cursor:"pointer",
         display:"flex", alignItems:"center", gap:"0.6rem",
       }}>
-        <div style={{
-          width:40, height:40, borderRadius:"50%",
-          background:C.yellow, display:"flex", alignItems:"center", justifyContent:"center",
-          fontWeight:900, fontSize:"0.7rem", color:C.pink, letterSpacing:"0.05em",
-          fontFamily:"'Bebas Neue', 'Impact', sans-serif",
-        }}>TGW</div>
-        <span className="navbar-brand-text" style={{fontWeight:800, color:C.dark, letterSpacing:"0.01em", fontFamily:"'Bebas Neue','Impact',sans-serif", fontSize:"1.1rem"}}>THE GIRLS WALK</span>
+        <img src={tgwLogo} alt="TGW" style={{height:36}} />
       </button>
       <button
         className="mobile-menu-toggle"
@@ -320,6 +315,33 @@ function HomePage({ setPage }) {
           </div>
         </div>
       </div>
+
+      {/* Newsletter Section */}
+      <div className="section-padding" style={{padding:"5rem 4rem",background:"white",textAlign:"center"}}>
+        <div style={{maxWidth:560,margin:"0 auto"}}>
+          <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.75rem"}}>STAY CONNECTED</div>
+          <h2 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 0.75rem"}}>JOIN OUR NEWSLETTER</h2>
+          <p style={{fontSize:"0.95rem",color:C.muted,lineHeight:1.7,marginBottom:"2rem"}}>
+            Get updates on upcoming walks, events, community stories, and merch drops — straight to your inbox.
+          </p>
+          <div className="email-row" style={{display:"flex",gap:"0.75rem",maxWidth:440,margin:"0 auto"}}>
+            <input placeholder="Enter your email" style={{
+              flex:1,border:`2px solid ${C.blush}`,borderRadius:99,
+              padding:"0.85rem 1.25rem",fontSize:"0.9rem",outline:"none",
+              fontFamily:"inherit",color:C.dark,
+            }}/>
+            <button style={{
+              background:`linear-gradient(135deg,${C.pink},${C.orange})`,
+              color:"white",border:"none",borderRadius:99,
+              padding:"0.85rem 1.75rem",cursor:"pointer",fontWeight:700,
+              fontSize:"0.85rem",letterSpacing:"0.05em",textTransform:"uppercase",
+              fontFamily:"inherit",whiteSpace:"nowrap",
+              boxShadow:`0 4px 16px ${C.pink}44`,
+            }}>Subscribe</button>
+          </div>
+          <p style={{fontSize:"0.72rem",color:C.muted,marginTop:"1rem"}}>No spam, ever. Unsubscribe anytime.</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -503,43 +525,31 @@ function GalleryPage() {
 }
 
 function ShopPage() {
-  const items = [
-    {name:"TGW Tote Bag",price:"$35",color:C.yellow,emoji:"👜"},
-    {name:"Girls Walk Hoodie",price:"$75",color:C.pink,emoji:"🧥"},
-    {name:"TGW Water Bottle",price:"$40",color:C.orange,emoji:"💧"},
-    {name:"Community Cap",price:"$45",color:C.hotpink,emoji:"🧢"},
-  ];
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="section-padding page-banner" style={{background:`linear-gradient(135deg,${C.yellow},${C.orange})`,padding:"4rem 4rem 3rem"}}>
         <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:"rgba(255,255,255,0.7)",textTransform:"uppercase",marginBottom:"0.75rem"}}>TGW Shop</div>
         <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:0,lineHeight:1}}>WEAR THE MOVEMENT.</h1>
-        <p style={{fontSize:"1rem",color:"rgba(255,255,255,0.9)",marginTop:"0.75rem"}}>Coming soon — merch dropping for our community.</p>
       </div>
-      <div className="section-padding" style={{padding:"3rem 4rem"}}>
-        <div className="cards-grid-4" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"1.5rem"}}>
-          {items.map(item=>(
-            <div key={item.name} style={{background:"white",borderRadius:20,overflow:"hidden",border:`1px solid ${C.blush}`}}>
-              <div style={{height:200,background:`linear-gradient(135deg,${item.color}22,${item.color}44)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"5rem"}}>{item.emoji}</div>
-              <div style={{padding:"1.25rem"}}>
-                <div style={{fontWeight:700,fontSize:"0.95rem",color:C.dark,marginBottom:"0.25rem"}}>{item.name}</div>
-                <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.4rem",color:item.color,marginBottom:"1rem"}}>{item.price}</div>
-                <button style={{
-                  width:"100%",background:item.color,color:"white",border:"none",
-                  borderRadius:99,padding:"0.7rem",cursor:"pointer",
-                  fontWeight:700,fontSize:"0.8rem",letterSpacing:"0.05em",
-                  textTransform:"uppercase",fontFamily:"inherit",
-                }}>Notify Me →</button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="feature-callout" style={{textAlign:"center",marginTop:"3rem",padding:"3rem",background:`${C.pink}10`,borderRadius:20,border:`1px dashed ${C.pink}44`}}>
-          <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.5rem",color:C.pink,marginBottom:"0.5rem"}}>MERCH DROPPING SOON</div>
-          <p style={{fontSize:"0.9rem",color:C.muted,marginBottom:"1.5rem"}}>Sign up to be first to know when our shop goes live.</p>
-          <div className="email-row" style={{display:"flex",gap:"0.75rem",maxWidth:380,margin:"0 auto"}}>
-            <input placeholder="Your email" style={{flex:1,border:`2px solid ${C.pink}`,borderRadius:99,padding:"0.7rem 1.2rem",fontSize:"0.88rem",outline:"none",fontFamily:"inherit",color:C.dark}}/>
-            <button style={{background:C.pink,color:"white",border:"none",borderRadius:99,padding:"0.7rem 1.4rem",fontWeight:700,fontSize:"0.82rem",cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>Notify Me</button>
+      <div className="section-padding" style={{padding:"5rem 4rem",textAlign:"center"}}>
+        <div style={{maxWidth:500,margin:"0 auto"}}>
+          <div style={{fontSize:"4rem",marginBottom:"1.5rem"}}>👟</div>
+          <h2 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1rem"}}>MERCHANDISE DROPPING SOON</h2>
+          <p style={{fontSize:"1rem",color:C.muted,lineHeight:1.7,marginBottom:"2rem"}}>
+            We're working on something special. Sign up below to be the first to know when our merch goes live.
+          </p>
+          <div style={{display:"flex",gap:"0.75rem",maxWidth:400,margin:"0 auto"}}>
+            <input placeholder="Your email" style={{
+              flex:1,border:`2px solid ${C.blush}`,borderRadius:99,
+              padding:"0.85rem 1.25rem",fontSize:"0.9rem",outline:"none",
+              fontFamily:"inherit",color:C.dark,
+            }}/>
+            <button style={{
+              background:C.pink,color:"white",border:"none",borderRadius:99,
+              padding:"0.85rem 1.75rem",cursor:"pointer",fontWeight:700,
+              fontSize:"0.85rem",letterSpacing:"0.05em",textTransform:"uppercase",
+              fontFamily:"inherit",whiteSpace:"nowrap",
+            }}>Notify Me</button>
           </div>
         </div>
       </div>
@@ -607,11 +617,11 @@ function Footer({ setPage }) {
   return (
     <footer className="footer section-padding" style={{background:C.dark,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem"}}>
       <div>
-        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.2rem",color:"white",letterSpacing:"0.05em",marginBottom:"0.25rem"}}>THE GIRLS WALK <span style={{color:C.pink}}>COMMUNITY</span></div>
+        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.2rem",color:"white",letterSpacing:"0.05em",marginBottom:"0.25rem"}}>TGW <span style={{color:C.pink}}>COMMUNITY</span></div>
         <div style={{fontSize:"0.72rem",color:"rgba(255,255,255,0.4)",letterSpacing:"0.05em"}}>© 2026 · Toronto, ON · A movement. literally.</div>
       </div>
       <div className="footer-links" style={{display:"flex",gap:"1.25rem"}}>
-        {["Home","About","Events","Gallery","Shop","Donate"].map(p=>(
+        {["Home","About","Events","Gallery","Donate"].map(p=>(
           <button key={p} onClick={()=>setPage(p)} style={{background:"none",border:"none",cursor:"pointer",fontSize:"0.75rem",color:"rgba(255,255,255,0.4)",letterSpacing:"0.06em",textTransform:"uppercase",fontFamily:"inherit",transition:"color 0.2s"}}
           onMouseEnter={e=>e.target.style.color=C.pink}
           onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.4)"}>{p}</button>
@@ -648,15 +658,6 @@ export default function App() {
   return (
     <div style={{minHeight:"100vh",fontFamily:"'DM Sans','Segoe UI',sans-serif"}}>
       <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-      {/* MOCKUP BADGE */}
-      <div style={{
-        position:"fixed",bottom:"1.25rem",right:"1.25rem",zIndex:9999,
-        background:"rgba(26,10,16,0.95)",color:C.yellow,
-        padding:"0.5rem 1.1rem",borderRadius:99,fontSize:"0.72rem",
-        fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",
-        backdropFilter:"blur(8px)",border:`1px solid ${C.pink}44`,
-        boxShadow:"0 4px 16px rgba(0,0,0,0.3)",
-      }}>⚡ OMAI Technologies · Mockup</div>
       <NavBar page={page} setPage={setPage}/>
       {renderPage()}
       <Footer setPage={setPage}/>
