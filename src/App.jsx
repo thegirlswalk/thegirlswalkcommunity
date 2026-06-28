@@ -29,38 +29,35 @@ const events = [
   {
     id: 1,
     type: "Weekly Walk",
-    title: "Evening Walk — High Park",
-    date: "Tuesday, May 27 · 7:00 PM – 8:30 PM",
-    location: "5 High Park Ave, Toronto, ON",
-    desc: "Our signature weekly walk through one of Toronto's most beautiful parks. All paces welcome — this is about connection, fresh air, and showing up for yourself and each other.",
+    title: "Morning Walk — Saturday",
+    date: "Saturday · 11:00 AM",
+    location: "Toronto & GTA",
+    desc: "Our signature weekly walk. All paces welcome — this is about connection, fresh air, and showing up for yourself and each other. Join our WhatsApp group for location updates each week.",
     rsvp: false,
     color: C.pink,
-    img: "park",
     tag: "Free · No RSVP needed",
   },
   {
     id: 2,
-    type: "MTG Brunch",
-    title: "Meet The Girls Brunch",
-    date: "Saturday, May 9 · 11:00 AM",
-    location: "The Good Sweets, 1362 Queen St W, Toronto",
-    desc: "Our monthly brunch is THE event. Great food, great energy, and women who will inspire you. Each brunch features vendor partners, a vibe, and memories you won't forget.",
+    type: "Fitness & Wellness",
+    title: "The Pilates Picnic",
+    date: "Saturday, July 26 · 11:00 AM – 2:00 PM",
+    location: "Toronto (location TBA)",
+    desc: "An interactive Pilates and yoga class mixed with food and wellness. Class led by WellnesswithTumi and our very own fitness director Francess. More details coming soon — tickets available shortly!",
     rsvp: true,
     color: C.orange,
-    img: "brunch_arch",
-    tag: "Ticketed · RSVP Required",
+    tag: "More Info Coming Soon",
   },
   {
     id: 3,
-    type: "May Flowers",
-    title: "May Flowers Walk & Picnic",
-    date: "Sundays in May · Various Parks",
-    location: "Toronto & GTA",
-    desc: "Spring walks with flower picking, picnic vibes, and community. Come out and celebrate the season with women who get it.",
+    type: "Summer Event",
+    title: "Field Day & Friends",
+    date: "August · Date TBD",
+    location: "Toronto",
+    desc: "Come for a day of sports, games, food, and fun with the community. Date and details coming soon!",
     rsvp: false,
     color: C.yellow,
-    img: "brunch_person",
-    tag: "Free · Drop-in Welcome",
+    tag: "Date TBD",
   },
 ];
 
@@ -107,42 +104,16 @@ function NavBar({ page, setPage }) {
             fontFamily:"inherit",
           }}>{l}</button>
         ))}
-        <button className="nav-cta-button" onClick={()=>{setPage("Events"); setOpen(false);}} style={{
+        <a className="nav-cta-button" href="https://chat.whatsapp.com/BrJxnx5G7VBAzNtP01eQ6v?mode=gi_t" target="_blank" rel="noopener noreferrer" style={{
           marginLeft:"0.5rem",
           background:C.pink, color:"white", border:"none", cursor:"pointer",
           padding:"0.5rem 1.2rem", borderRadius:99,
           fontWeight:700, fontSize:"0.8rem", letterSpacing:"0.05em",
           boxShadow:`0 4px 12px ${C.pink}55`, textTransform:"uppercase",
-          fontFamily:"inherit",
-        }}>Join Us →</button>
+          fontFamily:"inherit", textDecoration:"none",
+        }}>Join Us →</a>
       </div>
     </nav>
-  );
-}
-
-function MarqueeBar() {
-  const items = ["A MOVEMENT. LITERALLY.","FOR AMBITIOUS WOMEN","BY AMBITIOUS WOMEN","TORONTO & GTA","WEEKLY WALKS","MTG BRUNCH","MAY FLOWERS","#THEGIRLSWALK"];
-  const doubled = [...items, ...items];
-  return (
-    <div style={{background:C.pink, overflow:"hidden", padding:"0.6rem 0", borderTop:`2px solid ${C.hotpink}`}}>
-      <div style={{
-        display:"flex", gap:"2.5rem", width:"max-content",
-        animation:"marquee 18s linear infinite",
-      }}>
-        {doubled.map((t,i)=>(
-          <span key={i} style={{
-            color:"white", fontWeight:900,
-            letterSpacing:"0.15em", whiteSpace:"nowrap",
-            fontFamily:"'Bebas Neue','Impact',sans-serif", fontSize:"1rem",
-            display:"flex", alignItems:"center", gap:"1.5rem",
-          }}>
-            {t}
-            <span style={{color:"rgba(255,255,255,0.4)", fontSize:"0.5rem"}}>✦</span>
-          </span>
-        ))}
-      </div>
-      <style>{`@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}`}</style>
-    </div>
   );
 }
 
@@ -219,26 +190,15 @@ function HomePage({ setPage }) {
             position:"absolute", inset:0,
             background:`linear-gradient(135deg, ${C.pink}33, ${C.orange}22, transparent 60%)`,
           }}/>
-          <div className="hero-overlay-card" style={{
-            position:"absolute", bottom:"2rem", left:"2rem", right:"2rem",
-            background:"rgba(255,255,255,0.12)", backdropFilter:"blur(12px)",
-            borderRadius:16, padding:"1.25rem 1.5rem",
-            border:"1px solid rgba(255,255,255,0.2)",
-          }}>
-            <div style={{fontWeight:800,fontSize:"1rem",color:"white",marginBottom:"0.25rem",fontFamily:"'Bebas Neue','Impact',sans-serif",letterSpacing:"0.05em"}}>NEXT EVENT: HIGH PARK WALK</div>
-            <div style={{fontSize:"0.82rem",color:"rgba(255,255,255,0.8)"}}>Tuesday May 27 · 7:00 PM · Free to join</div>
-          </div>
         </div>
       </div>
-
-      <MarqueeBar/>
 
       {/* ── UPCOMING EVENTS SECTION ── */}
       <div className="section-padding" style={{padding:"5rem 4rem", background:"white"}}>
         <div className="section-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"2.5rem"}}>
           <div>
             <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>What's On</div>
-            <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Upcoming Events</h2>
+            <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Events</h2>
           </div>
           <button onClick={()=>setPage("Events")} style={{
             background:"transparent",border:`2px solid ${C.pink}`,color:C.pink,
@@ -257,8 +217,8 @@ function HomePage({ setPage }) {
       {/* ── PHOTO GALLERY SECTION ── */}
       <div className="section-padding" style={{padding:"4rem",background:C.cream}}>
         <div style={{textAlign:"center",marginBottom:"2rem"}}>
-          <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>Community Moments</div>
-          <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Life in the Walk</h2>
+          <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>From Previous Events</div>
+          <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Past Events</h2>
         </div>
         <div className="gallery-grid-home" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gridTemplateRows:"200px 200px",gap:"1rem"}}>
           <div style={{gridColumn:"span 2",gridRow:"span 2",borderRadius:20,overflow:"hidden"}}>
@@ -278,40 +238,6 @@ function HomePage({ setPage }) {
               <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",letterSpacing:"0.1em"}}>TGW</div>
               <div style={{fontSize:"0.7rem",letterSpacing:"0.15em",textTransform:"uppercase",opacity:0.85}}>@thegirlswalk</div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── CALL TO ACTION (Join the Walk) ── */}
-      <div className="section-padding cta-section" style={{
-        background:`linear-gradient(135deg,${C.hotpink},${C.orange})`,
-        padding:"5rem 4rem",textAlign:"center",position:"relative",overflow:"hidden",
-      }}>
-        <div style={{position:"relative",zIndex:2}}>
-          <div style={{fontSize:"0.78rem",fontWeight:700,letterSpacing:"0.2em",color:"rgba(255,255,255,0.7)",textTransform:"uppercase",marginBottom:"1rem"}}>Join the Movement</div>
-          <h2 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"clamp(2.5rem,5vw,5rem)",color:"white",letterSpacing:"0.02em",margin:"0 0 1rem",lineHeight:0.95}}>YOUR NEXT CHAPTER<br/>STARTS WITH A WALK.</h2>
-          <p style={{fontSize:"1rem",color:"rgba(255,255,255,0.85)",maxWidth:480,margin:"0 auto 2rem",lineHeight:1.7}}>
-            Sign up for our next event and become part of a community of women who show up, walk boldly, and rise together.
-          </p>
-          <div className="email-row" style={{display:"flex",gap:"0.75rem",maxWidth:420,margin:"0 auto 2rem",justifyContent:"center"}}>
-            <input placeholder="Your email address" style={{
-              flex:1,background:"rgba(255,255,255,0.2)",border:"1px solid rgba(255,255,255,0.4)",
-              borderRadius:99,padding:"0.85rem 1.5rem",color:"white",
-              fontSize:"0.88rem",outline:"none",fontFamily:"inherit",
-              "::placeholder":{color:"rgba(255,255,255,0.6)"},
-            }}/>
-            <button style={{
-              background:"white",color:C.pink,border:"none",cursor:"pointer",
-              borderRadius:99,padding:"0.85rem 1.75rem",
-              fontWeight:800,fontSize:"0.85rem",letterSpacing:"0.05em",
-              textTransform:"uppercase",fontFamily:"inherit",whiteSpace:"nowrap",
-            }}>Join →</button>
-          </div>
-          <div className="social-row" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"1rem"}}>
-            <span style={{fontSize:"0.75rem",color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.1em"}}>Follow us</span>
-            <a href="https://instagram.com/thegirlswalk" target="_blank" style={{color:"white",fontSize:"0.85rem",fontWeight:700,textDecoration:"none"}}>@thegirlswalk</a>
-            <span style={{color:"rgba(255,255,255,0.3)"}}>·</span>
-            <a href="https://instagram.com/thegirlswalkcommunity" target="_blank" style={{color:"white",fontSize:"0.85rem",fontWeight:700,textDecoration:"none"}}>@thegirlswalkcommunity</a>
           </div>
         </div>
       </div>
@@ -339,6 +265,12 @@ function HomePage({ setPage }) {
               boxShadow:`0 4px 16px ${C.pink}44`,
             }}>Subscribe</button>
           </div>
+          <p style={{fontSize:"0.85rem",color:C.muted,marginTop:"1.5rem"}}>
+            Or join our WhatsApp group for live updates:{" "}
+            <a href="https://chat.whatsapp.com/BrJxnx5G7VBAzNtP01eQ6v?mode=gi_t" target="_blank" rel="noopener noreferrer" style={{color:C.pink,fontWeight:700,textDecoration:"none"}}>
+              Join WhatsApp →
+            </a>
+          </p>
           <p style={{fontSize:"0.72rem",color:C.muted,marginTop:"1rem"}}>No spam, ever. Unsubscribe anytime.</p>
         </div>
       </div>
@@ -355,15 +287,23 @@ function EventCard({ event, setPage }) {
     }}
     onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow=`0 16px 32px ${event.color}33`}}
     onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow="0 2px 8px rgba(0,0,0,0.06)"}}>
-      <div style={{height:180,position:"relative",overflow:"hidden"}}>
-        <img src={event.img} alt={event.title} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-        <div style={{position:"absolute",inset:0,background:`linear-gradient(to top,${event.color}88,transparent 60%)`}}/>
+      <div style={{
+        minHeight:180,
+        position:"relative",
+        overflow:"hidden",
+        background:`linear-gradient(135deg, ${event.color}, ${C.dark})`,
+        padding:"1.25rem",
+        display:"flex",
+        flexDirection:"column",
+        justifyContent:"space-between",
+      }}>
         <span style={{
-          position:"absolute",top:"0.75rem",left:"0.75rem",
+          width:"fit-content",
           background:"rgba(255,255,255,0.9)",color:event.color,
           padding:"0.25rem 0.75rem",borderRadius:99,fontSize:"0.68rem",
           fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",
         }}>{event.type}</span>
+        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:"white",letterSpacing:"0.03em",lineHeight:1}}>{event.location}</div>
       </div>
       <div style={{padding:"1.25rem"}}>
         <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:event.color,textTransform:"uppercase",marginBottom:"0.35rem"}}>{event.date}</div>
@@ -383,9 +323,13 @@ function EventDetailPage({ eventId, setPage }) {
   if (!event) return null;
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
-      <div className="event-detail-banner" style={{height:400,position:"relative",overflow:"hidden"}}>
-        <img src={event.img} alt={event.title} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-        <div style={{position:"absolute",inset:0,background:`linear-gradient(to top,${C.dark}CC,transparent 40%)`}}/>
+      <div className="event-detail-banner" style={{
+        height:400,
+        position:"relative",
+        overflow:"hidden",
+        background:`linear-gradient(135deg, ${event.color}, ${C.dark})`,
+      }}>
+        <div style={{position:"absolute",inset:0,background:`linear-gradient(to top,${C.dark}55,transparent 40%)`}}/>
         <button onClick={()=>setPage("Events")} style={{
           position:"absolute",top:"1.5rem",left:"1.5rem",
           background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",
@@ -393,7 +337,7 @@ function EventDetailPage({ eventId, setPage }) {
           padding:"0.5rem 1rem",borderRadius:99,fontSize:"0.8rem",fontWeight:700,fontFamily:"inherit",
         }}>← Back to Events</button>
         <div className="event-detail-banner-copy" style={{position:"absolute",bottom:"2rem",left:"3rem",right:"3rem"}}>
-          <span style={{background:event.color,color:"white",padding:"0.3rem 0.9rem",borderRadius:99,fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase"}}>{event.type}</span>
+          <span style={{background:"rgba(255,255,255,0.18)",color:"white",padding:"0.3rem 0.9rem",borderRadius:99,fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",border:"1px solid rgba(255,255,255,0.2)"}}>{event.type}</span>
           <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3.5rem",color:"white",letterSpacing:"0.02em",margin:"0.75rem 0 0",lineHeight:1}}>{event.title}</h1>
         </div>
       </div>
@@ -428,7 +372,6 @@ function EventsPage({ setPage }) {
         <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:0,lineHeight:1}}>UPCOMING EVENTS</h1>
         <p style={{fontSize:"1rem",color:"rgba(255,255,255,0.85)",marginTop:"0.75rem",maxWidth:500}}>From weekly walks to monthly brunches — there's always something to show up to.</p>
       </div>
-      <MarqueeBar/>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.5rem"}}>
           {events.map(e=><EventCard key={e.id} event={e} setPage={setPage}/>)}
