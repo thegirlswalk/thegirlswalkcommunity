@@ -1,5 +1,5 @@
 import { useState } from "react";
-import tgwLogo from "./assets/tgw-logo.png";
+import tgwLogo from "./assets/tgw-logo-yellow.png";
 import "./App.css";
 
 // Real photos from The Girls Walk Community
