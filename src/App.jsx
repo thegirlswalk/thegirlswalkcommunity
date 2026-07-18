@@ -13,17 +13,48 @@ import photoTgwCards from "./assets/photo-tgw-cards.jpg";
 
 // ── COLOUR PALETTE ─────────────────────────────────────────────
 const C = {
-  pink:    "#E8186D",
-  hotpink: "#D90F62",
+  pink:    "#FF2E88",
+  hotpink: "#E60073",
   orange:  "#FF6B35",
-  yellow:  "#F5A623",
-  blush:   "#F2B5CB",
-  cream:   "#FFF8F4",
+  yellow:  "#FFD23F",
+  blush:   "#FFD6E7",
+  cream:   "#FFF4EC",
   white:   "#FFFFFF",
-  dark:    "#1A0A10",
+  dark:    "#0D0B0C",
   mid:     "#4A1A2C",
-  muted:   "#9B6080",
+  muted:   "#6E4A5B",
 };
+
+// ── BOLD EDITORIAL DESIGN TOKENS (ISWIS-inspired) ──────────────
+const DISPLAY = "'Bebas Neue','Impact',sans-serif";
+const SCRIPT  = "'Caveat','Segoe Script',cursive";
+const HARD     = `6px 6px 0 ${C.dark}`;
+const HARD_SM  = `4px 4px 0 ${C.dark}`;
+const HARD_PINK = `6px 6px 0 ${C.pink}`;
+const BORDER   = `3px solid ${C.dark}`;
+
+// ── SCROLLING MARQUEE BAND ──
+function Marquee({ items, bg = C.dark, color = C.pink, border }) {
+  const strip = [...items, ...items, ...items];
+  return (
+    <div style={{
+      background: bg, overflow: "hidden", whiteSpace: "nowrap",
+      borderTop: border, borderBottom: border, padding: "0.6rem 0",
+    }}>
+      <div className="marquee-track" style={{display:"inline-flex", alignItems:"center"}}>
+        {strip.map((t, i) => (
+          <span key={i} style={{
+            fontFamily: DISPLAY, fontSize: "1.5rem", letterSpacing: "0.06em",
+            color, textTransform: "uppercase", padding: "0 1.25rem",
+            display: "inline-flex", alignItems: "center", gap: "1.25rem",
+          }}>
+            {t} <span style={{color: C.yellow}}>✦</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const events = [
   {
@@ -41,12 +72,13 @@ const events = [
     id: 2,
     type: "Fitness & Wellness",
     title: "The Pilates Picnic",
-    date: "Saturday, July 26 · 11:00 AM – 2:00 PM",
-    location: "Toronto (location TBA)",
-    desc: "An interactive Pilates and yoga class mixed with food and wellness. Class led by WellnesswithTumi and our very own fitness director Francess. More details coming soon — tickets available shortly!",
+    date: "Sunday, July 19 · 11:00 AM – 2:00 PM",
+    location: "High Park, Toronto",
+    desc: "Join us for a morning of intentional movement and connection, followed by a colourful picnic spread of snacks and drinks! An interactive Pilates and yoga class led by WellnesswithTumi and our very own fitness director Francess. Meet us at High Park (200 Parkside Dr, Toronto).",
     rsvp: true,
     color: C.orange,
-    tag: "More Info Coming Soon",
+    tag: "Tickets on Eventbrite",
+    ticketUrl: "https://www.eventbrite.ca/e/the-girls-walk-the-pilates-picnic-tickets-1993574989459",
   },
   {
     id: 3,
@@ -68,10 +100,10 @@ function NavBar({ page, setPage }) {
   return (
     <nav className="navbar" style={{
       position:"fixed", top:0, left:0, right:0, zIndex:200,
-      background:"rgba(255,255,255,0.96)", backdropFilter:"blur(16px)",
-      borderBottom:`3px solid ${C.pink}`,
+      background:"rgba(255,255,255,0.98)", backdropFilter:"blur(16px)",
+      borderBottom:`4px solid ${C.dark}`,
       display:"flex", alignItems:"center", justifyContent:"space-between",
-      padding:"0 2rem", height:64,
+      padding:"0 2rem", height:68,
     }}>
       <button className="navbar-brand" onClick={()=>{setPage("Home"); setOpen(false);}} style={{
         background:"none", border:"none", cursor:"pointer",
@@ -97,19 +129,19 @@ function NavBar({ page, setPage }) {
           <button className="nav-link-button" key={l} onClick={()=>{setPage(l); setOpen(false);}} style={{
             background: page===l ? C.pink : "transparent",
             color: page===l ? "white" : C.dark,
-            border:"none", cursor:"pointer",
-            padding:"0.45rem 0.85rem", borderRadius:99,
-            fontWeight:600, fontSize:"0.78rem", letterSpacing:"0.04em",
+            border: page===l ? `2px solid ${C.dark}` : "2px solid transparent", cursor:"pointer",
+            padding:"0.4rem 0.85rem", borderRadius:99,
+            fontWeight:700, fontSize:"0.78rem", letterSpacing:"0.04em",
             transition:"all 0.15s", textTransform:"uppercase",
             fontFamily:"inherit",
           }}>{l}</button>
         ))}
         <a className="nav-cta-button" href="https://chat.whatsapp.com/BrJxnx5G7VBAzNtP01eQ6v?mode=gi_t" target="_blank" rel="noopener noreferrer" style={{
           marginLeft:"0.5rem",
-          background:C.pink, color:"white", border:"none", cursor:"pointer",
+          background:C.pink, color:"white", border:`2px solid ${C.dark}`, cursor:"pointer",
           padding:"0.5rem 1.2rem", borderRadius:99,
-          fontWeight:700, fontSize:"0.8rem", letterSpacing:"0.05em",
-          boxShadow:`0 4px 12px ${C.pink}55`, textTransform:"uppercase",
+          fontWeight:800, fontSize:"0.8rem", letterSpacing:"0.05em",
+          boxShadow:HARD_SM, textTransform:"uppercase",
           fontFamily:"inherit", textDecoration:"none",
         }}>Join Us →</a>
       </div>
@@ -134,22 +166,22 @@ function HomePage({ setPage }) {
         }}>
           <div style={{
             display:"inline-flex", alignItems:"center", gap:"0.5rem",
-            background:`${C.pink}15`, border:`1px solid ${C.pink}40`,
-            borderRadius:99, padding:"0.35rem 1rem", marginBottom:"1.5rem",
-            width:"fit-content",
+            background:C.dark, border:`2px solid ${C.dark}`,
+            borderRadius:99, padding:"0.4rem 1.1rem", marginBottom:"1.5rem",
+            width:"fit-content", boxShadow:HARD_PINK,
           }}>
             <span style={{width:6,height:6,borderRadius:"50%",background:C.pink,display:"inline-block"}}></span>
-            <span style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.15em",color:C.pink,textTransform:"uppercase"}}>Toronto & GTA · Est. April 2026</span>
+            <span style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.15em",color:"white",textTransform:"uppercase"}}>Toronto & GTA · Est. April 2026</span>
           </div>
           <h1 className="hero-heading" style={{
-            fontFamily:"'Bebas Neue','Impact',sans-serif",
-            fontSize:"clamp(3.5rem,6vw,6.5rem)", lineHeight:0.95,
+            fontFamily:DISPLAY,
+            fontSize:"clamp(3.5rem,6vw,6.5rem)", lineHeight:0.92,
             color:C.dark, margin:"0 0 1.5rem",
             letterSpacing:"0.02em",
           }}>
             A<br/>
             <span style={{color:C.pink}}>Movement.</span><br/>
-            Literally.
+            <span style={{fontFamily:SCRIPT, fontWeight:700, color:C.dark, letterSpacing:0, fontSize:"0.85em"}}>literally.</span>
           </h1>
           <p style={{
             fontSize:"1.05rem", color:C.muted, lineHeight:1.7,
@@ -159,39 +191,41 @@ function HomePage({ setPage }) {
           </p>
           <div style={{display:"flex", gap:"1rem", flexWrap:"wrap", marginBottom:"2.5rem"}}>
             <button onClick={()=>setPage("Events")} style={{
-              background:C.pink, color:"white", border:"none", cursor:"pointer",
+              background:C.pink, color:"white", border:BORDER, cursor:"pointer",
               padding:"0.9rem 2rem", borderRadius:99,
-              fontWeight:700, fontSize:"0.9rem", letterSpacing:"0.05em",
-              boxShadow:`0 8px 24px ${C.pink}44`, textTransform:"uppercase",
-              fontFamily:"inherit", transition:"transform 0.2s",
+              fontWeight:800, fontSize:"0.9rem", letterSpacing:"0.05em",
+              boxShadow:HARD, textTransform:"uppercase",
+              fontFamily:"inherit", transition:"transform 0.1s",
             }}>Sign Up for an Event →</button>
             <button onClick={()=>setPage("About")} style={{
-              background:"transparent", color:C.dark, border:`2px solid ${C.dark}`,
+              background:"white", color:C.dark, border:BORDER,
               cursor:"pointer", padding:"0.9rem 1.75rem", borderRadius:99,
-              fontWeight:700, fontSize:"0.9rem", letterSpacing:"0.05em",
-              textTransform:"uppercase", fontFamily:"inherit",
+              fontWeight:800, fontSize:"0.9rem", letterSpacing:"0.05em",
+              boxShadow:HARD_SM, textTransform:"uppercase", fontFamily:"inherit",
             }}>Our Story</button>
           </div>
-          <div className="hero-stats" style={{display:"flex", gap:"2.5rem", borderTop:`1px solid ${C.pink}20`, paddingTop:"1.5rem"}}>
+          <div className="hero-stats" style={{display:"flex", gap:"2.5rem", borderTop:`3px solid ${C.dark}`, paddingTop:"1.5rem"}}>
             {[["500+","Community Members"],["Weekly","Walks & Events"],["April 2026","Founded in Toronto"]].map(([n,l])=>(
               <div key={l}>
-                <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:C.dark,lineHeight:1}}>{n}</div>
-                <div style={{fontSize:"0.7rem",color:C.muted,textTransform:"uppercase",letterSpacing:"0.1em",marginTop:"0.2rem"}}>{l}</div>
+                <div style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.pink,lineHeight:1}}>{n}</div>
+                <div style={{fontSize:"0.7rem",color:C.dark,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em",marginTop:"0.2rem"}}>{l}</div>
               </div>
             ))}
           </div>
         </div>
         {/* Right — photo collage */}
-        <div className="hero-media" style={{position:"relative", overflow:"hidden", background:C.dark}}>
+        <div className="hero-media" style={{position:"relative", overflow:"hidden", background:C.dark, borderLeft:`4px solid ${C.dark}`}}>
           <img src={heroCollage} alt="The Girls Walk Community" style={{
-            width:"100%", height:"100%", objectFit:"cover", opacity:0.85,
+            width:"100%", height:"100%", objectFit:"cover", opacity:0.92,
           }}/>
           <div style={{
             position:"absolute", inset:0,
-            background:`linear-gradient(135deg, ${C.pink}33, ${C.orange}22, transparent 60%)`,
+            background:`linear-gradient(135deg, ${C.pink}22, transparent 55%)`,
           }}/>
         </div>
       </div>
+
+      <Marquee items={["The Girls Walk","Move With Intention","Community","Wellness","Sisterhood","Toronto & GTA"]} />
 
       {/* ── UPCOMING EVENTS SECTION ── */}
       <div className="section-padding" style={{padding:"5rem 4rem", background:"white"}}>
@@ -201,10 +235,10 @@ function HomePage({ setPage }) {
             <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Events</h2>
           </div>
           <button onClick={()=>setPage("Events")} style={{
-            background:"transparent",border:`2px solid ${C.pink}`,color:C.pink,
+            background:C.yellow,border:BORDER,color:C.dark,
             cursor:"pointer",padding:"0.6rem 1.4rem",borderRadius:99,
-            fontWeight:700,fontSize:"0.78rem",letterSpacing:"0.06em",
-            textTransform:"uppercase",fontFamily:"inherit",
+            fontWeight:800,fontSize:"0.78rem",letterSpacing:"0.06em",
+            textTransform:"uppercase",fontFamily:"inherit",boxShadow:HARD_SM,
           }}>View All →</button>
         </div>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.25rem"}}>
@@ -221,19 +255,19 @@ function HomePage({ setPage }) {
           <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Past Events</h2>
         </div>
         <div className="gallery-grid-home" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gridTemplateRows:"200px 200px",gap:"1rem"}}>
-          <div style={{gridColumn:"span 2",gridRow:"span 2",borderRadius:20,overflow:"hidden"}}>
+          <div style={{gridColumn:"span 2",gridRow:"span 2",borderRadius:18,overflow:"hidden",border:BORDER,boxShadow:HARD}}>
             <img src={photoBrunchArch} alt="Brunch" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
           </div>
-          <div style={{borderRadius:16,overflow:"hidden"}}>
+          <div style={{borderRadius:14,overflow:"hidden",border:BORDER,boxShadow:HARD_SM}}>
             <img src={photoBrunchPerson} alt="Community" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
           </div>
-          <div style={{borderRadius:16,overflow:"hidden"}}>
+          <div style={{borderRadius:14,overflow:"hidden",border:BORDER,boxShadow:HARD_SM}}>
             <img src={photoTgwCards} alt="TGW" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
           </div>
-          <div style={{borderRadius:16,overflow:"hidden"}}>
+          <div style={{borderRadius:14,overflow:"hidden",border:BORDER,boxShadow:HARD_SM}}>
             <img src={photoParkEvent} alt="Park event" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
           </div>
-          <div style={{borderRadius:16,overflow:"hidden",background:`linear-gradient(135deg,${C.pink},${C.orange})`,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div style={{borderRadius:14,overflow:"hidden",border:BORDER,boxShadow:HARD_SM,background:`linear-gradient(135deg,${C.pink},${C.orange})`,display:"flex",alignItems:"center",justifyContent:"center"}}>
             <div style={{textAlign:"center",color:"white",padding:"1rem"}}>
               <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",letterSpacing:"0.1em"}}>TGW</div>
               <div style={{fontSize:"0.7rem",letterSpacing:"0.15em",textTransform:"uppercase",opacity:0.85}}>@thegirlswalk</div>
@@ -252,17 +286,17 @@ function HomePage({ setPage }) {
           </p>
           <div className="email-row" style={{display:"flex",gap:"0.75rem",maxWidth:440,margin:"0 auto"}}>
             <input placeholder="Enter your email" style={{
-              flex:1,border:`2px solid ${C.blush}`,borderRadius:99,
+              flex:1,border:BORDER,borderRadius:99,
               padding:"0.85rem 1.25rem",fontSize:"0.9rem",outline:"none",
               fontFamily:"inherit",color:C.dark,
             }}/>
             <button style={{
-              background:`linear-gradient(135deg,${C.pink},${C.orange})`,
-              color:"white",border:"none",borderRadius:99,
-              padding:"0.85rem 1.75rem",cursor:"pointer",fontWeight:700,
+              background:C.pink,
+              color:"white",border:BORDER,borderRadius:99,
+              padding:"0.85rem 1.75rem",cursor:"pointer",fontWeight:800,
               fontSize:"0.85rem",letterSpacing:"0.05em",textTransform:"uppercase",
               fontFamily:"inherit",whiteSpace:"nowrap",
-              boxShadow:`0 4px 16px ${C.pink}44`,
+              boxShadow:HARD_SM,
             }}>Subscribe</button>
           </div>
           <p style={{fontSize:"0.85rem",color:C.muted,marginTop:"1.5rem"}}>
@@ -281,17 +315,18 @@ function HomePage({ setPage }) {
 function EventCard({ event, setPage }) {
   return (
     <div onClick={()=>setPage("EventDetail_"+event.id)} style={{
-      background:"white",borderRadius:20,overflow:"hidden",cursor:"pointer",
-      border:`1px solid ${C.blush}`,transition:"all 0.25s",
-      boxShadow:"0 2px 8px rgba(0,0,0,0.06)",
+      background:"white",borderRadius:18,overflow:"hidden",cursor:"pointer",
+      border:BORDER,transition:"all 0.15s",
+      boxShadow:HARD,
     }}
-    onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow=`0 16px 32px ${event.color}33`}}
-    onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow="0 2px 8px rgba(0,0,0,0.06)"}}>
+    onMouseEnter={e=>{e.currentTarget.style.transform="translate(-3px,-3px)";e.currentTarget.style.boxShadow=`9px 9px 0 ${C.pink}`}}
+    onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow=HARD}}>
       <div style={{
         minHeight:180,
         position:"relative",
         overflow:"hidden",
         background:`linear-gradient(135deg, ${event.color}, ${C.dark})`,
+        borderBottom:BORDER,
         padding:"1.25rem",
         display:"flex",
         flexDirection:"column",
@@ -327,6 +362,7 @@ function EventDetailPage({ eventId, setPage }) {
         height:400,
         position:"relative",
         overflow:"hidden",
+        borderBottom:`4px solid ${C.dark}`,
         background:`linear-gradient(135deg, ${event.color}, ${C.dark})`,
       }}>
         <div style={{position:"absolute",inset:0,background:`linear-gradient(to top,${C.dark}55,transparent 40%)`}}/>
@@ -344,7 +380,7 @@ function EventDetailPage({ eventId, setPage }) {
       <div style={{maxWidth:800,margin:"0 auto",padding:"3rem 2rem"}}>
         <div className="detail-info-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginBottom:"2rem"}}>
           {[["📅",event.date],["📍",event.location],["🎟",event.tag],["💬","Join our WhatsApp for updates"]].map(([icon,text])=>(
-            <div key={text} style={{background:"white",borderRadius:12,padding:"1rem 1.25rem",display:"flex",alignItems:"flex-start",gap:"0.75rem",border:`1px solid ${C.blush}`}}>
+            <div key={text} style={{background:"white",borderRadius:12,padding:"1rem 1.25rem",display:"flex",alignItems:"flex-start",gap:"0.75rem",border:BORDER,boxShadow:HARD_SM}}>
               <span style={{fontSize:"1.2rem"}}>{icon}</span>
               <span style={{fontSize:"0.88rem",color:C.dark,lineHeight:1.5,fontWeight:500}}>{text}</span>
             </div>
@@ -352,12 +388,23 @@ function EventDetailPage({ eventId, setPage }) {
         </div>
         <h3 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.6rem",color:C.dark,letterSpacing:"0.02em",marginBottom:"0.75rem"}}>About This Event</h3>
         <p style={{fontSize:"0.95rem",color:C.muted,lineHeight:1.8,marginBottom:"2rem"}}>{event.desc}</p>
-        <button style={{
-          background:event.color,color:"white",border:"none",cursor:"pointer",
-          padding:"1rem 2.5rem",borderRadius:99,fontWeight:800,fontSize:"1rem",
-          letterSpacing:"0.05em",textTransform:"uppercase",fontFamily:"inherit",
-          boxShadow:`0 8px 24px ${event.color}44`,
-        }}>{event.rsvp ? "Reserve My Spot →" : "Join the Walk →"}</button>
+        {event.ticketUrl ? (
+          <a href={event.ticketUrl} target="_blank" rel="noopener noreferrer" style={{
+            display:"inline-block",
+            background:event.color,color:"white",border:BORDER,cursor:"pointer",
+            padding:"1rem 2.5rem",borderRadius:99,fontWeight:800,fontSize:"1rem",
+            letterSpacing:"0.05em",textTransform:"uppercase",fontFamily:"inherit",
+            textDecoration:"none",
+            boxShadow:HARD,
+          }}>Get Tickets on Eventbrite →</a>
+        ) : (
+          <button style={{
+            background:event.color,color:"white",border:BORDER,cursor:"pointer",
+            padding:"1rem 2.5rem",borderRadius:99,fontWeight:800,fontSize:"1rem",
+            letterSpacing:"0.05em",textTransform:"uppercase",fontFamily:"inherit",
+            boxShadow:HARD,
+          }}>{event.rsvp ? "Reserve My Spot →" : "Join the Walk →"}</button>
+        )}
       </div>
     </div>
   );
@@ -367,11 +414,12 @@ function EventDetailPage({ eventId, setPage }) {
 function EventsPage({ setPage }) {
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
-      <div className="section-padding page-banner" style={{background:`linear-gradient(135deg,${C.pink},${C.orange})`,padding:"4rem 4rem 3rem"}}>
-        <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:"rgba(255,255,255,0.7)",textTransform:"uppercase",marginBottom:"0.75rem"}}>Community Events</div>
-        <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:0,lineHeight:1}}>UPCOMING EVENTS</h1>
-        <p style={{fontSize:"1rem",color:"rgba(255,255,255,0.85)",marginTop:"0.75rem",maxWidth:500}}>From weekly walks to monthly brunches — there's always something to show up to.</p>
+      <div className="section-padding page-banner" style={{background:`linear-gradient(135deg,${C.pink},${C.orange})`,padding:"4rem 4rem 3rem",borderBottom:`4px solid ${C.dark}`}}>
+        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:"rgba(255,255,255,0.85)",textTransform:"uppercase",marginBottom:"0.75rem"}}>Community Events</div>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:0,lineHeight:1}}>UPCOMING EVENTS</h1>
+        <p style={{fontSize:"1rem",color:"rgba(255,255,255,0.9)",marginTop:"0.75rem",maxWidth:500}}>From weekly walks to monthly brunches — there's always something to show up to.</p>
       </div>
+      <Marquee items={["Show Up","Move Together","Weekly Walks","Brunch","Pilates Picnic","Field Day"]} bg={C.dark} color={C.pink} />
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.5rem"}}>
           {events.map(e=><EventCard key={e.id} event={e} setPage={setPage}/>)}
@@ -389,9 +437,9 @@ function AboutPage() {
         <div style={{overflow:"hidden"}}>
           <img src={photoParkEvent} alt="Community" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
         </div>
-        <div className="section-padding split-content" style={{background:C.pink,padding:"5rem 4rem",display:"flex",flexDirection:"column",justifyContent:"center"}}>
-          <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:"rgba(255,255,255,0.7)",textTransform:"uppercase",marginBottom:"1rem"}}>Who We Are</div>
-          <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3.5rem",color:"white",letterSpacing:"0.02em",margin:"0 0 1.5rem",lineHeight:1}}>BUILT FOR WOMEN WHO MOVE WITH INTENTION.</h1>
+        <div className="section-padding split-content" style={{background:C.pink,padding:"5rem 4rem",display:"flex",flexDirection:"column",justifyContent:"center",borderLeft:BORDER}}>
+          <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:"rgba(255,255,255,0.85)",textTransform:"uppercase",marginBottom:"1rem"}}>Who We Are</div>
+          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"3.5rem",color:"white",letterSpacing:"0.02em",margin:"0 0 1.5rem",lineHeight:1}}>BUILT FOR WOMEN WHO MOVE WITH <span style={{fontFamily:SCRIPT,fontWeight:700,color:C.dark,letterSpacing:0}}>intention.</span></h1>
           <p style={{fontSize:"0.95rem",color:"rgba(255,255,255,0.9)",lineHeight:1.8,marginBottom:"1.5rem"}}>
             The Girls Walk Community was founded in April 2026 with a simple belief: women are stronger when they move together. What started as walks through Toronto's neighbourhoods has grown into a thriving community of 500+ ambitious women.
           </p>
@@ -411,7 +459,7 @@ function AboutPage() {
             {emoji:"☕",title:"Coffee & Tea",desc:"Casual bi-weekly meetups to connect and recharge."},
             {emoji:"🌸",title:"Seasonal Events",desc:"Flower picking, picnics, workshops and more."},
           ].map(({emoji,title,desc})=>(
-            <div key={title} style={{background:C.cream,borderRadius:20,padding:"2rem 1.5rem",textAlign:"center",border:`1px solid ${C.blush}`}}>
+            <div key={title} style={{background:C.cream,borderRadius:18,padding:"2rem 1.5rem",textAlign:"center",border:BORDER,boxShadow:HARD_SM}}>
               <div style={{fontSize:"2.5rem",marginBottom:"1rem"}}>{emoji}</div>
               <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.3rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"0.5rem"}}>{title}</div>
               <p style={{fontSize:"0.85rem",color:C.muted,lineHeight:1.6}}>{desc}</p>
@@ -434,9 +482,9 @@ function GalleryPage() {
   ];
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
-      <div className="section-padding page-banner" style={{background:C.dark,padding:"4rem 4rem 3rem"}}>
-        <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.75rem"}}>Moments</div>
-        <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:0,lineHeight:1}}>LIFE IN THE COMMUNITY</h1>
+      <div className="section-padding page-banner" style={{background:C.dark,padding:"4rem 4rem 3rem",borderBottom:`4px solid ${C.pink}`}}>
+        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.75rem"}}>Moments</div>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:0,lineHeight:1}}>LIFE IN THE COMMUNITY</h1>
         <p style={{fontSize:"1rem",color:"rgba(255,255,255,0.6)",marginTop:"0.75rem"}}>Real women. Real moments. Real community.</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
@@ -450,7 +498,8 @@ function GalleryPage() {
             <div key={p.src} style={{
               gridColumn: i===0 ? "span 2" : "",
               gridRow: i===0 ? "span 2" : "",
-              borderRadius:20,overflow:"hidden",position:"relative",cursor:"pointer",
+              borderRadius:16,overflow:"hidden",position:"relative",cursor:"pointer",
+              border:BORDER,boxShadow:HARD_SM,
             }}
             onMouseEnter={e=>{e.currentTarget.querySelector("img").style.transform="scale(1.05)"}}
             onMouseLeave={e=>{e.currentTarget.querySelector("img").style.transform="scale(1)"}}>
@@ -474,9 +523,9 @@ function GalleryPage() {
 function ShopPage() {
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
-      <div className="section-padding page-banner" style={{background:`linear-gradient(135deg,${C.yellow},${C.orange})`,padding:"4rem 4rem 3rem"}}>
-        <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:"rgba(255,255,255,0.7)",textTransform:"uppercase",marginBottom:"0.75rem"}}>TGW Shop</div>
-        <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:0,lineHeight:1}}>WEAR THE MOVEMENT.</h1>
+      <div className="section-padding page-banner" style={{background:`linear-gradient(135deg,${C.yellow},${C.orange})`,padding:"4rem 4rem 3rem",borderBottom:`4px solid ${C.dark}`}}>
+        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.dark,textTransform:"uppercase",marginBottom:"0.75rem"}}>TGW Shop</div>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>WEAR THE MOVEMENT.</h1>
       </div>
       <div className="section-padding" style={{padding:"5rem 4rem",textAlign:"center"}}>
         <div style={{maxWidth:500,margin:"0 auto"}}>
@@ -487,15 +536,15 @@ function ShopPage() {
           </p>
           <div style={{display:"flex",gap:"0.75rem",maxWidth:400,margin:"0 auto"}}>
             <input placeholder="Your email" style={{
-              flex:1,border:`2px solid ${C.blush}`,borderRadius:99,
+              flex:1,border:BORDER,borderRadius:99,
               padding:"0.85rem 1.25rem",fontSize:"0.9rem",outline:"none",
               fontFamily:"inherit",color:C.dark,
             }}/>
             <button style={{
-              background:C.pink,color:"white",border:"none",borderRadius:99,
-              padding:"0.85rem 1.75rem",cursor:"pointer",fontWeight:700,
+              background:C.pink,color:"white",border:BORDER,borderRadius:99,
+              padding:"0.85rem 1.75rem",cursor:"pointer",fontWeight:800,
               fontSize:"0.85rem",letterSpacing:"0.05em",textTransform:"uppercase",
-              fontFamily:"inherit",whiteSpace:"nowrap",
+              fontFamily:"inherit",whiteSpace:"nowrap",boxShadow:HARD_SM,
             }}>Notify Me</button>
           </div>
         </div>
@@ -510,36 +559,37 @@ function DonatePage() {
   const amounts = [10,25,50,100];
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
-      <div className="section-padding page-banner" style={{background:`linear-gradient(135deg,${C.hotpink},${C.pink})`,padding:"4rem 4rem 3rem",textAlign:"center"}}>
-        <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:"rgba(255,255,255,0.7)",textTransform:"uppercase",marginBottom:"0.75rem"}}>Support the Community</div>
-        <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:"0 0 1rem",lineHeight:1}}>FUEL THE MOVEMENT.</h1>
+      <div className="section-padding page-banner" style={{background:`linear-gradient(135deg,${C.hotpink},${C.pink})`,padding:"4rem 4rem 3rem",textAlign:"center",borderBottom:`4px solid ${C.dark}`}}>
+        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:"rgba(255,255,255,0.85)",textTransform:"uppercase",marginBottom:"0.75rem"}}>Support the Community</div>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:"0 0 1rem",lineHeight:1}}>FUEL THE MOVEMENT.</h1>
         <p style={{fontSize:"1rem",color:"rgba(255,255,255,0.9)",maxWidth:480,margin:"0 auto"}}>Your donation helps us keep events free, accessible, and life-changing for women across Toronto & GTA.</p>
       </div>
       <div style={{maxWidth:600,margin:"3rem auto",padding:"0 2rem"}}>
-        <div style={{background:"white",borderRadius:24,padding:"2.5rem",boxShadow:"0 8px 32px rgba(0,0,0,0.08)"}}>
+        <div style={{background:"white",borderRadius:20,padding:"2.5rem",border:BORDER,boxShadow:HARD}}>
           <h3 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.5rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"1.5rem"}}>CHOOSE AN AMOUNT</h3>
           <div className="amount-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"0.75rem",marginBottom:"1.5rem"}}>
             {amounts.map(a=>(
               <button key={a} onClick={()=>setSelected(a)} style={{
                 padding:"1rem",borderRadius:12,cursor:"pointer",fontWeight:800,fontSize:"1.1rem",
-                border:`2px solid ${selected===a?C.pink:C.blush}`,
+                border:BORDER,
                 background:selected===a?C.pink:"white",
-                color:selected===a?"white":C.dark,fontFamily:"'Bebas Neue','Impact',sans-serif",
+                boxShadow:selected===a?HARD_SM:"none",
+                color:selected===a?"white":C.dark,fontFamily:DISPLAY,
                 letterSpacing:"0.05em",transition:"all 0.15s",
               }}>${a}</button>
             ))}
           </div>
           <input placeholder="Or enter custom amount" style={{
-            width:"100%",border:`2px solid ${C.blush}`,borderRadius:12,
+            width:"100%",border:BORDER,borderRadius:12,
             padding:"0.85rem 1rem",fontSize:"0.95rem",outline:"none",
             fontFamily:"inherit",color:C.dark,marginBottom:"1.5rem",boxSizing:"border-box",
           }}/>
           <button style={{
-            width:"100%",background:`linear-gradient(135deg,${C.pink},${C.orange})`,
-            color:"white",border:"none",borderRadius:99,padding:"1.1rem",
+            width:"100%",background:C.pink,
+            color:"white",border:BORDER,borderRadius:99,padding:"1.1rem",
             fontWeight:800,fontSize:"1rem",letterSpacing:"0.05em",cursor:"pointer",
             textTransform:"uppercase",fontFamily:"inherit",
-            boxShadow:`0 8px 24px ${C.pink}44`,
+            boxShadow:HARD,
           }}>Donate ${selected} →</button>
           <p style={{textAlign:"center",fontSize:"0.78rem",color:C.muted,marginTop:"1rem"}}>
             The Girls Walk Community is a registered nonprofit. Donations may be tax-deductible.
@@ -549,8 +599,8 @@ function DonatePage() {
           <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.2rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"0.5rem"}}>YOUR IMPACT</div>
           <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1rem",marginTop:"1rem"}}>
             {[["$10","Covers walk supplies for one event"],["$25","Sponsors one woman's brunch ticket"],["$50","Funds a full community workshop"]].map(([amt,desc])=>(
-              <div key={amt} style={{background:"white",borderRadius:16,padding:"1.25rem",textAlign:"center",border:`1px solid ${C.blush}`}}>
-                <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.8rem",color:C.pink,marginBottom:"0.25rem"}}>{amt}</div>
+              <div key={amt} style={{background:"white",borderRadius:14,padding:"1.25rem",textAlign:"center",border:BORDER,boxShadow:HARD_SM}}>
+                <div style={{fontFamily:DISPLAY,fontSize:"1.8rem",color:C.pink,marginBottom:"0.25rem"}}>{amt}</div>
                 <p style={{fontSize:"0.78rem",color:C.muted,lineHeight:1.5}}>{desc}</p>
               </div>
             ))}
@@ -564,9 +614,9 @@ function DonatePage() {
 // ── FOOTER ──
 function Footer({ setPage }) {
   return (
-    <footer className="footer section-padding" style={{background:C.dark,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem"}}>
+    <footer className="footer section-padding" style={{background:C.dark,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem",borderTop:`4px solid ${C.pink}`}}>
       <div>
-        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.2rem",color:"white",letterSpacing:"0.05em",marginBottom:"0.25rem"}}>TGW <span style={{color:C.pink}}>COMMUNITY</span></div>
+        <div style={{fontFamily:DISPLAY,fontSize:"1.4rem",color:"white",letterSpacing:"0.05em",marginBottom:"0.25rem"}}>TGW <span style={{color:C.pink}}>COMMUNITY</span></div>
         <div style={{fontSize:"0.72rem",color:"rgba(255,255,255,0.4)",letterSpacing:"0.05em"}}>© 2026 · Toronto, ON · A movement. literally.</div>
       </div>
       <div className="footer-links" style={{display:"flex",gap:"1.25rem"}}>
@@ -606,9 +656,10 @@ export default function App() {
 
   return (
     <div style={{minHeight:"100vh",fontFamily:"'DM Sans','Segoe UI',sans-serif"}}>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
       <NavBar page={page} setPage={setPage}/>
       {renderPage()}
+      <Marquee items={["Join The Movement","The Girls Walk","Walk With Us","Community"]} bg={C.pink} color={C.dark} />
       <Footer setPage={setPage}/>
     </div>
   );

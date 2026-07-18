@@ -15,6 +15,19 @@ img {
   max-width: 100%;
 }
 
+/* Scrolling marquee band */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.333%); }
+}
+.marquee-track {
+  animation: marquee-scroll 22s linear infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
 @media (max-width: 768px) {
   .navbar {
     padding: 0 1rem !important;
