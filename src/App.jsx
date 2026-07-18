@@ -4,7 +4,7 @@ import "./App.css";
 
 // ── IMAGES ─── Change these to update photos on the site ───
 // Hero (front page main photo)
-import heroCollage from "./assets/hero-collage.png";
+import heroCollage from "./assets/hero-collage.jpg";
 // Gallery & section photos
 import photoParkEvent from "./assets/photo-park-event.jpg";
 import photoBrunchArch from "./assets/photo-brunch-arch.jpg";
@@ -171,7 +171,7 @@ function HomePage({ setPage }) {
             width:"fit-content", boxShadow:HARD_PINK,
           }}>
             <span style={{width:6,height:6,borderRadius:"50%",background:C.pink,display:"inline-block"}}></span>
-            <span style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.15em",color:"white",textTransform:"uppercase"}}>Toronto & GTA · Est. April 2026</span>
+            <span style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.15em",color:"white",textTransform:"uppercase"}}>Toronto & GTA</span>
           </div>
           <h1 className="hero-heading" style={{
             fontFamily:DISPLAY,
@@ -205,7 +205,7 @@ function HomePage({ setPage }) {
             }}>Our Story</button>
           </div>
           <div className="hero-stats" style={{display:"flex", gap:"2.5rem", borderTop:`3px solid ${C.dark}`, paddingTop:"1.5rem"}}>
-            {[["500+","Community Members"],["Weekly","Walks & Events"],["April 2026","Founded in Toronto"]].map(([n,l])=>(
+            {[["500+","Community Members"],["Weekly","Walks & Events"]].map(([n,l])=>(
               <div key={l}>
                 <div style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.pink,lineHeight:1}}>{n}</div>
                 <div style={{fontSize:"0.7rem",color:C.dark,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em",marginTop:"0.2rem"}}>{l}</div>
@@ -285,7 +285,7 @@ function HomePage({ setPage }) {
             Get updates on upcoming walks, events, community stories, and merch drops — straight to your inbox.
           </p>
           <div className="email-row" style={{display:"flex",gap:"0.75rem",maxWidth:440,margin:"0 auto"}}>
-            <input placeholder="Enter your email" style={{
+            <input type="email" aria-label="Email address" placeholder="Enter your email" style={{
               flex:1,border:BORDER,borderRadius:99,
               padding:"0.85rem 1.25rem",fontSize:"0.9rem",outline:"none",
               fontFamily:"inherit",color:C.dark,
@@ -535,7 +535,7 @@ function ShopPage() {
             We're working on something special. Sign up below to be the first to know when our merch goes live.
           </p>
           <div style={{display:"flex",gap:"0.75rem",maxWidth:400,margin:"0 auto"}}>
-            <input placeholder="Your email" style={{
+            <input type="email" aria-label="Email address" placeholder="Your email" style={{
               flex:1,border:BORDER,borderRadius:99,
               padding:"0.85rem 1.25rem",fontSize:"0.9rem",outline:"none",
               fontFamily:"inherit",color:C.dark,
@@ -579,7 +579,7 @@ function DonatePage() {
               }}>${a}</button>
             ))}
           </div>
-          <input placeholder="Or enter custom amount" style={{
+          <input type="number" min="1" inputMode="numeric" aria-label="Custom donation amount" placeholder="Or enter custom amount" style={{
             width:"100%",border:BORDER,borderRadius:12,
             padding:"0.85rem 1rem",fontSize:"0.95rem",outline:"none",
             fontFamily:"inherit",color:C.dark,marginBottom:"1.5rem",boxSizing:"border-box",
@@ -627,8 +627,8 @@ function Footer({ setPage }) {
         ))}
       </div>
       <div className="footer-social" style={{display:"flex",gap:"1rem"}}>
-        <a href="https://instagram.com/thegirlswalk" target="_blank" style={{color:"rgba(255,255,255,0.5)",fontSize:"0.82rem",textDecoration:"none",fontWeight:600}}>@thegirlswalk</a>
-        <a href="https://instagram.com/thegirlswalkcommunity" target="_blank" style={{color:"rgba(255,255,255,0.5)",fontSize:"0.82rem",textDecoration:"none",fontWeight:600}}>@thegirlswalkcommunity</a>
+        <a href="https://instagram.com/thegirlswalk" target="_blank" rel="noopener noreferrer" style={{color:"rgba(255,255,255,0.5)",fontSize:"0.82rem",textDecoration:"none",fontWeight:600}}>@thegirlswalk</a>
+        <a href="https://instagram.com/thegirlswalkcommunity" target="_blank" rel="noopener noreferrer" style={{color:"rgba(255,255,255,0.5)",fontSize:"0.82rem",textDecoration:"none",fontWeight:600}}>@thegirlswalkcommunity</a>
       </div>
     </footer>
   );
