@@ -554,57 +554,84 @@ function ShopPage() {
 }
 
 // ── DONATE PAGE ──
+// To accept live payments: set DONATE_URL to your Stripe Payment Link / Donorbox
+// URL. When set, the Donate button opens it (passing ?amount=). Leave "" to disable.
+const DONATE_URL = "";
+
+const DONATE_PILLARS = [
+  { title:"Develop Resources", desc:"We create tools and resources that support women at every stage.",
+    icon:(<path d="M12 3l1.9 4.6L18.5 8l-3.5 3 1 4.8L12 13.6 8 15.8l1-4.8-3.5-3 4.6-.4L12 3z"/>) },
+  { title:"Expand Opportunities", desc:"We connect women to experiences, programming, and opportunities that open doors and build confidence.",
+    icon:(<><path d="M7 17L17 7"/><path d="M9 7h8v8"/></>) },
+  { title:"Grow Together", desc:"We strengthen our community so more women can thrive in their careers and lives.",
+    icon:(<><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M4 19c0-2.8 2.2-5 5-5s5 2.2 5 5"/><path d="M15 19c0-2 1-3.6 2.6-4.4"/></>) },
+];
+
 function DonatePage() {
   const [selected, setSelected] = useState(25);
+  const [custom, setCustom] = useState("");
   const amounts = [10,25,50,100];
+  const amount = custom ? Number(custom) : selected;
+  const handleDonate = () => {
+    if (!DONATE_URL) return;
+    const sep = DONATE_URL.includes("?") ? "&" : "?";
+    window.open(`${DONATE_URL}${amount ? `${sep}amount=${amount}` : ""}`, "_blank", "noopener,noreferrer");
+  };
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
-      <div className="section-padding page-banner" style={{background:`linear-gradient(135deg,${C.hotpink},${C.pink})`,padding:"4rem 4rem 3rem",textAlign:"center",borderBottom:`4px solid ${C.dark}`}}>
-        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:"rgba(255,255,255,0.85)",textTransform:"uppercase",marginBottom:"0.75rem"}}>Support the Community</div>
-        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:"0 0 1rem",lineHeight:1}}>FUEL THE MOVEMENT.</h1>
-        <p style={{fontSize:"1rem",color:"rgba(255,255,255,0.9)",maxWidth:480,margin:"0 auto"}}>Your donation helps us keep events free, accessible, and life-changing for women across Toronto & GTA.</p>
-      </div>
-      <div style={{maxWidth:600,margin:"3rem auto",padding:"0 2rem"}}>
-        <div style={{background:"white",borderRadius:20,padding:"2.5rem",border:BORDER,boxShadow:HARD}}>
-          <h3 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.5rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"1.5rem"}}>CHOOSE AN AMOUNT</h3>
-          <div className="amount-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"0.75rem",marginBottom:"1.5rem"}}>
-            {amounts.map(a=>(
-              <button key={a} onClick={()=>setSelected(a)} style={{
-                padding:"1rem",borderRadius:12,cursor:"pointer",fontWeight:800,fontSize:"1.1rem",
-                border:BORDER,
-                background:selected===a?C.pink:"white",
-                boxShadow:selected===a?HARD_SM:"none",
-                color:selected===a?"white":C.dark,fontFamily:DISPLAY,
-                letterSpacing:"0.05em",transition:"all 0.15s",
-              }}>${a}</button>
-            ))}
-          </div>
-          <input type="number" min="1" inputMode="numeric" aria-label="Custom donation amount" placeholder="Or enter custom amount" style={{
-            width:"100%",border:BORDER,borderRadius:12,
-            padding:"0.85rem 1rem",fontSize:"0.95rem",outline:"none",
-            fontFamily:"inherit",color:C.dark,marginBottom:"1.5rem",boxSizing:"border-box",
-          }}/>
-          <button style={{
-            width:"100%",background:C.pink,
-            color:"white",border:BORDER,borderRadius:99,padding:"1.1rem",
-            fontWeight:800,fontSize:"1rem",letterSpacing:"0.05em",cursor:"pointer",
-            textTransform:"uppercase",fontFamily:"inherit",
-            boxShadow:HARD,
-          }}>Donate ${selected} →</button>
-          <p style={{textAlign:"center",fontSize:"0.78rem",color:C.muted,marginTop:"1rem"}}>
-            The Girls Walk Community is a registered nonprofit. Donations may be tax-deductible.
-          </p>
-        </div>
-        <div style={{marginTop:"2rem",textAlign:"center"}}>
-          <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.2rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"0.5rem"}}>YOUR IMPACT</div>
-          <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1rem",marginTop:"1rem"}}>
-            {[["$10","Covers walk supplies for one event"],["$25","Sponsors one woman's brunch ticket"],["$50","Funds a full community workshop"]].map(([amt,desc])=>(
-              <div key={amt} style={{background:"white",borderRadius:14,padding:"1.25rem",textAlign:"center",border:BORDER,boxShadow:HARD_SM}}>
-                <div style={{fontFamily:DISPLAY,fontSize:"1.8rem",color:C.pink,marginBottom:"0.25rem"}}>{amt}</div>
-                <p style={{fontSize:"0.78rem",color:C.muted,lineHeight:1.5}}>{desc}</p>
+      <div className="section-padding split-grid" style={{
+        display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3.5rem",alignItems:"center",
+        maxWidth:1200,margin:"0 auto",padding:"4.5rem 4rem",
+      }}>
+        {/* LEFT — headline + pillars */}
+        <div>
+          <div style={{fontSize:"0.8rem",fontWeight:800,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"1rem"}}>Support the Community</div>
+          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"5rem",color:C.dark,letterSpacing:"0.01em",margin:"0 0 1.5rem",lineHeight:0.92}}>Grow the<br/>Movement.</h1>
+          <p style={{fontSize:"1.05rem",color:C.mid,maxWidth:440,lineHeight:1.6,margin:"0 0 2.5rem"}}>Your support helps us develop resources and experiences that empower women to grow in their networks, careers, and community.</p>
+          <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.75rem"}}>
+            {DONATE_PILLARS.map(p=>(
+              <div key={p.title}>
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={C.pink} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{marginBottom:"0.75rem"}}>{p.icon}</svg>
+                <div style={{fontFamily:DISPLAY,fontSize:"1.05rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"0.4rem"}}>{p.title.toUpperCase()}</div>
+                <p style={{fontSize:"0.82rem",color:C.muted,lineHeight:1.55,margin:0}}>{p.desc}</p>
               </div>
             ))}
           </div>
+        </div>
+
+        {/* RIGHT — donation card */}
+        <div style={{background:C.white,borderRadius:24,padding:"2.75rem",border:BORDER,boxShadow:HARD}}>
+          <h3 style={{fontFamily:DISPLAY,fontSize:"1.9rem",color:C.dark,letterSpacing:"0.04em",margin:"0 0 1.75rem"}}>CHOOSE AN AMOUNT</h3>
+          <div className="amount-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"0.9rem",marginBottom:"0.9rem"}}>
+            {amounts.map(a=>{
+              const active = !custom && selected===a;
+              return (
+                <button key={a} onClick={()=>{setSelected(a);setCustom("");}} style={{
+                  padding:"1.15rem",borderRadius:14,cursor:"pointer",fontWeight:800,fontSize:"1.25rem",
+                  border:BORDER,
+                  background:active?C.yellow:C.white,
+                  boxShadow:active?HARD_SM:"none",
+                  color:C.dark,fontFamily:DISPLAY,letterSpacing:"0.05em",transition:"all 0.15s",
+                }}>${a}</button>
+              );
+            })}
+          </div>
+          <input type="number" min="1" inputMode="numeric" aria-label="Custom donation amount"
+            value={custom} onChange={e=>setCustom(e.target.value)} placeholder="Or enter custom amount" style={{
+            width:"100%",border:BORDER,borderRadius:14,
+            padding:"1.05rem 1.1rem",fontSize:"1rem",outline:"none",
+            fontFamily:"inherit",color:C.dark,marginBottom:"1.5rem",boxSizing:"border-box",
+          }}/>
+          <button onClick={handleDonate} style={{
+            width:"100%",background:C.yellow,
+            color:C.dark,border:BORDER,borderRadius:99,padding:"1.15rem",
+            fontWeight:800,fontSize:"1.1rem",letterSpacing:"0.05em",cursor:"pointer",
+            textTransform:"uppercase",fontFamily:DISPLAY,
+            boxShadow:HARD,
+          }}>Donate ${amount||0} →</button>
+          <p style={{textAlign:"center",fontSize:"0.85rem",color:C.mid,lineHeight:1.5,marginTop:"1.5rem",marginBottom:0}}>
+            The TGW Community is a registered nonprofit. Donations may be tax-deductible.
+          </p>
         </div>
       </div>
     </div>
