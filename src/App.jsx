@@ -1,5 +1,5 @@
 import { useState } from "react";
-import tgwLogo from "./assets/tgw-logo-yellow.png";
+import tgwLogo from "./assets/tgw-logo-brand-wordmark.png";
 import "./App.css";
 
 // ── IMAGES ─── Change these to update photos on the site ───
@@ -12,17 +12,18 @@ import photoBrunchPerson from "./assets/photo-brunch-person.jpg";
 import photoTgwCards from "./assets/photo-tgw-cards.jpg";
 
 // ── COLOUR PALETTE ─────────────────────────────────────────────
+// Official TGW brand palette (Brand Guide, Aug 2026)
 const C = {
-  pink:    "#FF2E88",
-  hotpink: "#E60073",
-  orange:  "#FF6B35",
-  yellow:  "#FFD23F",
-  blush:   "#FFD6E7",
-  cream:   "#FFF4EC",
+  pink:    "#EB1169", // primary bold pink
+  hotpink: "#C20E57", // deeper pink for gradients / hover
+  orange:  "#FF8944", // brand orange
+  yellow:  "#FFE99B", // soft brand yellow
+  blush:   "#FD92EF", // light pink (logo fill)
+  cream:   "#FDF4EC", // brand cream background
   white:   "#FFFFFF",
-  dark:    "#0D0B0C",
-  mid:     "#4A1A2C",
-  muted:   "#6E4A5B",
+  dark:    "#46172C", // deep plum (primary text / dark sections)
+  mid:     "#6E223F", // mid plum
+  muted:   "#8A5A6B", // muted plum (secondary text)
 };
 
 // ── BOLD EDITORIAL DESIGN TOKENS (ISWIS-inspired) ──────────────
@@ -623,8 +624,8 @@ function DonatePage() {
             fontFamily:"inherit",color:C.dark,marginBottom:"1.5rem",boxSizing:"border-box",
           }}/>
           <button onClick={handleDonate} style={{
-            width:"100%",background:C.yellow,
-            color:C.dark,border:BORDER,borderRadius:99,padding:"1.15rem",
+            width:"100%",background:C.pink,
+            color:C.white,border:BORDER,borderRadius:99,padding:"1.15rem",
             fontWeight:800,fontSize:"1.1rem",letterSpacing:"0.05em",cursor:"pointer",
             textTransform:"uppercase",fontFamily:DISPLAY,
             boxShadow:HARD,
