@@ -1,5 +1,5 @@
 import { useState } from "react";
-import tgwLogo from "./assets/tgw-logo-brand-wordmark.png";
+import tgwLogo from "./assets/tgw-logo-brand.png";
 import "./App.css";
 
 // ── IMAGES ─── Change these to update photos on the site ───
@@ -110,7 +110,7 @@ function NavBar({ page, setPage }) {
         background:"none", border:"none", cursor:"pointer",
         display:"flex", alignItems:"center", gap:"0.6rem",
       }}>
-        <img src={tgwLogo} alt="TGW" style={{height:36}} />
+        <img src={tgwLogo} alt="TGW Community" style={{height:48}} />
       </button>
       <button
         className="mobile-menu-toggle"
