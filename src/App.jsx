@@ -1,5 +1,6 @@
 import { useState } from "react";
 import tgwLogo from "./assets/tgw-logo-brand.png";
+import { isShopifyConfigured, createCheckout, DONATION_VARIANTS } from "./shopify";
 import "./App.css";
 
 // ── IMAGES ─── Change these to update photos on the site ───
@@ -573,7 +574,19 @@ function DonatePage() {
   const [custom, setCustom] = useState("");
   const amounts = [10,25,50,100];
   const amount = custom ? Number(custom) : selected;
-  const handleDonate = () => {
+  const handleDonate = async () => {
+    // Preferred: headless Shopify checkout for the selected preset amount.
+    const variantId = DONATION_VARIANTS[amount];
+    if (isShopifyConfigured() && variantId) {
+      try {
+        const url = await createCheckout([{ merchandiseId: variantId, quantity: 1 }]);
+        window.location.href = url;
+        return;
+      } catch (err) {
+        console.error("Shopify checkout failed:", err);
+      }
+    }
+    // Fallback: external donate link (Donorbox/Stripe) if one is configured.
     if (!DONATE_URL) return;
     const sep = DONATE_URL.includes("?") ? "&" : "?";
     window.open(`${DONATE_URL}${amount ? `${sep}amount=${amount}` : ""}`, "_blank", "noopener,noreferrer");
