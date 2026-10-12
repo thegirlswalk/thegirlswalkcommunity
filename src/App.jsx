@@ -8,14 +8,12 @@ import "./App.css";
 import heroWalkGroup from "./assets/hero-walk-group.jpg";
 import heroPilatesGroup from "./assets/hero-pilates-group.jpg";
 import heroRoomPanel from "./assets/hero-room-panel.jpg";
-// About (large community group from the 2026 Walk Dump)
-import aboutCommunityWalk from "./assets/about-community-walk.jpg";
 // Gallery cover photos
 import galleryBrunch from "./assets/gallery-meet-the-girls-brunch.jpg";
 import galleryMayFlower from "./assets/gallery-may-flower.jpg";
 import galleryPilates from "./assets/gallery-pilates-picnic.jpg";
 import galleryRoom from "./assets/gallery-shes-the-room.jpg";
-import galleryWalks from "./assets/gallery-2026-walk-dump.jpg";
+import galleryWalks from "./assets/gallery-2026-walk-dump.jpg"; // also used for About
 
 // Event album photos: a curated, resized selection from each Google Drive album.
 // Add/remove .jpg files in src/assets/albums/<slug>/ to change what shows.
@@ -454,8 +452,8 @@ function AboutPage() {
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="split-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",minHeight:480}}>
-        <div style={{overflow:"hidden"}}>
-          <img src={aboutCommunityWalk} alt="The Girls Walk Community members together on a lakeside walk" style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 60%"}}/>
+        <div className="about-photo" style={{overflow:"hidden",position:"relative"}}>
+          <img src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 58%"}}/>
         </div>
         <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 4rem",display:"flex",flexDirection:"column",justifyContent:"center",borderLeft:BORDER}}>
           <div style={{width:"fit-content",background:C.yellow,color:C.dark,border:`2px solid ${C.dark}`,borderRadius:99,padding:"0.3rem 0.9rem",fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1.25rem"}}>Who We Are</div>

@@ -16,8 +16,9 @@ the full Drive album. The first event, She's the Room, is featured largest.
 Photo curation rules for hero, About, covers, and albums: only clear group or
 community moments with 2+ people; no solo, founder/exec, scenery, object, or
 near-duplicate shots. Never use `IMG_5069` (swan), `IMG_5071` (founder), or
-`IMG_5042` (exec). The About photo is the lakeside group shot `IMG_5080` from the
-2026 Walk Dump album.
+`IMG_5042` (exec). The About photo is the large 2026 Walk Dump group shot from the
+website reference doc (`src/assets/gallery-2026-walk-dump.jpg`, also the Walk
+Dump cover).
 
 The Events page lists the Weekly Walk, a "Something New Is Coming" card, and a
 Past Events gallery grid. Shop is intentionally absent until merch is
