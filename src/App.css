@@ -24,8 +24,91 @@ img {
   animation: marquee-scroll 22s linear infinite;
   will-change: transform;
 }
+
+.gallery-grid-page {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.gallery-event {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gallery-event:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+  aspect-ratio: auto;
+}
+
+.gallery-event img {
+  position: absolute;
+  inset: 0;
+}
+
+.gallery-event:hover img,
+.gallery-event:focus-visible img {
+  transform: scale(1.05);
+}
+
+.gallery-event:focus-visible {
+  outline: 4px solid #EB1169;
+  outline-offset: 4px;
+}
+
+.album-grid {
+  columns: 3 260px;
+  column-gap: 1rem;
+}
+
+.album-photo {
+  display: block;
+  width: 100%;
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 3px solid #46172C;
+  border-radius: 14px;
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+  break-inside: avoid;
+  box-shadow: 4px 4px 0 #46172C;
+}
+
+.album-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s;
+}
+
+.album-photo:hover img,
+.album-photo:focus-visible img {
+  transform: scale(1.04);
+}
+
+.album-photo:focus-visible {
+  outline: 4px solid #EB1169;
+  outline-offset: 3px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }
+  .gallery-event img,
+  .album-photo img { transition: none !important; }
+  .gallery-event:hover img,
+  .gallery-event:focus-visible img,
+  .album-photo:hover img,
+  .album-photo:focus-visible img { transform: none; }
 }
 
 @media (max-width: 768px) {
@@ -54,8 +137,8 @@ img {
     flex-direction: column !important;
     gap: 0.5rem !important;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(244, 115, 168, 0.25);
+    background: #FFE99B;
+    border: 2px solid #46172C;
     border-radius: 20px;
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
   }
@@ -84,21 +167,31 @@ img {
 
   .cards-grid-4,
   .amount-grid,
-  .gallery-grid-home,
   .gallery-grid-page {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 
-  .gallery-grid-home,
   .gallery-grid-page {
     grid-template-rows: auto !important;
   }
 
-  .gallery-grid-home > :first-child,
+  .album-grid {
+    columns: 2;
+    column-gap: 0.75rem;
+  }
+
   .gallery-grid-page > :first-child {
     grid-column: 1 / -1 !important;
     grid-row: auto !important;
     min-height: 240px;
+  }
+
+  .gallery-grid-page > :first-child {
+    aspect-ratio: 1;
+  }
+
+  .donation-card {
+    padding: 1.5rem !important;
   }
 
   .hero-media,

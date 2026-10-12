@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import tgwLogo from "./assets/tgw-logo-brand.png";
 import { isShopifyConfigured, createCheckout, DONATION_VARIANTS } from "./shopify";
 import "./App.css";
@@ -8,28 +8,39 @@ import "./App.css";
 import heroCollage from "./assets/hero-collage.jpg";
 // Gallery & section photos
 import photoParkEvent from "./assets/photo-park-event.jpg";
-import photoBrunchArch from "./assets/photo-brunch-arch.jpg";
-import photoBrunchPerson from "./assets/photo-brunch-person.jpg";
-import photoTgwCards from "./assets/photo-tgw-cards.jpg";
+import galleryBrunch from "./assets/gallery-meet-the-girls-brunch.jpg";
+import galleryMayFlower from "./assets/gallery-may-flower.jpg";
+import galleryPilates from "./assets/gallery-pilates-picnic.jpg";
+import galleryRoom from "./assets/gallery-shes-the-room.jpg";
+import galleryWalks from "./assets/gallery-2026-walk-dump.jpg";
+
+// Event album photos: a curated, resized selection from each Google Drive album.
+// Add/remove .jpg files in src/assets/albums/<slug>/ to change what shows.
+const sortedUrls = modules => Object.keys(modules).sort().map(k => modules[k]);
+const ALBUM_PHOTOS = {
+  room:      sortedUrls(import.meta.glob("./assets/albums/room/*.jpg",      { eager:true, import:"default" })),
+  pilates:   sortedUrls(import.meta.glob("./assets/albums/pilates/*.jpg",   { eager:true, import:"default" })),
+  mayflower: sortedUrls(import.meta.glob("./assets/albums/mayflower/*.jpg", { eager:true, import:"default" })),
+  brunch:    sortedUrls(import.meta.glob("./assets/albums/brunch/*.jpg",    { eager:true, import:"default" })),
+  walks:     sortedUrls(import.meta.glob("./assets/albums/walks/*.jpg",     { eager:true, import:"default" })),
+};
+const WHATSAPP_URL = "https://chat.whatsapp.com/BrJxnx5G7VBAzNtP01eQ6v?mode=gi_t";
 
 // ── COLOUR PALETTE ─────────────────────────────────────────────
 // Official TGW brand palette (Brand Guide, Aug 2026)
 const C = {
   pink:    "#EB1169", // primary bold pink
-  hotpink: "#C20E57", // deeper pink for gradients / hover
   orange:  "#FF8944", // brand orange
   yellow:  "#FFE99B", // soft brand yellow
   blush:   "#FD92EF", // light pink (logo fill)
   cream:   "#FDF4EC", // brand cream background
-  white:   "#FFFFFF",
   dark:    "#46172C", // deep plum (primary text / dark sections)
-  mid:     "#6E223F", // mid plum
-  muted:   "#8A5A6B", // muted plum (secondary text)
+  mid:     "#46172C", // secondary text uses the exact brand plum
+  muted:   "#46172C",
 };
 
 // ── BOLD EDITORIAL DESIGN TOKENS (ISWIS-inspired) ──────────────
 const DISPLAY = "'Bebas Neue','Impact',sans-serif";
-const SCRIPT  = "'Caveat','Segoe Script',cursive";
 const HARD     = `6px 6px 0 ${C.dark}`;
 const HARD_SM  = `4px 4px 0 ${C.dark}`;
 const HARD_PINK = `6px 6px 0 ${C.pink}`;
@@ -69,40 +80,47 @@ const events = [
     rsvp: false,
     color: C.pink,
     tag: "Free · No RSVP needed",
-  },
-  {
-    id: 2,
-    type: "Fitness & Wellness",
-    title: "The Pilates Picnic",
-    date: "Sunday, July 19 · 11:00 AM – 2:00 PM",
-    location: "High Park, Toronto",
-    desc: "Join us for a morning of intentional movement and connection, followed by a colourful picnic spread of snacks and drinks! An interactive Pilates and yoga class led by WellnesswithTumi and our very own fitness director Francess. Meet us at High Park (200 Parkside Dr, Toronto).",
-    rsvp: true,
-    color: C.orange,
-    tag: "Tickets on Eventbrite",
-    ticketUrl: "https://www.eventbrite.ca/e/the-girls-walk-the-pilates-picnic-tickets-1993574989459",
-  },
-  {
-    id: 3,
-    type: "Summer Event",
-    title: "Field Day & Friends",
-    date: "August · Date TBD",
-    location: "Toronto",
-    desc: "Come for a day of sports, games, food, and fun with the community. Date and details coming soon!",
-    rsvp: false,
-    color: C.yellow,
-    tag: "Date TBD",
+    joinUrl: WHATSAPP_URL,
   },
 ];
 
+// Info cards shown alongside upcoming events (not clickable event detail pages)
+function InfoCard({ eyebrow, title, desc, cta, onClick, href, bg }) {
+  const linkProps = href ? { href, target:"_blank", rel:"noopener noreferrer" } : {};
+  const Tag = href ? "a" : "button";
+  return (
+    <div style={{background:C.cream,borderRadius:18,overflow:"hidden",border:BORDER,boxShadow:HARD,display:"flex",flexDirection:"column"}}>
+      <div style={{minHeight:180,background:bg,borderBottom:BORDER,padding:"1.25rem",display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+        <span style={{width:"fit-content",background:C.cream,color:C.dark,padding:"0.25rem 0.75rem",borderRadius:99,fontSize:"0.68rem",fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase"}}>{eyebrow}</span>
+        <div style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.dark,letterSpacing:"0.03em",lineHeight:1}}>{title}</div>
+      </div>
+      <div style={{padding:"1.25rem",display:"flex",flexDirection:"column",flex:1}}>
+        <p style={{fontSize:"0.85rem",color:C.dark,lineHeight:1.6,margin:"0 0 1.25rem",flex:1}}>{desc}</p>
+        <Tag {...linkProps} onClick={onClick} style={{
+          alignSelf:"flex-start",background:C.yellow,color:C.dark,border:`2px solid ${C.dark}`,borderRadius:99,
+          padding:"0.5rem 1.1rem",fontWeight:800,fontSize:"0.75rem",letterSpacing:"0.06em",textTransform:"uppercase",
+          fontFamily:"inherit",textDecoration:"none",cursor:"pointer",boxShadow:HARD_SM,
+        }}>{cta}</Tag>
+      </div>
+    </div>
+  );
+}
+
+const NextEventCard = () => (
+  <InfoCard eyebrow="Next Event" title="Something New Is Coming" bg={`linear-gradient(135deg, ${C.yellow}, ${C.orange})`}
+    desc="Our next event is in the works. Join our WhatsApp group or follow @thegirlswalk to hear first — and bring a friend!"
+    cta="Get Updates →" href={WHATSAPP_URL}/>
+);
+
 // ── NAVIGATION BAR ──
 function NavBar({ page, setPage }) {
-  const links = ["Home","About","Events","Gallery","Shop","Donate"];
+  const links = ["Home","About","Events","Gallery","Donate"];
   const [open, setOpen] = useState(false);
+  const active = page.startsWith("Album_") ? "Gallery" : page.startsWith("EventDetail_") ? "Events" : page;
   return (
     <nav className="navbar" style={{
       position:"fixed", top:0, left:0, right:0, zIndex:200,
-      background:"rgba(255,255,255,0.98)", backdropFilter:"blur(16px)",
+      background:C.yellow,
       borderBottom:`4px solid ${C.dark}`,
       display:"flex", alignItems:"center", justifyContent:"space-between",
       padding:"0 2rem", height:68,
@@ -119,7 +137,7 @@ function NavBar({ page, setPage }) {
         aria-label={open ? "Close navigation menu" : "Open navigation menu"}
         aria-expanded={open}
         style={{
-          display:"none", background:"white", border:`1px solid ${C.blush}`, cursor:"pointer",
+          display:"none", background:C.yellow, border:`2px solid ${C.dark}`, cursor:"pointer",
           width:40, height:40, borderRadius:"50%", color:C.dark, fontSize:"1.2rem",
           alignItems:"center", justifyContent:"center", boxShadow:"0 4px 12px rgba(0,0,0,0.08)",
         }}
@@ -128,19 +146,19 @@ function NavBar({ page, setPage }) {
       </button>
       <div className={`nav-links ${open ? "nav-links-open" : ""}`} style={{display:"flex", gap:"0.25rem", alignItems:"center"}}>
         {links.map(l => (
-          <button className="nav-link-button" key={l} onClick={()=>{setPage(l); setOpen(false);}} style={{
-            background: page===l ? C.pink : "transparent",
-            color: page===l ? "white" : C.dark,
-            border: page===l ? `2px solid ${C.dark}` : "2px solid transparent", cursor:"pointer",
+          <button className="nav-link-button" key={l} aria-current={active===l ? "page" : undefined} onClick={()=>{setPage(l); setOpen(false);}} style={{
+            background: l==="Donate" ? C.yellow : active===l ? C.pink : "transparent",
+            color: l==="Donate" || active!==l ? C.dark : C.cream,
+            border: active===l || l==="Donate" ? `2px solid ${C.dark}` : "2px solid transparent", cursor:"pointer",
             padding:"0.4rem 0.85rem", borderRadius:99,
             fontWeight:700, fontSize:"0.78rem", letterSpacing:"0.04em",
             transition:"all 0.15s", textTransform:"uppercase",
             fontFamily:"inherit",
           }}>{l}</button>
         ))}
-        <a className="nav-cta-button" href="https://chat.whatsapp.com/BrJxnx5G7VBAzNtP01eQ6v?mode=gi_t" target="_blank" rel="noopener noreferrer" style={{
+        <a className="nav-cta-button" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{
           marginLeft:"0.5rem",
-          background:C.pink, color:"white", border:`2px solid ${C.dark}`, cursor:"pointer",
+          background:C.pink, color:C.cream, border:`2px solid ${C.dark}`, cursor:"pointer",
           padding:"0.5rem 1.2rem", borderRadius:99,
           fontWeight:800, fontSize:"0.8rem", letterSpacing:"0.05em",
           boxShadow:HARD_SM, textTransform:"uppercase",
@@ -173,7 +191,7 @@ function HomePage({ setPage }) {
             width:"fit-content", boxShadow:HARD_PINK,
           }}>
             <span style={{width:6,height:6,borderRadius:"50%",background:C.pink,display:"inline-block"}}></span>
-            <span style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.15em",color:"white",textTransform:"uppercase"}}>Toronto & GTA</span>
+            <span style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.15em",color:C.cream,textTransform:"uppercase"}}>Toronto & GTA</span>
           </div>
           <h1 className="hero-heading" style={{
             fontFamily:DISPLAY,
@@ -183,7 +201,7 @@ function HomePage({ setPage }) {
           }}>
             A<br/>
             <span style={{color:C.pink}}>Movement.</span><br/>
-            <span style={{fontFamily:SCRIPT, fontWeight:700, color:C.dark, letterSpacing:0, fontSize:"0.85em"}}>literally.</span>
+            <span style={{fontFamily:DISPLAY, fontWeight:700, color:C.dark, letterSpacing:0, fontSize:"0.85em"}}>literally.</span>
           </h1>
           <p style={{
             fontSize:"1.05rem", color:C.muted, lineHeight:1.7,
@@ -193,14 +211,14 @@ function HomePage({ setPage }) {
           </p>
           <div style={{display:"flex", gap:"1rem", flexWrap:"wrap", marginBottom:"2.5rem"}}>
             <button onClick={()=>setPage("Events")} style={{
-              background:C.pink, color:"white", border:BORDER, cursor:"pointer",
+              background:C.pink, color:C.cream, border:BORDER, cursor:"pointer",
               padding:"0.9rem 2rem", borderRadius:99,
               fontWeight:800, fontSize:"0.9rem", letterSpacing:"0.05em",
               boxShadow:HARD, textTransform:"uppercase",
               fontFamily:"inherit", transition:"transform 0.1s",
             }}>Sign Up for an Event →</button>
             <button onClick={()=>setPage("About")} style={{
-              background:"white", color:C.dark, border:BORDER,
+              background:C.cream, color:C.dark, border:BORDER,
               cursor:"pointer", padding:"0.9rem 1.75rem", borderRadius:99,
               fontWeight:800, fontSize:"0.9rem", letterSpacing:"0.05em",
               boxShadow:HARD_SM, textTransform:"uppercase", fontFamily:"inherit",
@@ -230,7 +248,7 @@ function HomePage({ setPage }) {
       <Marquee items={["The Girls Walk","Move With Intention","Community","Wellness","Sisterhood","Toronto & GTA"]} />
 
       {/* ── UPCOMING EVENTS SECTION ── */}
-      <div className="section-padding" style={{padding:"5rem 4rem", background:"white"}}>
+      <div className="section-padding" style={{padding:"5rem 4rem", background:C.cream}}>
         <div className="section-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"2.5rem"}}>
           <div>
             <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>What's On</div>
@@ -247,44 +265,37 @@ function HomePage({ setPage }) {
           {events.map(e=>(
             <EventCard key={e.id} event={e} setPage={setPage}/>
           ))}
+          <NextEventCard/>
+          <InfoCard eyebrow="Missed One?" title="Relive Past Events" bg={`linear-gradient(135deg, ${C.blush}, ${C.pink})`}
+            desc="From She’s the Room to the Pilates Picnic — see the photos from our community events and walks."
+            cta="See the Photos →" onClick={()=>setPage("Gallery")}/>
         </div>
       </div>
 
       {/* ── PHOTO GALLERY SECTION ── */}
       <div className="section-padding" style={{padding:"4rem",background:C.cream}}>
-        <div style={{textAlign:"center",marginBottom:"2rem"}}>
-          <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>From Previous Events</div>
-          <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Past Events</h2>
+        <div className="section-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"2rem"}}>
+          <div>
+            <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>From Previous Events</div>
+            <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Past Events</h2>
+          </div>
+          <button onClick={()=>setPage("Gallery")} style={{
+            background:C.yellow,border:BORDER,color:C.dark,
+            cursor:"pointer",padding:"0.6rem 1.4rem",borderRadius:99,
+            fontWeight:800,fontSize:"0.78rem",letterSpacing:"0.06em",
+            textTransform:"uppercase",fontFamily:"inherit",boxShadow:HARD_SM,
+          }}>View Gallery →</button>
         </div>
-        <div className="gallery-grid-home" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gridTemplateRows:"200px 200px",gap:"1rem"}}>
-          <div style={{gridColumn:"span 2",gridRow:"span 2",borderRadius:18,overflow:"hidden",border:BORDER,boxShadow:HARD}}>
-            <img src={photoBrunchArch} alt="Brunch" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-          </div>
-          <div style={{borderRadius:14,overflow:"hidden",border:BORDER,boxShadow:HARD_SM}}>
-            <img src={photoBrunchPerson} alt="Community" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-          </div>
-          <div style={{borderRadius:14,overflow:"hidden",border:BORDER,boxShadow:HARD_SM}}>
-            <img src={photoTgwCards} alt="TGW" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-          </div>
-          <div style={{borderRadius:14,overflow:"hidden",border:BORDER,boxShadow:HARD_SM}}>
-            <img src={photoParkEvent} alt="Park event" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-          </div>
-          <div style={{borderRadius:14,overflow:"hidden",border:BORDER,boxShadow:HARD_SM,background:`linear-gradient(135deg,${C.pink},${C.orange})`,display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <div style={{textAlign:"center",color:"white",padding:"1rem"}}>
-              <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",letterSpacing:"0.1em"}}>TGW</div>
-              <div style={{fontSize:"0.7rem",letterSpacing:"0.15em",textTransform:"uppercase",opacity:0.85}}>@thegirlswalk</div>
-            </div>
-          </div>
-        </div>
+        <EventGalleryGrid setPage={setPage}/>
       </div>
 
       {/* ── NEWSLETTER SIGNUP ── */}
-      <div className="section-padding" style={{padding:"5rem 4rem",background:"white",textAlign:"center"}}>
+      <div className="section-padding" style={{padding:"5rem 4rem",background:C.cream,textAlign:"center"}}>
         <div style={{maxWidth:560,margin:"0 auto"}}>
           <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.75rem"}}>STAY CONNECTED</div>
           <h2 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 0.75rem"}}>JOIN OUR NEWSLETTER</h2>
           <p style={{fontSize:"0.95rem",color:C.muted,lineHeight:1.7,marginBottom:"2rem"}}>
-            Get updates on upcoming walks, events, community stories, and merch drops — straight to your inbox.
+            Get updates on upcoming walks, events, and community stories — straight to your inbox.
           </p>
           <div className="email-row" style={{display:"flex",gap:"0.75rem",maxWidth:440,margin:"0 auto"}}>
             <input type="email" aria-label="Email address" placeholder="Enter your email" style={{
@@ -294,7 +305,7 @@ function HomePage({ setPage }) {
             }}/>
             <button style={{
               background:C.pink,
-              color:"white",border:BORDER,borderRadius:99,
+              color:C.cream,border:BORDER,borderRadius:99,
               padding:"0.85rem 1.75rem",cursor:"pointer",fontWeight:800,
               fontSize:"0.85rem",letterSpacing:"0.05em",textTransform:"uppercase",
               fontFamily:"inherit",whiteSpace:"nowrap",
@@ -303,7 +314,7 @@ function HomePage({ setPage }) {
           </div>
           <p style={{fontSize:"0.85rem",color:C.muted,marginTop:"1.5rem"}}>
             Or join our WhatsApp group for live updates:{" "}
-            <a href="https://chat.whatsapp.com/BrJxnx5G7VBAzNtP01eQ6v?mode=gi_t" target="_blank" rel="noopener noreferrer" style={{color:C.pink,fontWeight:700,textDecoration:"none"}}>
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{color:C.pink,fontWeight:700,textDecoration:"none"}}>
               Join WhatsApp →
             </a>
           </p>
@@ -317,7 +328,7 @@ function HomePage({ setPage }) {
 function EventCard({ event, setPage }) {
   return (
     <div onClick={()=>setPage("EventDetail_"+event.id)} style={{
-      background:"white",borderRadius:18,overflow:"hidden",cursor:"pointer",
+      background:C.cream,borderRadius:18,overflow:"hidden",cursor:"pointer",
       border:BORDER,transition:"all 0.15s",
       boxShadow:HARD,
     }}
@@ -336,11 +347,11 @@ function EventCard({ event, setPage }) {
       }}>
         <span style={{
           width:"fit-content",
-          background:"rgba(255,255,255,0.9)",color:event.color,
+          background:C.cream,color:C.dark,
           padding:"0.25rem 0.75rem",borderRadius:99,fontSize:"0.68rem",
           fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",
         }}>{event.type}</span>
-        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:"white",letterSpacing:"0.03em",lineHeight:1}}>{event.location}</div>
+        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:C.cream,letterSpacing:"0.03em",lineHeight:1}}>{event.location}</div>
       </div>
       <div style={{padding:"1.25rem"}}>
         <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:event.color,textTransform:"uppercase",marginBottom:"0.35rem"}}>{event.date}</div>
@@ -370,19 +381,19 @@ function EventDetailPage({ eventId, setPage }) {
         <div style={{position:"absolute",inset:0,background:`linear-gradient(to top,${C.dark}55,transparent 40%)`}}/>
         <button onClick={()=>setPage("Events")} style={{
           position:"absolute",top:"1.5rem",left:"1.5rem",
-          background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",
-          border:"1px solid rgba(255,255,255,0.3)",color:"white",cursor:"pointer",
+          background:`${C.cream}26`,backdropFilter:"blur(8px)",
+          border:`1px solid ${C.cream}4D`,color:C.cream,cursor:"pointer",
           padding:"0.5rem 1rem",borderRadius:99,fontSize:"0.8rem",fontWeight:700,fontFamily:"inherit",
         }}>← Back to Events</button>
         <div className="event-detail-banner-copy" style={{position:"absolute",bottom:"2rem",left:"3rem",right:"3rem"}}>
-          <span style={{background:"rgba(255,255,255,0.18)",color:"white",padding:"0.3rem 0.9rem",borderRadius:99,fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",border:"1px solid rgba(255,255,255,0.2)"}}>{event.type}</span>
-          <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3.5rem",color:"white",letterSpacing:"0.02em",margin:"0.75rem 0 0",lineHeight:1}}>{event.title}</h1>
+          <span style={{background:`${C.cream}2E`,color:C.cream,padding:"0.3rem 0.9rem",borderRadius:99,fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",border:`1px solid ${C.cream}33`}}>{event.type}</span>
+          <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3.5rem",color:C.cream,letterSpacing:"0.02em",margin:"0.75rem 0 0",lineHeight:1}}>{event.title}</h1>
         </div>
       </div>
       <div style={{maxWidth:800,margin:"0 auto",padding:"3rem 2rem"}}>
         <div className="detail-info-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginBottom:"2rem"}}>
           {[["📅",event.date],["📍",event.location],["🎟",event.tag],["💬","Join our WhatsApp for updates"]].map(([icon,text])=>(
-            <div key={text} style={{background:"white",borderRadius:12,padding:"1rem 1.25rem",display:"flex",alignItems:"flex-start",gap:"0.75rem",border:BORDER,boxShadow:HARD_SM}}>
+            <div key={text} style={{background:C.cream,borderRadius:12,padding:"1rem 1.25rem",display:"flex",alignItems:"flex-start",gap:"0.75rem",border:BORDER,boxShadow:HARD_SM}}>
               <span style={{fontSize:"1.2rem"}}>{icon}</span>
               <span style={{fontSize:"0.88rem",color:C.dark,lineHeight:1.5,fontWeight:500}}>{text}</span>
             </div>
@@ -390,18 +401,18 @@ function EventDetailPage({ eventId, setPage }) {
         </div>
         <h3 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.6rem",color:C.dark,letterSpacing:"0.02em",marginBottom:"0.75rem"}}>About This Event</h3>
         <p style={{fontSize:"0.95rem",color:C.muted,lineHeight:1.8,marginBottom:"2rem"}}>{event.desc}</p>
-        {event.ticketUrl ? (
-          <a href={event.ticketUrl} target="_blank" rel="noopener noreferrer" style={{
+        {event.ticketUrl || event.joinUrl ? (
+          <a href={event.ticketUrl || event.joinUrl} target="_blank" rel="noopener noreferrer" style={{
             display:"inline-block",
-            background:event.color,color:"white",border:BORDER,cursor:"pointer",
+            background:event.color,color:C.dark,border:BORDER,cursor:"pointer",
             padding:"1rem 2.5rem",borderRadius:99,fontWeight:800,fontSize:"1rem",
             letterSpacing:"0.05em",textTransform:"uppercase",fontFamily:"inherit",
             textDecoration:"none",
             boxShadow:HARD,
-          }}>Get Tickets on Eventbrite →</a>
+          }}>{event.ticketUrl ? "Get Tickets on Eventbrite →" : "Join the Walk →"}</a>
         ) : (
           <button style={{
-            background:event.color,color:"white",border:BORDER,cursor:"pointer",
+            background:event.color,color:C.dark,border:BORDER,cursor:"pointer",
             padding:"1rem 2.5rem",borderRadius:99,fontWeight:800,fontSize:"1rem",
             letterSpacing:"0.05em",textTransform:"uppercase",fontFamily:"inherit",
             boxShadow:HARD,
@@ -417,15 +428,21 @@ function EventsPage({ setPage }) {
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="section-padding page-banner" style={{background:`linear-gradient(135deg,${C.pink},${C.orange})`,padding:"4rem 4rem 3rem",borderBottom:`4px solid ${C.dark}`}}>
-        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:"rgba(255,255,255,0.85)",textTransform:"uppercase",marginBottom:"0.75rem"}}>Community Events</div>
-        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:0,lineHeight:1}}>UPCOMING EVENTS</h1>
-        <p style={{fontSize:"1rem",color:"rgba(255,255,255,0.9)",marginTop:"0.75rem",maxWidth:500}}>From weekly walks to monthly brunches — there's always something to show up to.</p>
+        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.dark,textTransform:"uppercase",marginBottom:"0.75rem"}}>Community Events</div>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>UPCOMING EVENTS</h1>
+        <p style={{fontSize:"1rem",color:C.dark,marginTop:"0.75rem",maxWidth:500}}>From weekly walks to monthly brunches — there's always something to show up to.</p>
       </div>
-      <Marquee items={["Show Up","Move Together","Weekly Walks","Brunch","Pilates Picnic","Field Day"]} bg={C.dark} color={C.pink} />
+      <Marquee items={["Show Up","Move Together","Weekly Walks","Come Along","Bring a Friend","See You at the Next Walk"]} bg={C.dark} color={C.pink} />
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
-        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.5rem"}}>
+        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.5rem"}}>
           {events.map(e=><EventCard key={e.id} event={e} setPage={setPage}/>)}
+          <NextEventCard/>
         </div>
+      </div>
+      <div className="section-padding" style={{padding:"1rem 4rem 4rem"}}>
+        <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>Missed One?</div>
+        <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 2rem"}}>Past Events</h2>
+        <EventGalleryGrid setPage={setPage}/>
       </div>
     </div>
   );
@@ -440,17 +457,17 @@ function AboutPage() {
           <img src={photoParkEvent} alt="Community" style={{width:"100%",height:"100%",objectFit:"cover"}}/>
         </div>
         <div className="section-padding split-content" style={{background:C.pink,padding:"5rem 4rem",display:"flex",flexDirection:"column",justifyContent:"center",borderLeft:BORDER}}>
-          <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:"rgba(255,255,255,0.85)",textTransform:"uppercase",marginBottom:"1rem"}}>Who We Are</div>
-          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"3.5rem",color:"white",letterSpacing:"0.02em",margin:"0 0 1.5rem",lineHeight:1}}>BUILT FOR WOMEN WHO MOVE WITH <span style={{fontFamily:SCRIPT,fontWeight:700,color:C.dark,letterSpacing:0}}>intention.</span></h1>
-          <p style={{fontSize:"0.95rem",color:"rgba(255,255,255,0.9)",lineHeight:1.8,marginBottom:"1.5rem"}}>
+          <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.dark,textTransform:"uppercase",marginBottom:"1rem"}}>Who We Are</div>
+          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"3.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1.5rem",lineHeight:1}}>BUILT FOR WOMEN WHO MOVE WITH <span style={{fontFamily:DISPLAY,fontWeight:700,color:C.dark,letterSpacing:0}}>intention.</span></h1>
+          <p style={{fontSize:"0.95rem",color:C.dark,lineHeight:1.8,marginBottom:"1.5rem"}}>
             The Girls Walk Community was founded in April 2026 with a simple belief: women are stronger when they move together. What started as walks through Toronto's neighbourhoods has grown into a thriving community of 500+ ambitious women.
           </p>
-          <p style={{fontSize:"0.95rem",color:"rgba(255,255,255,0.9)",lineHeight:1.8}}>
+          <p style={{fontSize:"0.95rem",color:C.dark,lineHeight:1.8}}>
             To build a safe, uplifting community where women connect through walks, events, and shared experiences that promote wellness, confidence, community, and genuine networking opportunities.
           </p>
         </div>
       </div>
-      <div className="section-padding" style={{padding:"5rem 4rem",background:"white"}}>
+      <div className="section-padding" style={{padding:"5rem 4rem",background:C.cream}}>
         <div style={{textAlign:"center",marginBottom:"3rem"}}>
           <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em"}}>WHAT WE DO</h2>
         </div>
@@ -474,83 +491,122 @@ function AboutPage() {
 }
 
 // ── GALLERY PAGE ──
-function GalleryPage() {
-  const photos = [
-    {src:photoBrunchArch,label:"Meet The Girls Brunch — April 2026",span:"col"},
-    {src:photoBrunchPerson,label:"MTG Brunch — May 2026"},
-    {src:photoTgwCards,label:"TGW Merch & Branding"},
-    {src:photoParkEvent,label:"May Flowers Park Event"},
-    {src:heroCollage,label:"@thegirlswalk on Instagram"},
-  ];
+// First event is the featured (largest) box. `slug` maps to src/assets/albums/<slug>/.
+const galleryEvents = [
+  { slug:"room",      src:galleryRoom,      label:"She’s the Room - 09/25/26",        album:"1LDG2X3GuL1hOwd-cAnbfLOIxYQFPLnnb" },
+  { slug:"pilates",   src:galleryPilates,   label:"The Pilates Picnic - 07/19/26",    album:"1yOequ_B8dEz-Nm0fI79nOHBZr4YeSfb2" },
+  { slug:"mayflower", src:galleryMayFlower, label:"May Flower - 05/09/26",            album:"1Ek2C7T-Oe65PvQmZrXZ7WbD04hw9gehF" },
+  { slug:"brunch",    src:galleryBrunch,    label:"Meet the Girls Brunch - 04/18/26", album:"1IQuG4fJZrYNIPRVvNqwuPpbYDAFBOfO2" },
+  { slug:"walks",     src:galleryWalks,     label:"2026 Walk Dump",                   album:"1FF6P-zbOjjmi6Ic2yknDccQ3xypMVn3K" },
+];
+
+function EventGalleryGrid({ setPage }) {
   return (
-    <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
+    <div className="gallery-grid-page">
+      {galleryEvents.map(p=>(
+        <button type="button" className="gallery-event" key={p.slug}
+        onClick={()=>setPage(`Album_${p.slug}`)}
+        aria-label={`View ${p.label} photo gallery`}
+        style={{borderRadius:16,overflow:"hidden",position:"relative",border:BORDER,boxShadow:HARD_SM}}>
+          <img src={p.src} alt="" loading="lazy" style={{width:"100%",height:"100%",objectFit:"cover",transition:"transform 0.4s"}}/>
+          <div style={{
+            position:"absolute",inset:0,
+            background:`linear-gradient(to top,${C.dark},transparent 65%)`,
+            display:"flex",alignItems:"flex-end",padding:"1.25rem",
+          }}>
+            <span style={{fontFamily:DISPLAY,fontSize:"clamp(1rem,1.5vw,1.5rem)",color:C.cream,letterSpacing:"0.05em",textAlign:"left"}}>{p.label}</span>
+          </div>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function GalleryPage({ setPage }) {
+  return (
+    <div style={{paddingTop:68,minHeight:"100vh",background:C.cream}}>
       <div className="section-padding page-banner" style={{background:C.dark,padding:"4rem 4rem 3rem",borderBottom:`4px solid ${C.pink}`}}>
-        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.75rem"}}>Moments</div>
-        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:"white",letterSpacing:"0.02em",margin:0,lineHeight:1}}>LIFE IN THE COMMUNITY</h1>
-        <p style={{fontSize:"1rem",color:"rgba(255,255,255,0.6)",marginTop:"0.75rem"}}>Real women. Real moments. Real community.</p>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.yellow,letterSpacing:"0.02em",margin:0,lineHeight:1}}>COMMUNITY LIFE ON CAMERA</h1>
+        <p style={{fontSize:"1rem",color:C.yellow,marginTop:"0.75rem"}}>Explore the gallery of photos for each of our events and walk.</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
-        <div className="gallery-grid-page" style={{
-          display:"grid",
-          gridTemplateColumns:"repeat(4,1fr)",
-          gridTemplateRows:"280px 280px",
-          gap:"1rem",
-        }}>
-          {photos.map((p,i)=>(
-            <div key={p.src} style={{
-              gridColumn: i===0 ? "span 2" : "",
-              gridRow: i===0 ? "span 2" : "",
-              borderRadius:16,overflow:"hidden",position:"relative",cursor:"pointer",
-              border:BORDER,boxShadow:HARD_SM,
-            }}
-            onMouseEnter={e=>{e.currentTarget.querySelector("img").style.transform="scale(1.05)"}}
-            onMouseLeave={e=>{e.currentTarget.querySelector("img").style.transform="scale(1)"}}>
-              <img src={p.src} alt={p.label} style={{width:"100%",height:"100%",objectFit:"cover",transition:"transform 0.4s"}}/>
-              <div style={{
-                position:"absolute",inset:0,
-                background:"linear-gradient(to top,rgba(0,0,0,0.6),transparent 50%)",
-                display:"flex",alignItems:"flex-end",padding:"1.25rem",
-              }}>
-                <span style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"0.95rem",color:"white",letterSpacing:"0.05em"}}>{p.label}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+        <EventGalleryGrid setPage={setPage}/>
       </div>
     </div>
   );
 }
 
-// ── SHOP PAGE ──
-function ShopPage() {
+// ── EVENT ALBUM PAGE ──
+function AlbumPage({ slug, setPage }) {
+  const event = galleryEvents.find(e=>e.slug===slug);
+  const photos = ALBUM_PHOTOS[slug] || [];
+  const [index, setIndex] = useState(null);
+  const open = index !== null;
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = e => {
+      if (e.key === "Escape") setIndex(null);
+      if (e.key === "ArrowRight") setIndex(i => (i + 1) % photos.length);
+      if (e.key === "ArrowLeft") setIndex(i => (i - 1 + photos.length) % photos.length);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
+  }, [open, photos.length]);
+
+  if (!event) return <GalleryPage setPage={setPage}/>;
+  const driveUrl = `https://drive.google.com/drive/folders/${event.album}`;
+  const lightboxBtn = {
+    background:C.yellow,color:C.dark,border:`2px solid ${C.dark}`,borderRadius:99,cursor:"pointer",
+    fontWeight:800,fontFamily:"inherit",fontSize:"1.1rem",width:48,height:48,
+  };
+
   return (
-    <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
-      <div className="section-padding page-banner" style={{background:`linear-gradient(135deg,${C.yellow},${C.orange})`,padding:"4rem 4rem 3rem",borderBottom:`4px solid ${C.dark}`}}>
-        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.dark,textTransform:"uppercase",marginBottom:"0.75rem"}}>TGW Shop</div>
-        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>WEAR THE MOVEMENT.</h1>
+    <div style={{paddingTop:68,minHeight:"100vh",background:C.cream}}>
+      <div className="section-padding page-banner" style={{background:C.dark,padding:"2.5rem 4rem 2.5rem",borderBottom:`4px solid ${C.pink}`}}>
+        <button onClick={()=>setPage("Gallery")} style={{
+          background:"none",border:`2px solid ${C.yellow}`,color:C.yellow,cursor:"pointer",
+          padding:"0.4rem 1rem",borderRadius:99,fontSize:"0.75rem",fontWeight:800,letterSpacing:"0.06em",
+          textTransform:"uppercase",fontFamily:"inherit",marginBottom:"1.5rem",
+        }}>← Back to Gallery</button>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.yellow,letterSpacing:"0.02em",margin:0,lineHeight:1}}>{event.label}</h1>
+        <p style={{fontSize:"1rem",color:C.yellow,marginTop:"0.75rem"}}>
+          Highlights from the day.{" "}
+          <a href={driveUrl} target="_blank" rel="noopener noreferrer" style={{color:C.yellow,fontWeight:700}}>View the full album on Google Drive ↗</a>
+        </p>
       </div>
-      <div className="section-padding" style={{padding:"5rem 4rem",textAlign:"center"}}>
-        <div style={{maxWidth:500,margin:"0 auto"}}>
-          <div style={{fontSize:"4rem",marginBottom:"1.5rem"}}>👟</div>
-          <h2 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1rem"}}>MERCHANDISE DROPPING SOON</h2>
-          <p style={{fontSize:"1rem",color:C.muted,lineHeight:1.7,marginBottom:"2rem"}}>
-            We're working on something special. Sign up below to be the first to know when our merch goes live.
-          </p>
-          <div style={{display:"flex",gap:"0.75rem",maxWidth:400,margin:"0 auto"}}>
-            <input type="email" aria-label="Email address" placeholder="Your email" style={{
-              flex:1,border:BORDER,borderRadius:99,
-              padding:"0.85rem 1.25rem",fontSize:"0.9rem",outline:"none",
-              fontFamily:"inherit",color:C.dark,
-            }}/>
-            <button style={{
-              background:C.pink,color:"white",border:BORDER,borderRadius:99,
-              padding:"0.85rem 1.75rem",cursor:"pointer",fontWeight:800,
-              fontSize:"0.85rem",letterSpacing:"0.05em",textTransform:"uppercase",
-              fontFamily:"inherit",whiteSpace:"nowrap",boxShadow:HARD_SM,
-            }}>Notify Me</button>
-          </div>
+      <div className="section-padding" style={{padding:"3rem 4rem"}}>
+        <div className="album-grid">
+          {photos.map((src,i)=>(
+            <button type="button" key={src} className="album-photo" onClick={()=>setIndex(i)}
+              aria-label={`Open photo ${i+1} of ${photos.length}`}>
+              <img src={src} alt={`${event.label} — photo ${i+1}`} loading="lazy"/>
+            </button>
+          ))}
+        </div>
+        <div style={{textAlign:"center",marginTop:"3rem"}}>
+          <p style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.dark,letterSpacing:"0.03em",margin:"0 0 1rem"}}>Want to be in the next album? Come along!</p>
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{
+            display:"inline-block",background:C.yellow,color:C.dark,border:BORDER,borderRadius:99,
+            padding:"0.85rem 1.75rem",fontWeight:800,fontSize:"0.85rem",letterSpacing:"0.05em",
+            textTransform:"uppercase",textDecoration:"none",boxShadow:HARD_SM,
+          }}>Join Our WhatsApp →</a>
         </div>
       </div>
+
+      {open && (
+        <div role="dialog" aria-modal="true" aria-label={`${event.label} — photo ${index+1} of ${photos.length}`}
+          onClick={()=>setIndex(null)}
+          style={{position:"fixed",inset:0,zIndex:300,background:`${C.dark}F2`,display:"flex",alignItems:"center",justifyContent:"center",padding:"4.5rem 1rem 1rem"}}>
+          <img src={photos[index]} alt={`${event.label} — photo ${index+1}`} onClick={e=>e.stopPropagation()}
+            style={{maxWidth:"100%",maxHeight:"100%",objectFit:"contain",borderRadius:12,border:`3px solid ${C.cream}`}}/>
+          <button type="button" aria-label="Close" autoFocus onClick={()=>setIndex(null)} style={{...lightboxBtn,position:"absolute",top:"1rem",right:"1rem"}}>✕</button>
+          <button type="button" aria-label="Previous photo" onClick={e=>{e.stopPropagation();setIndex((index-1+photos.length)%photos.length);}} style={{...lightboxBtn,position:"absolute",left:"1rem",top:"50%",transform:"translateY(-50%)"}}>←</button>
+          <button type="button" aria-label="Next photo" onClick={e=>{e.stopPropagation();setIndex((index+1)%photos.length);}} style={{...lightboxBtn,position:"absolute",right:"1rem",top:"50%",transform:"translateY(-50%)"}}>→</button>
+          <div style={{position:"absolute",top:"1.4rem",left:"1rem",color:C.cream,fontSize:"0.85rem",fontWeight:700}}>{index+1} / {photos.length}</div>
+        </div>
+      )}
     </div>
   );
 }
@@ -562,11 +618,11 @@ const DONATE_URL = "";
 
 const DONATE_PILLARS = [
   { title:"Develop Resources", desc:"We create tools and resources that support women at every stage.",
-    icon:(<path d="M12 3l1.9 4.6L18.5 8l-3.5 3 1 4.8L12 13.6 8 15.8l1-4.8-3.5-3 4.6-.4L12 3z"/>) },
+  },
   { title:"Expand Opportunities", desc:"We connect women to experiences, programming, and opportunities that open doors and build confidence.",
-    icon:(<><path d="M7 17L17 7"/><path d="M9 7h8v8"/></>) },
+  },
   { title:"Grow Together", desc:"We strengthen our community so more women can thrive in their careers and lives.",
-    icon:(<><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M4 19c0-2.8 2.2-5 5-5s5 2.2 5 5"/><path d="M15 19c0-2 1-3.6 2.6-4.4"/></>) },
+  },
 ];
 
 function DonatePage() {
@@ -592,7 +648,7 @@ function DonatePage() {
     window.open(`${DONATE_URL}${amount ? `${sep}amount=${amount}` : ""}`, "_blank", "noopener,noreferrer");
   };
   return (
-    <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
+    <div style={{paddingTop:68,minHeight:"100vh",background:C.cream}}>
       <div className="section-padding split-grid" style={{
         display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3.5rem",alignItems:"center",
         maxWidth:1200,margin:"0 auto",padding:"4.5rem 4rem",
@@ -601,12 +657,12 @@ function DonatePage() {
         <div>
           <div style={{fontSize:"0.8rem",fontWeight:800,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"1rem"}}>Support the Community</div>
           <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"5rem",color:C.dark,letterSpacing:"0.01em",margin:"0 0 1.5rem",lineHeight:0.92}}>Grow the<br/>Movement.</h1>
-          <p style={{fontSize:"1.05rem",color:C.mid,maxWidth:440,lineHeight:1.6,margin:"0 0 2.5rem"}}>Your support helps us develop resources and experiences that empower women to grow in their networks, careers, and community.</p>
-          <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.75rem"}}>
+          <p style={{fontSize:"1.05rem",color:C.dark,maxWidth:440,lineHeight:1.6,margin:"0 0 2.5rem"}}>Your support helps us develop resources, expand opportunities, and grow together. Every contribution helps create welcoming spaces where women feel seen, connected, and supported.</p>
+          <div style={{display:"grid",gap:"1.75rem"}}>
             {DONATE_PILLARS.map(p=>(
               <div key={p.title}>
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={C.pink} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{marginBottom:"0.75rem"}}>{p.icon}</svg>
-                <div style={{fontFamily:DISPLAY,fontSize:"1.05rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"0.4rem"}}>{p.title.toUpperCase()}</div>
+                <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={C.dark} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{background:C.yellow,borderRadius:"50%",padding:4,marginBottom:"0.5rem"}}><path d="M7 17L17 7M9 7h8v8"/></svg>
+                <h2 style={{fontFamily:DISPLAY,fontSize:"1.6rem",fontWeight:400,color:C.dark,letterSpacing:"0.05em",marginBottom:"0.4rem"}}>{p.title}</h2>
                 <p style={{fontSize:"0.82rem",color:C.muted,lineHeight:1.55,margin:0}}>{p.desc}</p>
               </div>
             ))}
@@ -614,16 +670,16 @@ function DonatePage() {
         </div>
 
         {/* RIGHT — donation card */}
-        <div style={{background:C.white,borderRadius:24,padding:"2.75rem",border:BORDER,boxShadow:HARD}}>
+        <div className="donation-card" style={{background:C.cream,borderRadius:24,padding:"2.75rem",border:BORDER,boxShadow:HARD}}>
           <h3 style={{fontFamily:DISPLAY,fontSize:"1.9rem",color:C.dark,letterSpacing:"0.04em",margin:"0 0 1.75rem"}}>CHOOSE AN AMOUNT</h3>
           <div className="amount-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"0.9rem",marginBottom:"0.9rem"}}>
             {amounts.map(a=>{
               const active = !custom && selected===a;
               return (
-                <button key={a} onClick={()=>{setSelected(a);setCustom("");}} style={{
+                <button key={a} aria-pressed={active} onClick={()=>{setSelected(a);setCustom("");}} style={{
                   padding:"1.15rem",borderRadius:14,cursor:"pointer",fontWeight:800,fontSize:"1.25rem",
                   border:BORDER,
-                  background:active?C.yellow:C.white,
+                  background:active?C.yellow:C.cream,
                   boxShadow:active?HARD_SM:"none",
                   color:C.dark,fontFamily:DISPLAY,letterSpacing:"0.05em",transition:"all 0.15s",
                 }}>${a}</button>
@@ -632,17 +688,18 @@ function DonatePage() {
           </div>
           <input type="number" min="1" inputMode="numeric" aria-label="Custom donation amount"
             value={custom} onChange={e=>setCustom(e.target.value)} placeholder="Or enter custom amount" style={{
-            width:"100%",border:BORDER,borderRadius:14,
+            width:"100%",background:C.cream,border:BORDER,borderRadius:14,
             padding:"1.05rem 1.1rem",fontSize:"1rem",outline:"none",
             fontFamily:"inherit",color:C.dark,marginBottom:"1.5rem",boxSizing:"border-box",
           }}/>
           <button onClick={handleDonate} style={{
-            width:"100%",background:C.pink,
-            color:C.white,border:BORDER,borderRadius:99,padding:"1.15rem",
+            width:"100%",background:C.yellow,
+            color:C.dark,border:BORDER,borderRadius:99,padding:"1.15rem",
             fontWeight:800,fontSize:"1.1rem",letterSpacing:"0.05em",cursor:"pointer",
             textTransform:"uppercase",fontFamily:DISPLAY,
             boxShadow:HARD,
           }}>Donate ${amount||0} →</button>
+          <p style={{textAlign:"center",fontSize:"0.85rem",color:C.dark,lineHeight:1.5,marginTop:"1.5rem"}}>Thank you for helping our community grow, one contribution at a time.</p>
           <p style={{textAlign:"center",fontSize:"0.85rem",color:C.mid,lineHeight:1.5,marginTop:"1.5rem",marginBottom:0}}>
             The TGW Community is a registered nonprofit. Donations may be tax-deductible.
           </p>
@@ -657,19 +714,24 @@ function Footer({ setPage }) {
   return (
     <footer className="footer section-padding" style={{background:C.dark,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem",borderTop:`4px solid ${C.pink}`}}>
       <div>
-        <div style={{fontFamily:DISPLAY,fontSize:"1.4rem",color:"white",letterSpacing:"0.05em",marginBottom:"0.25rem"}}>TGW <span style={{color:C.pink}}>COMMUNITY</span></div>
-        <div style={{fontSize:"0.72rem",color:"rgba(255,255,255,0.4)",letterSpacing:"0.05em"}}>© 2026 · Toronto, ON · A movement. literally.</div>
+        <div style={{fontFamily:DISPLAY,fontSize:"1.4rem",color:C.cream,letterSpacing:"0.05em",marginBottom:"0.25rem"}}>TGW <span style={{color:C.pink}}>COMMUNITY</span></div>
+        <div style={{fontSize:"0.72rem",color:C.cream,letterSpacing:"0.05em"}}>© 2026 · Toronto, ON · A movement. literally.</div>
       </div>
       <div className="footer-links" style={{display:"flex",gap:"1.25rem"}}>
         {["Home","About","Events","Gallery","Donate"].map(p=>(
-          <button key={p} onClick={()=>setPage(p)} style={{background:"none",border:"none",cursor:"pointer",fontSize:"0.75rem",color:"rgba(255,255,255,0.4)",letterSpacing:"0.06em",textTransform:"uppercase",fontFamily:"inherit",transition:"color 0.2s"}}
-          onMouseEnter={e=>e.target.style.color=C.pink}
-          onMouseLeave={e=>e.target.style.color="rgba(255,255,255,0.4)"}>{p}</button>
+          <button key={p} onClick={()=>setPage(p)} style={{
+            background:p==="Donate"?C.yellow:"none",border:p==="Donate"?`2px solid ${C.dark}`:"none",
+            borderRadius:p==="Donate"?99:0,padding:p==="Donate"?"0.3rem 0.75rem":0,
+            cursor:"pointer",fontSize:"0.75rem",color:p==="Donate"?C.dark:C.cream,
+            letterSpacing:"0.06em",textTransform:"uppercase",fontFamily:"inherit",transition:"color 0.2s",
+          }}
+          onMouseEnter={e=>e.target.style.color=p==="Donate"?C.dark:C.pink}
+          onMouseLeave={e=>e.target.style.color=p==="Donate"?C.dark:C.cream}>{p}</button>
         ))}
       </div>
       <div className="footer-social" style={{display:"flex",gap:"1rem"}}>
-        <a href="https://instagram.com/thegirlswalk" target="_blank" rel="noopener noreferrer" style={{color:"rgba(255,255,255,0.5)",fontSize:"0.82rem",textDecoration:"none",fontWeight:600}}>@thegirlswalk</a>
-        <a href="https://instagram.com/thegirlswalkcommunity" target="_blank" rel="noopener noreferrer" style={{color:"rgba(255,255,255,0.5)",fontSize:"0.82rem",textDecoration:"none",fontWeight:600}}>@thegirlswalkcommunity</a>
+        <a href="https://instagram.com/thegirlswalk" target="_blank" rel="noopener noreferrer" style={{color:C.cream,fontSize:"0.82rem",textDecoration:"none",fontWeight:600}}>@thegirlswalk</a>
+        <a href="https://instagram.com/thegirlswalkcommunity" target="_blank" rel="noopener noreferrer" style={{color:C.cream,fontSize:"0.82rem",textDecoration:"none",fontWeight:600}}>@thegirlswalkcommunity</a>
       </div>
     </footer>
   );
@@ -679,28 +741,29 @@ function Footer({ setPage }) {
 export default function App() {
   const [page, setPage] = useState("Home");
 
+  useEffect(() => { window.scrollTo(0, 0); }, [page]);
+
   const eventDetailMatch = page.startsWith("EventDetail_");
   const eventId = eventDetailMatch ? parseInt(page.split("_")[1]) : null;
 
   const renderPage = () => {
     if (eventDetailMatch) return <EventDetailPage eventId={eventId} setPage={setPage}/>;
+    if (page.startsWith("Album_")) return <AlbumPage key={page} slug={page.slice(6)} setPage={setPage}/>;
     switch(page) {
       case "Home":    return <HomePage setPage={setPage}/>;
       case "About":   return <AboutPage/>;
       case "Events":  return <EventsPage setPage={setPage}/>;
-      case "Gallery": return <GalleryPage/>;
-      case "Shop":    return <ShopPage/>;
+      case "Gallery": return <GalleryPage setPage={setPage}/>;
       case "Donate":  return <DonatePage/>;
       default:        return <HomePage setPage={setPage}/>;
     }
   };
 
   return (
-    <div style={{minHeight:"100vh",fontFamily:"'DM Sans','Segoe UI',sans-serif"}}>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <div style={{minHeight:"100vh",background:C.cream,color:C.dark,fontFamily:"'DM Sans','Segoe UI',sans-serif"}}>
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
       <NavBar page={page} setPage={setPage}/>
       {renderPage()}
-      <Marquee items={["Join The Movement","The Girls Walk","Walk With Us","Community"]} bg={C.pink} color={C.dark} />
       <Footer setPage={setPage}/>
     </div>
   );

@@ -1,5 +1,24 @@
 # React + Vite
 
+## TGW brand and event gallery
+
+The site uses the official TGW palette, Bebas Neue headings, and DM Sans body
+text. Navigation and donation highlights use yellow `#FFE99B` with deep plum
+`#46172C`; the main background is cream `#FDF4EC`.
+
+The Gallery page's five event covers and album links are configured in
+`galleryEvents` in `src/App.jsx`. Cover images in `src/assets/gallery-*.jpg`
+come from the supplied website reference. Each card opens an on-site album page
+showing curated photos from `src/assets/albums/<slug>/` (18 per event, resized
+to max 1000px from the Google Drive albums), with a lightbox and a link to the
+full Drive album. To add an event, add a cover, a photo folder, and a
+`galleryEvents` entry. Keep the Drive folders shared as **Anyone with the link -
+Viewer**. The first event, She's the Room, is featured largest.
+
+The Events page lists the Weekly Walk, a "Something New Is Coming" card, and a
+Past Events gallery grid. Shop is intentionally absent until merch is
+available. Shopify donation configuration remains in `src/shopify.js`.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
