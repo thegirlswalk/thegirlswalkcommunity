@@ -3,17 +3,21 @@
 ## TGW brand and event gallery
 
 The site uses the official TGW palette, Bebas Neue headings, and DM Sans body
-text. Navigation and donation highlights use yellow `#FFE99B` with deep plum
-`#46172C`; the main background is cream `#FDF4EC`.
+text. Burgundy `#46172C` and butter yellow `#FFE99B` lead (navigation, buttons,
+Past Events/Gallery sections), cream `#FDF4EC` is the main background, and hot
+pink `#EB1169` is used only as a small accent.
 
-The Gallery page's five event covers and album links are configured in
-`galleryEvents` in `src/App.jsx`. Cover images in `src/assets/gallery-*.jpg`
-come from the supplied website reference. Each card opens an on-site album page
-showing curated photos from `src/assets/albums/<slug>/` (18 per event, resized
-to max 1000px from the Google Drive albums), with a lightbox and a link to the
-full Drive album. To add an event, add a cover, a photo folder, and a
-`galleryEvents` entry. Keep the Drive folders shared as **Anyone with the link -
-Viewer**. The first event, She's the Room, is featured largest.
+The Gallery page's five event covers are configured in `galleryEvents` in
+`src/App.jsx` (`src/assets/gallery-*.jpg`). Each card opens an on-site album
+page showing curated photos from `src/assets/albums/<slug>/` (resized to max
+1000px from the Google Drive albums), with a lightbox and a secondary link to
+the full Drive album. The first event, She's the Room, is featured largest.
+
+Photo curation rules for hero, About, covers, and albums: only clear group or
+community moments with 2+ people; no solo, founder/exec, scenery, object, or
+near-duplicate shots. Never use `IMG_5069` (swan), `IMG_5071` (founder), or
+`IMG_5042` (exec). The About photo is the lakeside group shot `IMG_5080` from the
+2026 Walk Dump album.
 
 The Events page lists the Weekly Walk, a "Something New Is Coming" card, and a
 Past Events gallery grid. Shop is intentionally absent until merch is
