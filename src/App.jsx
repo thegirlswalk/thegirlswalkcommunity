@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import tgwLogo from "./assets/tgw-logo-burgundy-light.png";
+import tgwLogoYellow from "./assets/tgw-logo-yellow-community.png";
 import { isShopifyConfigured, createCheckout, DONATION_VARIANTS } from "./shopify";
 import "./App.css";
 
@@ -297,7 +298,7 @@ function NavBar({ page, setPage }) {
         background:"none", border:"none", cursor:"pointer",
         display:"flex", alignItems:"center", gap:"0.6rem",
       }}>
-        <img src={tgwLogo} alt="TGW Community" style={{height:46, filter: overHero ? "brightness(0) invert(1)" : "none", transition:"filter 0.3s"}} />
+        <img src={overHero ? tgwLogoYellow : tgwLogo} alt="TGW Community" style={{height:46}} />
       </button>
       <button
         className="mobile-menu-toggle"
