@@ -225,19 +225,17 @@ a:focus-visible {
   will-change: transform;
 }
 
-/* Home hero: rounded full-bleed community video */
+/* Home hero: edge-to-edge community video filling the first screen below the nav */
 .home-hero-wrap {
-  padding: clamp(10px, 1.7vw, 24px);
   background: #FDF4EC;
 }
 
 .home-hero {
   position: relative;
   overflow: hidden;
-  max-width: 1420px;
-  min-height: 800px;
-  margin: 0 auto;
-  border-radius: 36px;
+  height: calc(100vh - 64px);
+  height: calc(100svh - 64px);
+  min-height: 560px;
   background: #46172C;
   display: flex;
   flex-direction: column;
@@ -558,8 +556,7 @@ a:focus-visible {
   }
 
   .home-hero {
-    min-height: 640px;
-    border-radius: 28px;
+    min-height: 520px;
   }
 
   .home-hero-copy {
