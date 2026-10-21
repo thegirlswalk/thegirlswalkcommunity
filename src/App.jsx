@@ -273,18 +273,21 @@ const NextEventCard = () => (
 function NavBar({ page, setPage }) {
   const links = ["Home","About","Events","Gallery","Donate"];
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(() => window.scrollY > 12);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   const active = page.startsWith("Album_") ? "Gallery" : page.startsWith("EventDetail_") ? "Events" : page;
+  // On Home, the bar is see-through over the hero video until the visitor scrolls or opens the menu.
+  const overHero = page === "Home" && !scrolled && !open;
+  const linkColor = overHero ? C.cream : C.dark;
   return (
     <nav className="navbar" style={{
       position:"fixed", top:0, left:0, right:0, zIndex:200,
-      background:C.cream,
-      borderBottom:BORDER,
+      background: overHero ? "linear-gradient(180deg, rgba(46,12,28,0.55) 0%, rgba(46,12,28,0) 100%)" : C.cream,
+      borderBottom: overHero ? "none" : BORDER,
       boxShadow: scrolled ? "0 10px 30px rgba(70,23,44,0.12)" : "none",
       transition:"box-shadow 0.3s",
       display:"flex", alignItems:"center", justifyContent:"space-between",
@@ -294,7 +297,7 @@ function NavBar({ page, setPage }) {
         background:"none", border:"none", cursor:"pointer",
         display:"flex", alignItems:"center", gap:"0.6rem",
       }}>
-        <img src={tgwLogo} alt="TGW Community" style={{height:46}} />
+        <img src={tgwLogo} alt="TGW Community" style={{height:46, filter: overHero ? "brightness(0) invert(1)" : "none", transition:"filter 0.3s"}} />
       </button>
       <button
         className="mobile-menu-toggle"
@@ -302,8 +305,8 @@ function NavBar({ page, setPage }) {
         aria-label={open ? "Close navigation menu" : "Open navigation menu"}
         aria-expanded={open}
         style={{
-          display:"none", background:"transparent", border:`2px solid ${C.dark}`, cursor:"pointer",
-          width:40, height:40, borderRadius:"50%", color:C.dark, fontSize:"1.2rem",
+          display:"none", background:"transparent", border:`2px solid ${linkColor}`, cursor:"pointer",
+          width:40, height:40, borderRadius:"50%", color:linkColor, fontSize:"1.2rem",
           alignItems:"center", justifyContent:"center", boxShadow:"0 4px 12px rgba(0,0,0,0.08)",
         }}
       >
@@ -313,7 +316,7 @@ function NavBar({ page, setPage }) {
         {links.map(l => (
           <button className={`nav-link-button${l==="Donate" ? " nav-donate" : ""}`} key={l} aria-current={active===l ? "page" : undefined} onClick={()=>{setPage(l); setOpen(false);}} style={{
             background: l==="Donate" ? C.yellow : active===l ? C.dark : "transparent",
-            color: l==="Donate" ? C.dark : active===l ? C.cream : C.dark,
+            color: l==="Donate" ? C.dark : active===l ? C.cream : linkColor,
             border: `2px solid ${l==="Donate" || active===l ? C.dark : "transparent"}`,
             boxShadow: l==="Donate" && active===l ? `0 0 0 2px ${C.dark}` : "none",
             cursor:"pointer",
@@ -407,7 +410,7 @@ function HomeHero({ setPage }) {
 // ── HOME PAGE ──
 function HomePage({ setPage }) {
   return (
-    <div style={{paddingTop:64}}>
+    <div>
       <HomeHero setPage={setPage}/>
 
       <Marquee items={["2,000+ Women & Growing","Saturday Walks","Brunches & Picnics","Wellness","Networking","Events"]} />

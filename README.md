@@ -6,8 +6,10 @@ The site uses the official TGW palette, Bebas Neue headings, Instrument Serif
 italic (hero subline only), and DM Sans body text. The header is cream with the
 burgundy TGW logo (`src/assets/tgw-logo-burgundy-light.png`) and burgundy nav
 links. The homepage hero (`HomeHero` in `src/App.jsx`) is an edge-to-edge,
-muted, looping background video that fills the first screen below the nav
-(min 560px, 520px on phones): TGW's "2026 Walking Recap" Instagram reel, trimmed
+muted, looping background video that fills the whole first screen, running
+under the nav: on Home the nav is see-through (cream logo and links over a soft
+dark fade) until the visitor scrolls or opens the phone menu, then it turns
+cream again (min 560px, 520px on phones): TGW's "2026 Walking Recap" Instagram reel, trimmed
 to 0:04–0:38.8 to drop its text cards (`src/assets/hero-reel-wide.mp4` 1080×608
 crop for desktop, `hero-reel-tall.mp4` 540×960 for phones ≤768px, plus
 `hero-reel-poster-*.jpg` stills). It has a pause/play button, and visitors with

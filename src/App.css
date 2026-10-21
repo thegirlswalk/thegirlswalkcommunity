@@ -225,7 +225,7 @@ a:focus-visible {
   will-change: transform;
 }
 
-/* Home hero: edge-to-edge community video filling the first screen below the nav */
+/* Home hero: edge-to-edge community video filling the first screen, behind the see-through nav */
 .home-hero-wrap {
   background: #FDF4EC;
 }
@@ -233,8 +233,8 @@ a:focus-visible {
 .home-hero {
   position: relative;
   overflow: hidden;
-  height: calc(100vh - 64px);
-  height: calc(100svh - 64px);
+  height: 100vh;
+  height: 100svh;
   min-height: 560px;
   background: #46172C;
   display: flex;
