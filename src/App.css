@@ -264,27 +264,6 @@ a:focus-visible {
   pointer-events: none;
 }
 
-.home-hero-pill {
-  position: absolute;
-  top: clamp(18px, 2.4vw, 32px);
-  left: clamp(18px, 2.4vw, 32px);
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid rgba(253,244,236,.35);
-  border-radius: 99px;
-  background: rgba(253,244,236,.16);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  color: #FDF4EC;
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
 .home-hero-copy {
   position: relative;
   z-index: 2;
@@ -590,11 +569,6 @@ a:focus-visible {
   /* Taller copy block on phones sits higher, over brighter sky */
   .home-hero-scrim {
     background: linear-gradient(180deg, rgba(46,12,28,.18) 0%, rgba(46,12,28,0) 16%, rgba(46,12,28,.32) 38%, rgba(46,12,28,.55) 70%, rgba(46,12,28,.68) 100%);
-  }
-
-  .home-hero-pill {
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
   }
 
   .home-hero-text {

@@ -162,8 +162,8 @@ function CountUp({ to, suffix = "" }) {
   }, [seen, reduceMotion, to]);
   return (
     <span ref={ref}>
-      <span aria-hidden="true">{reduceMotion ? to : n}{suffix}</span>
-      <span className="sr-only">{to}{suffix}</span>
+      <span aria-hidden="true">{(reduceMotion ? to : n).toLocaleString("en-CA")}{suffix}</span>
+      <span className="sr-only">{to.toLocaleString("en-CA")}{suffix}</span>
     </span>
   );
 }
@@ -368,11 +368,6 @@ function HomeHero({ setPage }) {
         </div>
         <div className="home-hero-scrim" aria-hidden="true"/>
 
-        <div className="home-hero-pill">
-          <span style={{width:7,height:7,borderRadius:"50%",background:C.pink,display:"inline-block",flexShrink:0}}/>
-          A Social Club · Toronto &amp; the GTA
-        </div>
-
         <div className="home-hero-copy">
           <h1 className="home-hero-heading">
             For Ambitious Women,
@@ -416,7 +411,7 @@ function HomePage({ setPage }) {
     <div style={{paddingTop:64}}>
       <HomeHero setPage={setPage}/>
 
-      <Marquee items={["Come Along","Bring a Friend","Walks","Wellness","Networking","Toronto & GTA"]} />
+      <Marquee items={["2,000+ Women & Growing","Saturday Walks","Brunches & Picnics","Wellness","Networking","Toronto & the GTA"]} />
 
       {/* ── UPCOMING EVENTS SECTION ── */}
       <div className="section-padding" style={{padding:"5rem 4rem", background:C.cream}}>
@@ -634,7 +629,7 @@ function AboutPage() {
           <div style={{width:"fit-content",background:C.yellow,color:C.dark,border:`2px solid ${C.dark}`,borderRadius:99,padding:"0.3rem 0.9rem",fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1.25rem"}}>Who We Are</div>
           <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"3.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1.5rem",lineHeight:1}}>BUILT FOR WOMEN WHO MOVE WITH <Mark delay={300}>intention.</Mark></h1>
           <p style={{fontSize:"0.95rem",color:C.dark,lineHeight:1.8,marginBottom:"1.5rem"}}>
-            The Girls Walk Community was founded in April 2026 with a simple belief: women are stronger when they move together. What started as walks through Toronto's neighbourhoods has grown into a thriving community of 500+ ambitious women.
+            The Girls Walk Community was founded in April 2026 with a simple belief: women are stronger when they move together. What started as walks through Toronto's neighbourhoods has grown into a thriving community of 2,000+ ambitious women — and growing.
           </p>
           <p style={{fontSize:"0.95rem",color:C.dark,lineHeight:1.8}}>
             To build a safe, uplifting community where women connect through walks, events, and shared experiences that promote wellness, confidence, community, and genuine networking opportunities.
@@ -644,7 +639,7 @@ function AboutPage() {
       <div className="section-padding" style={{padding:"3.5rem 4rem",background:C.cream,borderTop:BORDER}}>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.25rem"}}>
           {[
-            {to:500, suffix:"+", label:"Women in the community", bg:C.yellow},
+            {to:2000, suffix:"+", label:"Women in the community", bg:C.yellow},
             {to:galleryEvents.filter(e=>e.slug!=="walks").length, label:"Signature events so far", bg:C.peach},
             {to:TOTAL_ALBUM_PHOTOS, label:"Photos from our events & walks", bg:C.blush},
           ].map((st,i)=>(
