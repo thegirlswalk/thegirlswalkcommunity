@@ -28,7 +28,6 @@ const ALBUM_PHOTOS = {
   brunch:    sortedUrls(import.meta.glob("./assets/albums/brunch/*.jpg",    { eager:true, import:"default" })),
   walks:     sortedUrls(import.meta.glob("./assets/albums/walks/*.jpg",     { eager:true, import:"default" })),
 };
-const TOTAL_ALBUM_PHOTOS = Object.values(ALBUM_PHOTOS).reduce((n, list) => n + list.length, 0);
 // About page photo strip: hand-picked group shots (2+ people) — indices into each sorted album.
 const ALBUM_NAMES = { room:"She’s the Room", pilates:"The Pilates Picnic", mayflower:"May Flower", brunch:"Meet the Girls Brunch", walks:"a community walk" };
 const STRIP_PICKS = { room:[25, 27, 34], pilates:[18, 34, 35], mayflower:[2, 13, 21], brunch:[0, 84, 88], walks:[0, 24, 34] };
@@ -636,11 +635,10 @@ function AboutPage() {
         </div>
       </div>
       <div className="section-padding" style={{padding:"3.5rem 4rem",background:C.peach,borderTop:BORDER,borderBottom:BORDER}}>
-        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.25rem"}}>
+        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.25rem",maxWidth:820,margin:"0 auto"}}>
           {[
             {to:2000, suffix:"+", label:"Women in the community", bg:C.yellow},
             {to:galleryEvents.filter(e=>e.slug!=="walks").length, label:"Signature events so far", bg:C.cream},
-            {to:TOTAL_ALBUM_PHOTOS, label:"Photos from our events & walks", bg:C.blush},
           ].map((st,i)=>(
             <Reveal fill key={st.label} delay={i*120}>
               <div className="lift-card" style={{background:st.bg,border:BORDER,borderRadius:18,boxShadow:HARD_SM,padding:"1.75rem 1.5rem",textAlign:"center"}}>
