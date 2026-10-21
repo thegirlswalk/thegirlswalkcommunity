@@ -374,7 +374,7 @@ function HomeHero({ setPage }) {
             <span className="home-hero-heading-serif"><Mark color="rgba(235,17,105,0.82)" delay={550}>by ambitious women.</Mark></span>
           </h1>
           <p className="home-hero-text">
-            A social club for women across Toronto and the GTA — centred on wellness, networking and growing together. Come for a Saturday walk, a picnic, a brunch or a night out. We’d love to see you.
+            A global social club for women — centred on wellness, networking and growing together. Come for a Saturday walk, a picnic, a brunch or a night out. We’d love to see you.
           </p>
           <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap"}}>
             <button onClick={()=>setPage("Events")} className="home-hero-btn" style={{
@@ -411,7 +411,7 @@ function HomePage({ setPage }) {
     <div style={{paddingTop:64}}>
       <HomeHero setPage={setPage}/>
 
-      <Marquee items={["2,000+ Women & Growing","Saturday Walks","Brunches & Picnics","Wellness","Networking","Toronto & the GTA"]} />
+      <Marquee items={["2,000+ Women & Growing","Saturday Walks","Brunches & Picnics","Wellness","Networking","Events"]} />
 
       {/* ── UPCOMING EVENTS SECTION ── */}
       <div className="section-padding" style={{padding:"5rem 4rem", background:C.cream}}>
