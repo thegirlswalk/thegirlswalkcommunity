@@ -12,8 +12,9 @@ crop for desktop, `hero-reel-tall.mp4` 540×960 for phones ≤768px, plus
 `hero-reel-poster-*.jpg` stills). It has a pause/play button, and visitors with
 reduced motion see the still only. Burgundy is used as an
 accent: the marquee is yellow with burgundy text and the footer is cream. Burgundy `#46172C`
-and butter yellow `#FFE99B` lead (buttons and accents), peach `#FFE1CF` backs the Past Events/Gallery sections, cream
-`#FDF4EC` is the main background, and hot pink `#EB1169` is used only as a small
+and butter yellow `#FFE99B` lead (buttons and accents). Page sections alternate
+between cream `#FDF4EC` (main background) and peach `#FFE1CF` (Past Events,
+About stats and Our Community, Gallery grid, album photo grids), and hot pink `#EB1169` is used only as a small
 accent.
 
 The Gallery page's five event covers are configured in `galleryEvents` in

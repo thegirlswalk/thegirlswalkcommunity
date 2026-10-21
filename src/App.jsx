@@ -597,7 +597,6 @@ function EventsPage({ setPage }) {
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem"}}>
-        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.dark,textTransform:"uppercase",marginBottom:"0.75rem"}}>Community Events</div>
         <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>UPCOMING <Mark>EVENTS</Mark></h1>
         <p style={{fontSize:"1rem",color:C.dark,marginTop:"0.75rem",maxWidth:500}}>From weekly walks to monthly brunches — there's always something to show up to.</p>
       </div>
@@ -636,11 +635,11 @@ function AboutPage() {
           </p>
         </div>
       </div>
-      <div className="section-padding" style={{padding:"3.5rem 4rem",background:C.cream,borderTop:BORDER}}>
+      <div className="section-padding" style={{padding:"3.5rem 4rem",background:C.peach,borderTop:BORDER,borderBottom:BORDER}}>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.25rem"}}>
           {[
             {to:2000, suffix:"+", label:"Women in the community", bg:C.yellow},
-            {to:galleryEvents.filter(e=>e.slug!=="walks").length, label:"Signature events so far", bg:C.peach},
+            {to:galleryEvents.filter(e=>e.slug!=="walks").length, label:"Signature events so far", bg:C.cream},
             {to:TOTAL_ALBUM_PHOTOS, label:"Photos from our events & walks", bg:C.blush},
           ].map((st,i)=>(
             <Reveal fill key={st.label} delay={i*120}>
@@ -776,7 +775,7 @@ function AlbumPage({ slug, setPage }) {
         <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>{event.label}</h1>
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem"}}>Here’s all our highlights from the day</p>
       </div>
-      <div className="section-padding" style={{padding:"3rem 4rem"}}>
+      <div className="section-padding" style={{padding:"3rem 4rem",background:C.peach}}>
         <div className="album-grid">
           {photos.map((src,i)=>(
             <button type="button" key={src} className="album-photo" onClick={()=>setIndex(i)}
