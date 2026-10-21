@@ -414,7 +414,7 @@ function HomePage({ setPage }) {
       <Marquee items={["2,000+ Women & Growing","Saturday Walks","Brunches & Picnics","Wellness","Networking","Events"]} />
 
       {/* ── UPCOMING EVENTS SECTION ── */}
-      <div className="section-padding" style={{padding:"5rem 4rem", background:C.cream}}>
+      <div className="section-padding" style={{padding:"5rem 4rem", background:C.peach}}>
         <div className="section-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"2.5rem"}}>
           <div>
             <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>What's On</div>
@@ -441,7 +441,7 @@ function HomePage({ setPage }) {
       </div>
 
       {/* ── PHOTO GALLERY SECTION ── */}
-      <div className="section-padding" style={{padding:"4rem",background:C.peach,borderTop:BORDER,borderBottom:BORDER}}>
+      <div className="section-padding" style={{padding:"4rem",background:C.cream,borderTop:BORDER,borderBottom:BORDER}}>
         <div className="section-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"2rem"}}>
           <div>
             <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.dark,textTransform:"uppercase",marginBottom:"0.5rem"}}>From Previous Events</div>
@@ -459,7 +459,7 @@ function HomePage({ setPage }) {
       </div>
 
       {/* ── NEWSLETTER SIGNUP ── */}
-      <div id="newsletter" className="section-padding" style={{padding:"5rem 4rem",background:C.cream,textAlign:"center",scrollMarginTop:72}}>
+      <div id="newsletter" className="section-padding" style={{padding:"5rem 4rem",background:C.peach,textAlign:"center",scrollMarginTop:72}}>
         <Reveal style={{maxWidth:560,margin:"0 auto"}}>
           <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.75rem"}}>STAY CONNECTED</div>
           <h2 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 0.75rem"}}>JOIN OUR <Mark delay={200}>NEWSLETTER</Mark></h2>
@@ -909,9 +909,9 @@ function DonatePage() {
 }
 
 // ── FOOTER ──
-function Footer({ setPage }) {
+function Footer({ setPage, bg = C.cream }) {
   return (
-    <footer className="footer section-padding" style={{background:C.cream,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem",borderTop:BORDER}}>
+    <footer className="footer section-padding" style={{background:bg,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem",borderTop:BORDER}}>
       <div>
         <div style={{fontFamily:DISPLAY,fontSize:"1.4rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"0.25rem"}}>TGW <span style={{color:C.pink}}>COMMUNITY</span></div>
         <div style={{fontSize:"0.72rem",color:C.dark,letterSpacing:"0.05em"}}>© 2026 · Toronto, ON · A movement. literally.</div>
@@ -944,6 +944,9 @@ export default function App() {
 
   const eventDetailMatch = page.startsWith("EventDetail_");
   const eventId = eventDetailMatch ? parseInt(page.split("_")[1]) : null;
+  // Sections alternate cream/peach at every divider line, so the footer takes
+  // the opposite colour of the page's last section.
+  const endsOnPeach = ["Home","About","Events","Gallery"].includes(page) || page.startsWith("Album_");
 
   const renderPage = () => {
     if (eventDetailMatch) return <EventDetailPage eventId={eventId} setPage={setPage}/>;
@@ -963,7 +966,7 @@ export default function App() {
       <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet"/>
       <NavBar page={page} setPage={setPage}/>
       {renderPage()}
-      <Footer setPage={setPage}/>
+      <Footer setPage={setPage} bg={endsOnPeach ? C.cream : C.peach}/>
     </div>
   );
 }
