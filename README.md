@@ -28,7 +28,15 @@ shots (food, products, signs, empty rooms, landscapes), exact duplicates, and
 used anywhere. The
 About photo is the large 2026 Walk Dump group shot from the
 website reference doc (`src/assets/gallery-2026-walk-dump.jpg`, also the Walk
-Dump cover).
+Dump cover). Below it, the About page has count-up stats (members, signature
+events, total album photos) and an "Our Community" auto-scrolling, draggable
+photo strip of hand-picked group shots (`STRIP_PICKS` in `src/App.jsx`).
+
+Scroll and hover effects are dependency-free helpers in `src/App.jsx`
+(`Reveal` fade-ups, `Mark` highlighter sweeps, `GrowBar` underline bars,
+`CountUp`, `PhotoStrip`) driven by IntersectionObserver, plus `.lift` /
+`.lift-card` hover classes in `src/App.css`. All motion is disabled under
+`prefers-reduced-motion`.
 
 The Events page lists the Weekly Walk, a "Something New Is Coming" card, and a
 Past Events gallery grid. Shop is intentionally absent until merch is
