@@ -225,7 +225,7 @@ a:focus-visible {
   will-change: transform;
 }
 
-/* Home hero: rounded full-bleed photo slideshow */
+/* Home hero: rounded full-bleed community video */
 .home-hero-wrap {
   padding: clamp(10px, 1.7vw, 24px);
   background: #FDF4EC;
@@ -244,27 +244,17 @@ a:focus-visible {
   justify-content: flex-end;
 }
 
-.home-hero-slide {
+.home-hero-media {
   position: absolute;
   inset: 0;
-  opacity: 0;
-  transition: opacity 1.4s ease;
 }
 
-.home-hero-slide.is-active {
-  opacity: 1;
-}
-
-.home-hero-slide img {
+.home-hero-media video,
+.home-hero-media img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: home-hero-zoom 24s ease-in-out infinite alternate;
-}
-
-@keyframes home-hero-zoom {
-  from { transform: scale(1); }
-  to   { transform: scale(1.07); }
 }
 
 .home-hero-scrim {
@@ -357,7 +347,7 @@ a:focus-visible {
 }
 
 .home-hero-btn:focus-visible,
-.home-hero-dot:focus-visible {
+.home-hero-play:focus-visible {
   outline: 3px solid #FFE99B;
   outline-offset: 3px;
 }
@@ -374,7 +364,7 @@ a:focus-visible {
   background: rgba(253,244,236,.14);
 }
 
-.home-hero-dot {
+.home-hero-play {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -382,23 +372,10 @@ a:focus-visible {
   height: 30px;
   padding: 0;
   border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.home-hero-dot span {
-  display: block;
-  width: 6px;
-  height: 6px;
   border-radius: 99px;
-  background: #FDF4EC;
-  opacity: 0.35;
-  transition: width 0.4s, opacity 0.4s;
-}
-
-.home-hero-dot.is-active span {
-  width: 24px;
-  opacity: 1;
+  background: none;
+  color: #FDF4EC;
+  cursor: pointer;
 }
 
 .gallery-grid-page {
@@ -487,7 +464,6 @@ a:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track,
-  .home-hero-slide img,
   .home-hero-copy,
   .reveal.is-visible { animation: none; }
   .reveal { opacity: 1; }

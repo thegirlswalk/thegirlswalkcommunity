@@ -5,9 +5,12 @@ import "./App.css";
 
 // ── IMAGES ─── Change these to update photos on the site ───
 // Hero (front page main photo)
-import heroWalkGroup from "./assets/hero-walk-group.jpg";
-import heroPilatesGroup from "./assets/hero-pilates-group.jpg";
-import heroRoomPanel from "./assets/hero-room-panel.jpg";
+// Homepage hero: TGW's "2026 Walking Recap" Instagram reel (0:04–0:38.8, muted, no text cards).
+// Wide = 1080×608 crop for desktop; tall = 540×960 for phones.
+import heroReelWide from "./assets/hero-reel-wide.mp4";
+import heroReelTall from "./assets/hero-reel-tall.mp4";
+import heroPosterWide from "./assets/hero-reel-poster-wide.jpg";
+import heroPosterTall from "./assets/hero-reel-poster-tall.jpg";
 // Gallery cover photos
 import galleryBrunch from "./assets/gallery-meet-the-girls-brunch.jpg";
 import galleryMayFlower from "./assets/gallery-may-flower.jpg";
@@ -82,15 +85,19 @@ function Marquee({ items, bg = C.yellow, color = C.dark, border }) {
 // All motion is switched off in App.css under prefers-reduced-motion.
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 
-function usePrefersReducedMotion() {
-  const [reduce, setReduce] = useState(() => window.matchMedia(REDUCED_MOTION).matches);
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
   useEffect(() => {
-    const mq = window.matchMedia(REDUCED_MOTION);
-    const onChange = () => setReduce(mq.matches);
+    const mq = window.matchMedia(query);
+    const onChange = () => setMatches(mq.matches);
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return reduce;
+  }, [query]);
+  return matches;
+}
+
+function usePrefersReducedMotion() {
+  return useMediaQuery(REDUCED_MOTION);
 }
 
 function useInView() {
@@ -330,40 +337,35 @@ function NavBar({ page, setPage }) {
   );
 }
 
-// ── HOME HERO SLIDESHOW ── group/community photos, shown one at a time
-const HERO_SLIDES = [
-  { src: heroWalkGroup,    alt: "The Girls Walk Community members together after a walk" },
-  { src: galleryRoom,      alt: "The community gathered at She’s the Room" },
-  { src: galleryPilates,   alt: "Friends at The Pilates Picnic" },
-  { src: galleryBrunch,    alt: "Women together at the Meet the Girls Brunch" },
-  { src: galleryMayFlower, alt: "The community at the May Flower event" },
-  { src: galleryWalks,     alt: "The Girls Walk Community members together on a waterfront walk" },
-  { src: heroPilatesGroup, alt: "A group photo at The Pilates Picnic", position: "center 35%" },
-  { src: heroRoomPanel,    alt: "Women gathered for the panel at She’s the Room" },
-];
-const HERO_INTERVAL_MS = 5000;
-
+// ── HOME HERO VIDEO ── muted, looping community reel behind the headline.
+// Reduced motion shows the still poster instead; the button lets anyone pause it.
 function HomeHero({ setPage }) {
-  const [active, setActive] = useState(0);
   const reduceMotion = usePrefersReducedMotion();
+  const isPhone = useMediaQuery("(max-width: 768px)");
+  const [paused, setPaused] = useState(false);
+  const videoRef = useRef(null);
+  const src = isPhone ? heroReelTall : heroReelWide;
+  const poster = isPhone ? heroPosterTall : heroPosterWide;
 
-  // Restarts after every slide change, so a dot click gets a full 5s.
   useEffect(() => {
-    if (reduceMotion) return;
-    const timer = setTimeout(() => setActive(i => (i + 1) % HERO_SLIDES.length), HERO_INTERVAL_MS);
-    return () => clearTimeout(timer);
-  }, [active, reduceMotion]);
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true; // React doesn't set the muted attribute; iOS needs it to autoplay
+    if (paused) v.pause();
+    else v.play().catch(err => { if (err.name === "NotAllowedError") setPaused(true); });
+  }, [paused, src]);
 
   return (
     <section className="home-hero-wrap" aria-label="Welcome">
       <div className="home-hero">
-        {HERO_SLIDES.map((s, i) => (
-          <div key={s.src} className={`home-hero-slide${i === active ? " is-active" : ""}`} aria-hidden={i !== active}>
-            <img src={s.src} alt={s.alt}
-              loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} decoding="async"
-              style={s.position ? {objectPosition:s.position} : undefined}/>
-          </div>
-        ))}
+        <div className="home-hero-media">
+          {reduceMotion ? (
+            <img src={poster} alt="" fetchPriority="high" decoding="async"/>
+          ) : (
+            <video key={src} ref={videoRef} src={src} poster={poster}
+              autoPlay muted loop playsInline preload="auto" aria-hidden="true"/>
+          )}
+        </div>
         <div className="home-hero-scrim" aria-hidden="true"/>
 
         <div className="home-hero-pill">
@@ -389,16 +391,20 @@ function HomeHero({ setPage }) {
           </div>
         </div>
 
-        <div className="home-hero-dots">
-          {HERO_SLIDES.map((s, i) => (
-            <button key={s.src} type="button" aria-label={`Show photo ${i + 1}`}
-              aria-current={i === active ? "true" : undefined}
-              className={`home-hero-dot${i === active ? " is-active" : ""}`}
-              onClick={()=>setActive(i)}>
-              <span/>
+        {!reduceMotion && (
+          <div className="home-hero-dots">
+            <button type="button" className="home-hero-play"
+              aria-label={paused ? "Play background video" : "Pause background video"}
+              aria-pressed={paused}
+              onClick={()=>setPaused(p => !p)}>
+              {paused ? (
+                <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z" fill="currentColor"/></svg>
+              ) : (
+                <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z" fill="currentColor"/></svg>
+              )}
             </button>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
