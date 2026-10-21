@@ -3,13 +3,14 @@
 ## TGW brand and event gallery
 
 The site uses the official TGW palette, Bebas Neue headings, and DM Sans body
-text. Burgundy `#46172C` and butter yellow `#FFE99B` lead (navigation, buttons,
-Past Events/Gallery sections), cream `#FDF4EC` is the main background, and hot
-pink `#EB1169` is used only as a small accent.
+text. Burgundy `#46172C` and butter yellow `#FFE99B` lead (navigation and
+buttons), peach `#FFE1CF` backs the Past Events/Gallery sections, cream
+`#FDF4EC` is the main background, and hot pink `#EB1169` is used only as a small
+accent.
 
 The Gallery page's five event covers are configured in `galleryEvents` in
 `src/App.jsx` (`src/assets/gallery-*.jpg`). Each card opens an on-site album
-page showing every photo from that event's Google Drive folder, stored in
+page showing that event's Google Drive photos, stored in
 `src/assets/albums/<slug>/` (resized to max 1000×1333px), with a lightbox. Album
 pages do not link out to Drive; their CTA sends visitors to the homepage
 newsletter signup (`#newsletter`). The first event, She's the Room, is featured
@@ -17,8 +18,10 @@ largest.
 
 Photo rules for hero, About, and covers: only clear group or community moments
 with 2+ people; no solo, founder/exec, scenery, object, or near-duplicate shots.
-Albums include all Drive photos except exact duplicates and `IMG_5069` (swan),
-`IMG_5071` (founder), and `IMG_5042` (exec), which are never used anywhere. The
+Albums include all Drive photos that show people, excluding scenery/object-only
+shots (food, products, signs, empty rooms, landscapes), exact duplicates, and
+`IMG_5069` (swan), `IMG_5071` (founder), and `IMG_5042` (exec), which are never
+used anywhere. The
 About photo is the large 2026 Walk Dump group shot from the
 website reference doc (`src/assets/gallery-2026-walk-dump.jpg`, also the Walk
 Dump cover).

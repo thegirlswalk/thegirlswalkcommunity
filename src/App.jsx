@@ -15,8 +15,8 @@ import galleryPilates from "./assets/gallery-pilates-picnic.jpg";
 import galleryRoom from "./assets/gallery-shes-the-room.jpg";
 import galleryWalks from "./assets/gallery-2026-walk-dump.jpg"; // also used for About
 
-// Event album photos: every photo from each Google Drive album (minus exact
-// duplicates and IMG_5069/5071/5042), resized. Files live in src/assets/albums/<slug>/.
+// Event album photos: Drive photos that show people (no scenery/object-only shots,
+// duplicates, or IMG_5069/5071/5042), resized. Files live in src/assets/albums/<slug>/.
 const sortedUrls = modules => Object.keys(modules).sort().map(k => modules[k]);
 const ALBUM_PHOTOS = {
   room:      sortedUrls(import.meta.glob("./assets/albums/room/*.jpg",      { eager:true, import:"default" })),
@@ -35,6 +35,7 @@ const C = {
   yellow:  "#FFE99B", // soft brand yellow
   blush:   "#FD92EF", // light pink (logo fill)
   orchid:  "#B34A8E", // deeper pink for subtitle text on cream (AA contrast)
+  peach:   "#FFE1CF", // light tint of brand orange; Past Events / Gallery backgrounds
   cream:   "#FDF4EC", // brand cream background
   dark:    "#46172C", // deep plum (primary text / dark sections)
   mid:     "#46172C", // secondary text uses the exact brand plum
@@ -273,7 +274,7 @@ function HomePage({ setPage }) {
       </div>
 
       {/* ── PHOTO GALLERY SECTION ── */}
-      <div className="section-padding" style={{padding:"4rem",background:C.yellow,borderTop:BORDER,borderBottom:BORDER}}>
+      <div className="section-padding" style={{padding:"4rem",background:C.peach,borderTop:BORDER,borderBottom:BORDER}}>
         <div className="section-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"2rem"}}>
           <div>
             <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.dark,textTransform:"uppercase",marginBottom:"0.5rem"}}>From Previous Events</div>
@@ -438,7 +439,7 @@ function EventsPage({ setPage }) {
           <NextEventCard/>
         </div>
       </div>
-      <div className="section-padding" style={{padding:"4rem",background:C.yellow,borderTop:BORDER}}>
+      <div className="section-padding" style={{padding:"4rem",background:C.peach,borderTop:BORDER}}>
         <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.dark,textTransform:"uppercase",marginBottom:"0.5rem"}}>Missed One?</div>
         <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 2rem"}}>Past Events</h2>
         <EventGalleryGrid setPage={setPage}/>
@@ -523,7 +524,7 @@ function EventGalleryGrid({ setPage }) {
 
 function GalleryPage({ setPage }) {
   return (
-    <div style={{paddingTop:68,minHeight:"100vh",background:C.yellow}}>
+    <div style={{paddingTop:68,minHeight:"100vh",background:C.peach}}>
       <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem",borderBottom:BORDER}}>
         <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>COMMUNITY LIFE ON CAMERA</h1>
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem"}}>Explore the gallery of photos for each of our events and walk.</p>
