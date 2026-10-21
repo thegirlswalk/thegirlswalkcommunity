@@ -3,8 +3,9 @@
 ## TGW brand and event gallery
 
 The site uses the official TGW palette, Bebas Neue headings, and DM Sans body
-text. Burgundy `#46172C` and butter yellow `#FFE99B` lead (navigation and
-buttons), peach `#FFE1CF` backs the Past Events/Gallery sections, cream
+text. The header is cream with the burgundy TGW logo
+(`src/assets/tgw-logo-burgundy.png`) and burgundy nav links. Burgundy `#46172C`
+and butter yellow `#FFE99B` lead (buttons and accents), peach `#FFE1CF` backs the Past Events/Gallery sections, cream
 `#FDF4EC` is the main background, and hot pink `#EB1169` is used only as a small
 accent.
 

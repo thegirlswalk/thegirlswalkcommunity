@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import tgwLogo from "./assets/tgw-logo-brand.png";
+import tgwLogo from "./assets/tgw-logo-burgundy.png";
 import { isShopifyConfigured, createCheckout, DONATION_VARIANTS } from "./shopify";
 import "./App.css";
 
@@ -123,8 +123,8 @@ function NavBar({ page, setPage }) {
   return (
     <nav className="navbar" style={{
       position:"fixed", top:0, left:0, right:0, zIndex:200,
-      background:C.dark,
-      borderBottom:`3px solid ${C.yellow}`,
+      background:C.cream,
+      borderBottom:BORDER,
       display:"flex", alignItems:"center", justifyContent:"space-between",
       padding:"0 2rem", height:68,
     }}>
@@ -132,7 +132,7 @@ function NavBar({ page, setPage }) {
         background:"none", border:"none", cursor:"pointer",
         display:"flex", alignItems:"center", gap:"0.6rem",
       }}>
-        <img src={tgwLogo} alt="TGW Community" style={{height:48}} />
+        <img src={tgwLogo} alt="TGW Community" style={{height:46}} />
       </button>
       <button
         className="mobile-menu-toggle"
@@ -140,8 +140,8 @@ function NavBar({ page, setPage }) {
         aria-label={open ? "Close navigation menu" : "Open navigation menu"}
         aria-expanded={open}
         style={{
-          display:"none", background:"transparent", border:`2px solid ${C.yellow}`, cursor:"pointer",
-          width:40, height:40, borderRadius:"50%", color:C.yellow, fontSize:"1.2rem",
+          display:"none", background:"transparent", border:`2px solid ${C.dark}`, cursor:"pointer",
+          width:40, height:40, borderRadius:"50%", color:C.dark, fontSize:"1.2rem",
           alignItems:"center", justifyContent:"center", boxShadow:"0 4px 12px rgba(0,0,0,0.08)",
         }}
       >
@@ -150,10 +150,10 @@ function NavBar({ page, setPage }) {
       <div className={`nav-links ${open ? "nav-links-open" : ""}`} style={{display:"flex", gap:"0.25rem", alignItems:"center"}}>
         {links.map(l => (
           <button className="nav-link-button" key={l} aria-current={active===l ? "page" : undefined} onClick={()=>{setPage(l); setOpen(false);}} style={{
-            background: l==="Donate" ? C.yellow : active===l ? C.cream : "transparent",
-            color: l==="Donate" || active===l ? C.dark : C.cream,
-            border: `2px solid ${l==="Donate" ? C.dark : active===l ? C.cream : "transparent"}`,
-            boxShadow: l==="Donate" && active===l ? `0 0 0 2px ${C.cream}` : "none",
+            background: l==="Donate" ? C.yellow : active===l ? C.dark : "transparent",
+            color: l==="Donate" ? C.dark : active===l ? C.cream : C.dark,
+            border: `2px solid ${l==="Donate" || active===l ? C.dark : "transparent"}`,
+            boxShadow: l==="Donate" && active===l ? `0 0 0 2px ${C.dark}` : "none",
             cursor:"pointer",
             padding:"0.4rem 0.85rem", borderRadius:99,
             fontWeight:700, fontSize:"0.78rem", letterSpacing:"0.04em",
@@ -163,7 +163,7 @@ function NavBar({ page, setPage }) {
         ))}
         <a className="nav-cta-button" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{
           marginLeft:"0.5rem",
-          background:"transparent", color:C.yellow, border:`2px solid ${C.yellow}`, cursor:"pointer",
+          background:C.dark, color:C.cream, border:`2px solid ${C.dark}`, cursor:"pointer",
           padding:"0.5rem 1.2rem", borderRadius:99,
           fontWeight:800, fontSize:"0.8rem", letterSpacing:"0.05em",
           textTransform:"uppercase",

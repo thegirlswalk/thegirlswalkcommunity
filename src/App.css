@@ -168,8 +168,8 @@ img {
     flex-direction: column !important;
     gap: 0.5rem !important;
     padding: 1rem;
-    background: #46172C;
-    border: 2px solid #FFE99B;
+    background: #FDF4EC;
+    border: 2px solid #46172C;
     border-radius: 20px;
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
   }
