@@ -15,8 +15,8 @@ import galleryPilates from "./assets/gallery-pilates-picnic.jpg";
 import galleryRoom from "./assets/gallery-shes-the-room.jpg";
 import galleryWalks from "./assets/gallery-2026-walk-dump.jpg"; // also used for About
 
-// Event album photos: a curated, resized selection from each Google Drive album.
-// Add/remove .jpg files in src/assets/albums/<slug>/ to change what shows.
+// Event album photos: every photo from each Google Drive album (minus exact
+// duplicates and IMG_5069/5071/5042), resized. Files live in src/assets/albums/<slug>/.
 const sortedUrls = modules => Object.keys(modules).sort().map(k => modules[k]);
 const ALBUM_PHOTOS = {
   room:      sortedUrls(import.meta.glob("./assets/albums/room/*.jpg",      { eager:true, import:"default" })),
@@ -34,6 +34,7 @@ const C = {
   orange:  "#FF8944", // brand orange
   yellow:  "#FFE99B", // soft brand yellow
   blush:   "#FD92EF", // light pink (logo fill)
+  orchid:  "#B34A8E", // deeper pink for subtitle text on cream (AA contrast)
   cream:   "#FDF4EC", // brand cream background
   dark:    "#46172C", // deep plum (primary text / dark sections)
   mid:     "#46172C", // secondary text uses the exact brand plum
@@ -289,7 +290,7 @@ function HomePage({ setPage }) {
       </div>
 
       {/* ── NEWSLETTER SIGNUP ── */}
-      <div className="section-padding" style={{padding:"5rem 4rem",background:C.cream,textAlign:"center"}}>
+      <div id="newsletter" className="section-padding" style={{padding:"5rem 4rem",background:C.cream,textAlign:"center",scrollMarginTop:72}}>
         <div style={{maxWidth:560,margin:"0 auto"}}>
           <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.75rem"}}>STAY CONNECTED</div>
           <h2 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 0.75rem"}}>JOIN OUR NEWSLETTER</h2>
@@ -431,7 +432,6 @@ function EventsPage({ setPage }) {
         <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>UPCOMING EVENTS</h1>
         <p style={{fontSize:"1rem",color:C.dark,marginTop:"0.75rem",maxWidth:500}}>From weekly walks to monthly brunches — there's always something to show up to.</p>
       </div>
-      <Marquee items={["Show Up","Move Together","Weekly Walks","Come Along","Bring a Friend","See You at the Next Walk"]} bg={C.dark} />
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.5rem"}}>
           {events.map(e=><EventCard key={e.id} event={e} setPage={setPage}/>)}
@@ -472,10 +472,10 @@ function AboutPage() {
         </div>
         <div className="cards-grid-4" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"1.5rem"}}>
           {[
-            {emoji:"🚶🏾‍♀️",title:"Weekly Walks",desc:"Every week across Toronto & GTA parks. All paces, all vibes."},
-            {emoji:"🥂",title:"MTG Brunch",desc:"Monthly brunch events with vendors, vibes, and community."},
-            {emoji:"☕",title:"Coffee & Tea",desc:"Casual bi-weekly meetups to connect and recharge."},
-            {emoji:"🌸",title:"Seasonal Events",desc:"Flower picking, picnics, workshops and more."},
+            {emoji:"🤝🏾",title:"Community & Connection",desc:"Building genuine friendships and meaningful relationships with women navigating similar seasons of life."},
+            {emoji:"🧘🏾‍♀️",title:"Wellness & Movement",desc:"Creating opportunities to move our bodies, care for our minds, and make wellness part of everyday life."},
+            {emoji:"🌱",title:"Personal & Professional Growth",desc:"Making room for networking, learning, accountability, and conversations that inspire women to grow."},
+            {emoji:"🥂",title:"Experiences & Shared Moments",desc:"Bringing women together through thoughtfully curated events, workshops, social gatherings, and seasonal experiences."},
           ].map(({emoji,title,desc})=>(
             <div key={title} style={{background:C.cream,borderRadius:18,padding:"2rem 1.5rem",textAlign:"center",border:BORDER,boxShadow:`4px 4px 0 ${C.yellow}`}}>
               <div style={{fontSize:"2.5rem",marginBottom:"1rem"}}>{emoji}</div>
@@ -524,9 +524,9 @@ function EventGalleryGrid({ setPage }) {
 function GalleryPage({ setPage }) {
   return (
     <div style={{paddingTop:68,minHeight:"100vh",background:C.yellow}}>
-      <div className="section-padding page-banner" style={{background:C.dark,padding:"4rem 4rem 3rem",borderBottom:BORDER}}>
-        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.yellow,letterSpacing:"0.02em",margin:0,lineHeight:1}}>COMMUNITY LIFE ON CAMERA</h1>
-        <p style={{fontSize:"1rem",color:C.yellow,marginTop:"0.75rem"}}>Explore the gallery of photos for each of our events and walk.</p>
+      <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem",borderBottom:BORDER}}>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>COMMUNITY LIFE ON CAMERA</h1>
+        <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem"}}>Explore the gallery of photos for each of our events and walk.</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
         <EventGalleryGrid setPage={setPage}/>
@@ -555,7 +555,10 @@ function AlbumPage({ slug, setPage }) {
   }, [open, photos.length]);
 
   if (!event) return <GalleryPage setPage={setPage}/>;
-  const driveUrl = `https://drive.google.com/drive/folders/${event.album}`;
+  const goToNewsletter = () => {
+    setPage("Home");
+    setTimeout(() => document.getElementById("newsletter")?.scrollIntoView({ behavior:"smooth" }), 60);
+  };
   const lightboxBtn = {
     background:C.yellow,color:C.dark,border:`2px solid ${C.dark}`,borderRadius:99,cursor:"pointer",
     fontWeight:800,fontFamily:"inherit",fontSize:"1.1rem",width:48,height:48,
@@ -563,17 +566,14 @@ function AlbumPage({ slug, setPage }) {
 
   return (
     <div style={{paddingTop:68,minHeight:"100vh",background:C.cream}}>
-      <div className="section-padding page-banner" style={{background:C.dark,padding:"2.5rem 4rem 2.5rem",borderBottom:`3px solid ${C.yellow}`}}>
+      <div className="section-padding page-banner" style={{background:C.cream,padding:"2.5rem 4rem 2.5rem",borderBottom:BORDER}}>
         <button onClick={()=>setPage("Gallery")} style={{
-          background:"none",border:`2px solid ${C.yellow}`,color:C.yellow,cursor:"pointer",
-          padding:"0.4rem 1rem",borderRadius:99,fontSize:"0.75rem",fontWeight:800,letterSpacing:"0.06em",
+          background:"none",border:BORDER,color:C.dark,cursor:"pointer",
+          padding:"0.5rem 1.2rem",borderRadius:99,fontSize:"0.8rem",fontWeight:800,letterSpacing:"0.06em",
           textTransform:"uppercase",fontFamily:"inherit",marginBottom:"1.5rem",
         }}>← Back to Gallery</button>
-        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.yellow,letterSpacing:"0.02em",margin:0,lineHeight:1}}>{event.label}</h1>
-        <p style={{fontSize:"1rem",color:C.yellow,marginTop:"0.75rem"}}>
-          Highlights from the day.{" "}
-          <a href={driveUrl} target="_blank" rel="noopener noreferrer" style={{color:C.yellow,fontWeight:700}}>View the full album on Google Drive ↗</a>
-        </p>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>{event.label}</h1>
+        <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem"}}>Here’s all our highlights from the day</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
         <div className="album-grid">
@@ -585,12 +585,12 @@ function AlbumPage({ slug, setPage }) {
           ))}
         </div>
         <div style={{textAlign:"center",marginTop:"3rem"}}>
-          <p style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.dark,letterSpacing:"0.03em",margin:"0 0 1rem"}}>Want to be in the next album? Come along!</p>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{
-            display:"inline-block",background:C.yellow,color:C.dark,border:BORDER,borderRadius:99,
+          <p style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.dark,letterSpacing:"0.03em",margin:"0 0 1rem"}}>When’s our next event or walk? Join our newsletter to stay updated!</p>
+          <button type="button" onClick={goToNewsletter} style={{
+            display:"inline-block",background:C.yellow,color:C.dark,border:BORDER,borderRadius:99,cursor:"pointer",
             padding:"0.85rem 1.75rem",fontWeight:800,fontSize:"0.85rem",letterSpacing:"0.05em",
-            textTransform:"uppercase",textDecoration:"none",boxShadow:HARD_SM,
-          }}>Join Our WhatsApp →</a>
+            textTransform:"uppercase",fontFamily:"inherit",boxShadow:HARD_SM,
+          }}>Join here →</button>
         </div>
       </div>
 

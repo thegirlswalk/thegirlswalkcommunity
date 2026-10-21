@@ -9,14 +9,17 @@ pink `#EB1169` is used only as a small accent.
 
 The Gallery page's five event covers are configured in `galleryEvents` in
 `src/App.jsx` (`src/assets/gallery-*.jpg`). Each card opens an on-site album
-page showing curated photos from `src/assets/albums/<slug>/` (resized to max
-1000px from the Google Drive albums), with a lightbox and a secondary link to
-the full Drive album. The first event, She's the Room, is featured largest.
+page showing every photo from that event's Google Drive folder, stored in
+`src/assets/albums/<slug>/` (resized to max 1000×1333px), with a lightbox. Album
+pages do not link out to Drive; their CTA sends visitors to the homepage
+newsletter signup (`#newsletter`). The first event, She's the Room, is featured
+largest.
 
-Photo curation rules for hero, About, covers, and albums: only clear group or
-community moments with 2+ people; no solo, founder/exec, scenery, object, or
-near-duplicate shots. Never use `IMG_5069` (swan), `IMG_5071` (founder), or
-`IMG_5042` (exec). The About photo is the large 2026 Walk Dump group shot from the
+Photo rules for hero, About, and covers: only clear group or community moments
+with 2+ people; no solo, founder/exec, scenery, object, or near-duplicate shots.
+Albums include all Drive photos except exact duplicates and `IMG_5069` (swan),
+`IMG_5071` (founder), and `IMG_5042` (exec), which are never used anywhere. The
+About photo is the large 2026 Walk Dump group shot from the
 website reference doc (`src/assets/gallery-2026-walk-dump.jpg`, also the Walk
 Dump cover).
 
