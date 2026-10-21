@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import tgwLogo from "./assets/tgw-logo-burgundy.png";
+import tgwLogo from "./assets/tgw-logo-burgundy-light.png";
 import { isShopifyConfigured, createCheckout, DONATION_VARIANTS } from "./shopify";
 import "./App.css";
 
@@ -46,11 +46,10 @@ const C = {
 const DISPLAY = "'Bebas Neue','Impact',sans-serif";
 const HARD     = `6px 6px 0 ${C.dark}`;
 const HARD_SM  = `4px 4px 0 ${C.dark}`;
-const HARD_YELLOW = `6px 6px 0 ${C.yellow}`;
 const BORDER   = `3px solid ${C.dark}`;
 
 // ── SCROLLING MARQUEE BAND ──
-function Marquee({ items, bg = C.dark, color = C.yellow, border }) {
+function Marquee({ items, bg = C.yellow, color = C.dark, border }) {
   const strip = [...items, ...items, ...items];
   return (
     <div style={{
@@ -64,7 +63,7 @@ function Marquee({ items, bg = C.dark, color = C.yellow, border }) {
             color, textTransform: "uppercase", padding: "0 1.25rem",
             display: "inline-flex", alignItems: "center", gap: "1.25rem",
           }}>
-            {t} <span style={{color: C.pink}}>✦</span>
+            {t} <span aria-hidden="true" style={{color: C.pink}}>+</span>
           </span>
         ))}
       </div>
@@ -174,79 +173,99 @@ function NavBar({ page, setPage }) {
   );
 }
 
+// ── HOME HERO SLIDESHOW ── group/community photos, shown one at a time
+const HERO_SLIDES = [
+  { src: heroWalkGroup,    alt: "The Girls Walk Community members together after a walk" },
+  { src: galleryRoom,      alt: "The community gathered at She’s the Room" },
+  { src: galleryPilates,   alt: "Friends at The Pilates Picnic" },
+  { src: galleryBrunch,    alt: "Women together at the Meet the Girls Brunch" },
+  { src: galleryMayFlower, alt: "The community at the May Flower event" },
+  { src: galleryWalks,     alt: "The Girls Walk Community members together on a waterfront walk" },
+  { src: heroPilatesGroup, alt: "A group photo at The Pilates Picnic", position: "center 35%" },
+  { src: heroRoomPanel,    alt: "Women gathered for the panel at She’s the Room" },
+];
+const HERO_INTERVAL_MS = 5000;
+const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = useState(() => window.matchMedia(REDUCED_MOTION).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(REDUCED_MOTION);
+    const onChange = () => setReduce(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return reduce;
+}
+
+function HomeHero({ setPage }) {
+  const [active, setActive] = useState(0);
+  const reduceMotion = usePrefersReducedMotion();
+
+  // Restarts after every slide change, so a dot click gets a full 5s.
+  useEffect(() => {
+    if (reduceMotion) return;
+    const timer = setTimeout(() => setActive(i => (i + 1) % HERO_SLIDES.length), HERO_INTERVAL_MS);
+    return () => clearTimeout(timer);
+  }, [active, reduceMotion]);
+
+  return (
+    <section className="home-hero-wrap" aria-label="Welcome">
+      <div className="home-hero">
+        {HERO_SLIDES.map((s, i) => (
+          <div key={s.src} className={`home-hero-slide${i === active ? " is-active" : ""}`} aria-hidden={i !== active}>
+            <img src={s.src} alt={s.alt}
+              loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} decoding="async"
+              style={s.position ? {objectPosition:s.position} : undefined}/>
+          </div>
+        ))}
+        <div className="home-hero-scrim" aria-hidden="true"/>
+
+        <div className="home-hero-pill">
+          <span style={{width:7,height:7,borderRadius:"50%",background:C.pink,display:"inline-block",flexShrink:0}}/>
+          A Social Club · Toronto &amp; the GTA
+        </div>
+
+        <div className="home-hero-copy">
+          <h1 className="home-hero-heading">
+            For Ambitious Women,
+            <span className="home-hero-heading-serif">by ambitious women.</span>
+          </h1>
+          <p className="home-hero-text">
+            A social club for women across Toronto and the GTA — centred on wellness, networking and growing together. Come for a Saturday walk, a picnic, a brunch or a night out. We’d love to see you.
+          </p>
+          <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap"}}>
+            <button onClick={()=>setPage("Events")} className="home-hero-btn" style={{
+              background:C.yellow,color:C.dark,border:`2px solid ${C.yellow}`,
+            }}>Sign up for an event →</button>
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="home-hero-btn" style={{
+              background:"transparent",color:C.cream,border:`2px solid rgba(253,244,236,0.85)`,
+            }}>Join our WhatsApp</a>
+          </div>
+        </div>
+
+        <div className="home-hero-dots">
+          {HERO_SLIDES.map((s, i) => (
+            <button key={s.src} type="button" aria-label={`Show photo ${i + 1}`}
+              aria-current={i === active ? "true" : undefined}
+              className={`home-hero-dot${i === active ? " is-active" : ""}`}
+              onClick={()=>setActive(i)}>
+              <span/>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── HOME PAGE ──
 function HomePage({ setPage }) {
   return (
     <div style={{paddingTop:64}}>
-      {/* ── HERO SECTION (front page top) ── */}
-      <div className="hero-grid" style={{
-        minHeight:"92vh", background:C.cream,
-        display:"grid", gridTemplateColumns:"1fr 1fr",
-        position:"relative", overflow:"hidden",
-      }}>
-        {/* Left */}
-        <div className="section-padding hero-content" style={{
-          display:"flex", flexDirection:"column", justifyContent:"center",
-          padding:"4rem 3rem 4rem 4rem", position:"relative", zIndex:2,
-        }}>
-          <div style={{
-            display:"inline-flex", alignItems:"center", gap:"0.5rem",
-            background:C.dark, border:`2px solid ${C.dark}`,
-            borderRadius:99, padding:"0.4rem 1.1rem", marginBottom:"1.5rem",
-            width:"fit-content", boxShadow:`4px 4px 0 ${C.yellow}`,
-          }}>
-            <span style={{width:6,height:6,borderRadius:"50%",background:C.yellow,display:"inline-block"}}></span>
-            <span style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.15em",color:C.cream,textTransform:"uppercase"}}>Toronto & GTA</span>
-          </div>
-          <h1 className="hero-heading" style={{
-            fontFamily:DISPLAY,
-            fontSize:"clamp(3.5rem,6vw,6.5rem)", lineHeight:0.92,
-            color:C.dark, margin:"0 0 1.5rem",
-            letterSpacing:"0.02em",
-          }}>
-            A<br/>
-            <span style={{color:C.pink}}>Movement.</span><br/>
-            <span style={{fontFamily:DISPLAY, fontWeight:700, color:C.dark, letterSpacing:0, fontSize:"0.85em"}}>literally.</span>
-          </h1>
-          <p style={{
-            fontSize:"1.05rem", color:C.muted, lineHeight:1.7,
-            maxWidth:420, marginBottom:"2rem", fontWeight:400,
-          }}>
-            For ambitious women, by ambitious women. Walk with us every week across Toronto and the GTA — and join a community of 500+ women who show up for themselves and each other.
-          </p>
-          <div style={{display:"flex", gap:"1rem", flexWrap:"wrap", marginBottom:"2.5rem"}}>
-            <button onClick={()=>setPage("Events")} style={{
-              background:C.dark, color:C.cream, border:BORDER, cursor:"pointer",
-              padding:"0.9rem 2rem", borderRadius:99,
-              fontWeight:800, fontSize:"0.9rem", letterSpacing:"0.05em",
-              boxShadow:HARD_YELLOW, textTransform:"uppercase",
-              fontFamily:"inherit", transition:"transform 0.1s",
-            }}>Sign Up for an Event →</button>
-            <button onClick={()=>setPage("About")} style={{
-              background:C.cream, color:C.dark, border:BORDER,
-              cursor:"pointer", padding:"0.9rem 1.75rem", borderRadius:99,
-              fontWeight:800, fontSize:"0.9rem", letterSpacing:"0.05em",
-              boxShadow:HARD_SM, textTransform:"uppercase", fontFamily:"inherit",
-            }}>Our Story</button>
-          </div>
-          <div className="hero-stats" style={{display:"flex", gap:"2.5rem", borderTop:`3px solid ${C.dark}`, paddingTop:"1.5rem"}}>
-            {[["500+","Community Members"],["Weekly","Walks & Events"]].map(([n,l])=>(
-              <div key={l}>
-                <div style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.dark,lineHeight:1}}>{n}</div>
-                <div style={{fontSize:"0.7rem",color:C.dark,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em",marginTop:"0.2rem"}}>{l}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Right — photo collage (group/community moments only) */}
-        <div className="hero-media hero-collage">
-          <img className="hero-collage-main" src={heroWalkGroup} alt="The Girls Walk Community members together after a walk"/>
-          <img src={heroPilatesGroup} alt="Friends at The Pilates Picnic" style={{objectPosition:"center 35%"}}/>
-          <img src={heroRoomPanel} alt="The community gathered at She’s the Room"/>
-        </div>
-      </div>
+      <HomeHero setPage={setPage}/>
 
-      <Marquee items={["The Girls Walk","Move With Intention","Community","Wellness","Sisterhood","Toronto & GTA"]} />
+      <Marquee items={["Come Along","Bring a Friend","Walks","Wellness","Networking","Toronto & GTA"]} />
 
       {/* ── UPCOMING EVENTS SECTION ── */}
       <div className="section-padding" style={{padding:"5rem 4rem", background:C.cream}}>
@@ -339,7 +358,7 @@ function EventCard({ event, setPage }) {
         minHeight:180,
         position:"relative",
         overflow:"hidden",
-        background:C.dark,
+        background:C.peach,
         borderBottom:BORDER,
         padding:"1.25rem",
         display:"flex",
@@ -352,7 +371,7 @@ function EventCard({ event, setPage }) {
           padding:"0.25rem 0.75rem",borderRadius:99,fontSize:"0.68rem",
           fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",
         }}>{event.type}</span>
-        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:C.cream,letterSpacing:"0.03em",lineHeight:1}}>{event.location}</div>
+        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:C.dark,letterSpacing:"0.03em",lineHeight:1}}>{event.location}</div>
       </div>
       <div style={{padding:"1.25rem"}}>
         <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:event.color,textTransform:"uppercase",marginBottom:"0.35rem"}}>{event.date}</div>
@@ -712,26 +731,26 @@ function DonatePage() {
 // ── FOOTER ──
 function Footer({ setPage }) {
   return (
-    <footer className="footer section-padding" style={{background:C.dark,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem",borderTop:`3px solid ${C.yellow}`}}>
+    <footer className="footer section-padding" style={{background:C.cream,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem",borderTop:BORDER}}>
       <div>
-        <div style={{fontFamily:DISPLAY,fontSize:"1.4rem",color:C.cream,letterSpacing:"0.05em",marginBottom:"0.25rem"}}>TGW <span style={{color:C.yellow}}>COMMUNITY</span></div>
-        <div style={{fontSize:"0.72rem",color:C.cream,letterSpacing:"0.05em"}}>© 2026 · Toronto, ON · A movement. literally.</div>
+        <div style={{fontFamily:DISPLAY,fontSize:"1.4rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"0.25rem"}}>TGW <span style={{color:C.pink}}>COMMUNITY</span></div>
+        <div style={{fontSize:"0.72rem",color:C.dark,letterSpacing:"0.05em"}}>© 2026 · Toronto, ON · A movement. literally.</div>
       </div>
       <div className="footer-links" style={{display:"flex",gap:"1.25rem"}}>
         {["Home","About","Events","Gallery","Donate"].map(p=>(
           <button key={p} onClick={()=>setPage(p)} style={{
             background:p==="Donate"?C.yellow:"none",border:p==="Donate"?`2px solid ${C.dark}`:"none",
             borderRadius:p==="Donate"?99:0,padding:p==="Donate"?"0.3rem 0.75rem":0,
-            cursor:"pointer",fontSize:"0.75rem",color:p==="Donate"?C.dark:C.cream,
+            cursor:"pointer",fontSize:"0.75rem",fontWeight:p==="Donate"?800:600,color:C.dark,
             letterSpacing:"0.06em",textTransform:"uppercase",fontFamily:"inherit",transition:"color 0.2s",
           }}
-          onMouseEnter={e=>e.target.style.color=p==="Donate"?C.dark:C.yellow}
-          onMouseLeave={e=>e.target.style.color=p==="Donate"?C.dark:C.cream}>{p}</button>
+          onMouseEnter={e=>e.target.style.color=p==="Donate"?C.dark:C.pink}
+          onMouseLeave={e=>e.target.style.color=C.dark}>{p}</button>
         ))}
       </div>
       <div className="footer-social" style={{display:"flex",gap:"1rem"}}>
-        <a href="https://instagram.com/thegirlswalk" target="_blank" rel="noopener noreferrer" style={{color:C.cream,fontSize:"0.82rem",textDecoration:"none",fontWeight:600}}>@thegirlswalk</a>
-        <a href="https://instagram.com/thegirlswalkcommunity" target="_blank" rel="noopener noreferrer" style={{color:C.cream,fontSize:"0.82rem",textDecoration:"none",fontWeight:600}}>@thegirlswalkcommunity</a>
+        <a href="https://instagram.com/thegirlswalk" target="_blank" rel="noopener noreferrer" style={{color:C.dark,fontSize:"0.82rem",textDecoration:"none",fontWeight:700}}>@thegirlswalk</a>
+        <a href="https://instagram.com/thegirlswalkcommunity" target="_blank" rel="noopener noreferrer" style={{color:C.dark,fontSize:"0.82rem",textDecoration:"none",fontWeight:700}}>@thegirlswalkcommunity</a>
       </div>
     </footer>
   );
@@ -761,7 +780,7 @@ export default function App() {
 
   return (
     <div style={{minHeight:"100vh",background:C.cream,color:C.dark,fontFamily:"'DM Sans','Segoe UI',sans-serif"}}>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet"/>
       <NavBar page={page} setPage={setPage}/>
       {renderPage()}
       <Footer setPage={setPage}/>
