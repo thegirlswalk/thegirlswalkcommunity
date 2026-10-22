@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import tgwLogo from "./assets/tgw-logo-burgundy-light.png";
-import tgwLogoYellow from "./assets/tgw-logo-yellow-community.png";
+import tgwLogo from "./assets/tgw-logo-burgundy-yellow.png";
 import { isShopifyConfigured, createCheckout, DONATION_VARIANTS } from "./shopify";
 import "./App.css";
 
@@ -30,11 +29,16 @@ const ALBUM_PHOTOS = {
   walks:     sortedUrls(import.meta.glob("./assets/albums/walks/*.jpg",     { eager:true, import:"default" })),
 };
 // About page photo strip: hand-picked group shots (2+ people) — indices into each sorted album.
+// Near-duplicate shots are left out, and events are interleaved so neighbours differ.
 const ALBUM_NAMES = { room:"She’s the Room", pilates:"The Pilates Picnic", mayflower:"May Flower", brunch:"Meet the Girls Brunch", walks:"a community walk" };
-const STRIP_PICKS = { room:[25, 27, 34], pilates:[18, 34, 35], mayflower:[2, 13, 21], brunch:[0, 84, 88], walks:[0, 24, 34] };
-const COMMUNITY_STRIP = Object.entries(STRIP_PICKS).flatMap(([slug, picks]) =>
-  picks.map((idx, i) => ({ src: ALBUM_PHOTOS[slug][idx], alt: `Community moment ${i + 1} from ${ALBUM_NAMES[slug]}` }))
-).filter(p => p.src);
+const STRIP_PICKS = { room:[25, 27], pilates:[18, 35], mayflower:[2, 13, 21], brunch:[0, 84], walks:[0, 24] };
+const COMMUNITY_STRIP = (() => {
+  const lists = Object.entries(STRIP_PICKS).map(([slug, picks]) =>
+    picks.map((idx, i) => ({ src: ALBUM_PHOTOS[slug][idx], alt: `Community moment ${i + 1} from ${ALBUM_NAMES[slug]}` })));
+  const out = [];
+  for (let round = 0; lists.some(l => l[round]); round++) lists.forEach(l => l[round] && out.push(l[round]));
+  return out.filter(p => p.src);
+})();
 const WHATSAPP_URL = "https://chat.whatsapp.com/BrJxnx5G7VBAzNtP01eQ6v?mode=gi_t";
 
 // ── COLOUR PALETTE ─────────────────────────────────────────────
@@ -73,7 +77,7 @@ function Marquee({ items, bg = C.yellow, color = C.dark, border }) {
             color, textTransform: "uppercase", padding: "0 1.25rem",
             display: "inline-flex", alignItems: "center", gap: "1.25rem",
           }}>
-            {t} <span aria-hidden="true" style={{color: C.pink}}>+</span>
+            {t} <span aria-hidden="true" style={{width:8,height:8,borderRadius:"50%",background:"#FFFFFF",border:`1px solid ${C.dark}`,display:"inline-block"}}/>
           </span>
         ))}
       </div>
@@ -127,10 +131,10 @@ function Reveal({ children, delay = 0, fill = false, className = "", style }) {
 }
 
 // Marker-style highlight that sweeps in left→right behind text.
-function Mark({ children, color = C.yellow, delay = 0 }) {
+function Mark({ children, color = C.yellow, delay = 0, underline = false }) {
   const [ref, seen] = useInView();
   return (
-    <span ref={ref} className={`mark${seen ? " is-visible" : ""}`}
+    <span ref={ref} className={`mark${underline ? " mark-underline" : ""}${seen ? " is-visible" : ""}`}
       style={{"--mark": color, transitionDelay: delay ? `${delay}ms` : undefined}}>
       {children}
     </span>
@@ -298,7 +302,7 @@ function NavBar({ page, setPage }) {
         background:"none", border:"none", cursor:"pointer",
         display:"flex", alignItems:"center", gap:"0.6rem",
       }}>
-        <img src={overHero ? tgwLogoYellow : tgwLogo} alt="TGW Community" style={{height:46}} />
+        <img src={tgwLogo} alt="TGW Community" style={{height:46, filter: overHero ? "drop-shadow(0 0 1px #FDF4EC) drop-shadow(0 0 4px rgba(253,244,236,0.7))" : "none"}} />
       </button>
       <button
         className="mobile-menu-toggle"
@@ -374,10 +378,10 @@ function HomeHero({ setPage }) {
         <div className="home-hero-copy">
           <h1 className="home-hero-heading">
             For Ambitious Women,
-            <span className="home-hero-heading-serif"><Mark color="rgba(235,17,105,0.82)" delay={550}>by ambitious women.</Mark></span>
+            <span className="home-hero-heading-serif"><Mark underline color={C.pink} delay={550}>by ambitious women.</Mark></span>
           </h1>
           <p className="home-hero-text">
-            A global social club for women — centred on wellness, networking and growing together. Come for a Saturday walk, a picnic, a brunch or a night out. We’d love to see you.
+            A space centred on wellness, networking and growing together. It’s a movement, literally.
           </p>
           <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap"}}>
             <button onClick={()=>setPage("Events")} className="home-hero-btn" style={{
@@ -414,7 +418,7 @@ function HomePage({ setPage }) {
     <div>
       <HomeHero setPage={setPage}/>
 
-      <Marquee items={["2,000+ Women & Growing","Saturday Walks","Brunches & Picnics","Wellness","Networking","Events"]} />
+      <Marquee items={["3,000+ Women & Growing","Wellness","Networking","Events"]} />
 
       {/* ── UPCOMING EVENTS SECTION ── */}
       <div className="section-padding" style={{padding:"5rem 4rem", background:C.peach}}>
@@ -601,7 +605,6 @@ function EventsPage({ setPage }) {
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem"}}>
         <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>UPCOMING <Mark>EVENTS</Mark></h1>
-        <p style={{fontSize:"1rem",color:C.dark,marginTop:"0.75rem",maxWidth:500}}>From weekly walks to monthly brunches — there's always something to show up to.</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.5rem"}}>
@@ -631,7 +634,7 @@ function AboutPage() {
           <div style={{width:"fit-content",background:C.yellow,color:C.dark,border:`2px solid ${C.dark}`,borderRadius:99,padding:"0.3rem 0.9rem",fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1.25rem"}}>Who We Are</div>
           <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"3.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1.5rem",lineHeight:1}}>BUILT FOR WOMEN WHO MOVE WITH <Mark delay={300}>intention.</Mark></h1>
           <p style={{fontSize:"0.95rem",color:C.dark,lineHeight:1.8,marginBottom:"1.5rem"}}>
-            The Girls Walk Community was founded in April 2026 with a simple belief: women are stronger when they move together. What started as walks through Toronto's neighbourhoods has grown into a thriving community of 2,000+ ambitious women — and growing.
+            The Girls Walk Community was founded in April 2026 with a simple belief: women are stronger when they move together. What started as walks through Toronto's neighbourhoods has grown into a thriving community of 3,000+ ambitious women — and growing.
           </p>
           <p style={{fontSize:"0.95rem",color:C.dark,lineHeight:1.8}}>
             To build a safe, uplifting community where women connect through walks, events, and shared experiences that promote wellness, confidence, community, and genuine networking opportunities.
@@ -641,8 +644,8 @@ function AboutPage() {
       <div className="section-padding" style={{padding:"3.5rem 4rem",background:C.peach,borderTop:BORDER,borderBottom:BORDER}}>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.25rem",maxWidth:820,margin:"0 auto"}}>
           {[
-            {to:2000, suffix:"+", label:"Women in the community", bg:C.yellow},
-            {to:galleryEvents.filter(e=>e.slug!=="walks").length, label:"Signature events so far", bg:C.cream},
+            {to:3000, suffix:"+", label:"Women in our community", bg:C.yellow},
+            {to:20, suffix:"+", label:"Events & walks so far", bg:C.cream},
           ].map((st,i)=>(
             <Reveal fill key={st.label} delay={i*120}>
               <div className="lift-card" style={{background:st.bg,border:BORDER,borderRadius:18,boxShadow:HARD_SM,padding:"1.75rem 1.5rem",textAlign:"center"}}>
@@ -915,8 +918,7 @@ function Footer({ setPage, bg = C.cream }) {
   return (
     <footer className="footer section-padding" style={{background:bg,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem",borderTop:BORDER}}>
       <div>
-        <div style={{fontFamily:DISPLAY,fontSize:"1.4rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"0.25rem"}}>TGW <span style={{color:C.pink}}>COMMUNITY</span></div>
-        <div style={{fontSize:"0.72rem",color:C.dark,letterSpacing:"0.05em"}}>© 2026 · Toronto, ON · A movement. literally.</div>
+        <div style={{fontSize:"0.72rem",color:C.dark,letterSpacing:"0.05em"}}>© 2026 TGW Community · Toronto, ON · A movement, literally.</div>
       </div>
       <div className="footer-links" style={{display:"flex",gap:"1.25rem"}}>
         {["Home","About","Events","Gallery","Donate"].map(p=>(

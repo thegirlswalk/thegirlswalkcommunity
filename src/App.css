@@ -72,6 +72,18 @@ img {
   background-size: 100% 100%;
 }
 
+/* Underline variant: a thick bar that draws in under the words instead of a full highlight */
+.mark.mark-underline {
+  padding: 0;
+  margin: 0;
+  background-position: 0 92%;
+  background-size: 0% 0.09em;
+}
+
+.mark.mark-underline.is-visible {
+  background-size: 100% 0.09em;
+}
+
 .grow-bar {
   width: 88px;
   height: 6px;
@@ -283,7 +295,7 @@ a:focus-visible {
   line-height: 0.86;
   letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: rgba(253,244,236,.82);
+  color: #FFFFFF;
   text-shadow: 0 2px 24px rgba(46,12,28,.35);
 }
 
@@ -445,6 +457,7 @@ a:focus-visible {
   .reveal.is-visible { animation: none; }
   .reveal { opacity: 1; }
   .mark { background-size: 100% 100%; transition: none; }
+  .mark.mark-underline { background-size: 100% 0.09em; }
   .grow-bar { transform: none; transition: none; }
   .lift,
   .lift-card,

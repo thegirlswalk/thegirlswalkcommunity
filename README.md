@@ -4,17 +4,18 @@
 
 The site uses the official TGW palette, Bebas Neue headings, Instrument Serif
 italic (hero subline only), and DM Sans body text. The header is cream with the
-burgundy TGW logo (`src/assets/tgw-logo-burgundy-light.png`) and burgundy nav
+yellow-and-burgundy TGW Community logo (`src/assets/tgw-logo-burgundy-yellow.png`) and burgundy nav
 links. The homepage hero (`HomeHero` in `src/App.jsx`) is an edge-to-edge,
 muted, looping background video that fills the whole first screen, running
-under the nav: on Home the nav is see-through (yellow logo
-`src/assets/tgw-logo-yellow-community.png`, cream links, soft dark fade) until the visitor scrolls or opens the phone menu, then it turns
-cream again (min 560px, 520px on phones): TGW's "2026 Walking Recap" Instagram reel, trimmed
+under the nav: on Home the nav is see-through (same logo with a soft cream glow,
+cream links, soft dark fade) until the visitor scrolls or opens the phone menu, then it turns
+cream again (min 560px, 520px on phones). The hero heading is solid white, with
+"by ambitious women." underlined in pink (`Mark underline`): TGW's "2026 Walking Recap" Instagram reel, trimmed
 to 0:04–0:38.8 to drop its text cards (`src/assets/hero-reel-wide.mp4` 1080×608
 crop for desktop, `hero-reel-tall.mp4` 540×960 for phones ≤768px, plus
 `hero-reel-poster-*.jpg` stills). It has a pause/play button, and visitors with
 reduced motion see the still only. Burgundy is used as an
-accent: the marquee is yellow with burgundy text and the footer is cream. Burgundy `#46172C`
+accent: the marquee is yellow with burgundy text and white dot separators, and the footer is cream. Burgundy `#46172C`
 and butter yellow `#FFE99B` lead (buttons and accents). Page sections alternate
 between cream `#FDF4EC` (main background) and peach `#FFE1CF` at every divider
 line (Home Events and Newsletter, Events-page Past Events, About stats and Our
@@ -38,9 +39,10 @@ shots (food, products, signs, empty rooms, landscapes), exact duplicates, and
 used anywhere. The
 About photo is the large 2026 Walk Dump group shot from the
 website reference doc (`src/assets/gallery-2026-walk-dump.jpg`, also the Walk
-Dump cover). Below it, the About page has count-up stats (members, signature
-events, total album photos) and an "Our Community" auto-scrolling, draggable
-photo strip of hand-picked group shots (`STRIP_PICKS` in `src/App.jsx`).
+Dump cover). Below it, the About page has count-up stats (3,000+ women in our
+community, 20+ events & walks so far) and an "Our Community" auto-scrolling, draggable
+photo strip of 11 hand-picked group shots with no near-duplicates, interleaved
+so neighbouring photos come from different events (`STRIP_PICKS` in `src/App.jsx`).
 
 Scroll and hover effects are dependency-free helpers in `src/App.jsx`
 (`Reveal` fade-ups, `Mark` highlighter sweeps, `GrowBar` underline bars,
