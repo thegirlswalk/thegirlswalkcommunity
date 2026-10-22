@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import tgwLogo from "./assets/tgw-logo-burgundy-yellow.png";
+import tgwLogo from "./assets/tgw-logo-burgundy-light.png";
 import { isShopifyConfigured, createCheckout, DONATION_VARIANTS } from "./shopify";
 import "./App.css";
 
