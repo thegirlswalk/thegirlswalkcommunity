@@ -923,7 +923,7 @@ function Footer({ setPage, bg = C.cream }) {
   return (
     <footer className="footer section-padding" style={{background:bg,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem",borderTop:BORDER}}>
       <div>
-        <div style={{fontSize:"0.72rem",color:C.dark,letterSpacing:"0.05em"}}>© 2026 TGW Community · Toronto, ON · A movement, literally.</div>
+        <div style={{fontSize:"0.72rem",color:C.dark,letterSpacing:"0.05em"}}>© 2026 TGW Community · Toronto,{"\u00A0"}ON · A movement, literally.</div>
       </div>
       <div className="footer-links" style={{display:"flex",gap:"1.25rem"}}>
         {["Home","About","Events","Gallery","Donate"].map(p=>(
