@@ -240,14 +240,14 @@ function PhotoStrip({ photos, label }) {
 const events = [
   {
     id: 1,
-    type: "Weekly Walk",
-    title: "Morning Walk — Saturday",
-    date: "Saturday · 11:00 AM",
+    type: "Next Walk",
+    title: "Our Next Walk",
+    date: "March 2027 · Stay updated",
     location: "Toronto & GTA",
-    desc: "Our signature weekly walk. All paces welcome — this is about connection, fresh air, and showing up for yourself and each other. Join our WhatsApp group for location updates each week.",
+    desc: "Our next walk is in March 2027. All paces welcome — this is about connection, fresh air, and showing up for yourself and each other. Join our WhatsApp group to stay updated on the date and meeting spot.",
     rsvp: false,
     color: C.pink,
-    tag: "Free · No RSVP needed",
+    tag: "Free · All paces welcome",
     joinUrl: WHATSAPP_URL,
   },
 ];
@@ -610,6 +610,7 @@ function EventsPage({ setPage }) {
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem"}}>
         <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>UPCOMING <Mark>EVENTS</Mark></h1>
+        <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem",maxWidth:640}}>We host walks, challenges, and events to engage our community throughout the year and encourage continuous development.</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.5rem"}}>
@@ -618,7 +619,7 @@ function EventsPage({ setPage }) {
         </div>
       </div>
       <div className="section-padding" style={{padding:"4rem",background:C.peach,borderTop:BORDER}}>
-        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.dark,textTransform:"uppercase",marginBottom:"0.5rem"}}>Missed One?</div>
+        <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>Missed One?</div>
         <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Past Events</h2>
         <div style={{marginBottom:"2rem"}}><GrowBar/></div>
         <EventGalleryGrid setPage={setPage}/>
@@ -908,10 +909,7 @@ function DonatePage() {
             textTransform:"uppercase",fontFamily:DISPLAY,
             boxShadow:HARD,
           }}>Donate ${amount||0} →</button>
-          <p style={{textAlign:"center",fontSize:"0.85rem",color:C.dark,lineHeight:1.5,marginTop:"1.5rem"}}>Thank you for helping our community grow, one contribution at a time.</p>
-          <p style={{textAlign:"center",fontSize:"0.85rem",color:C.mid,lineHeight:1.5,marginTop:"1.5rem",marginBottom:0}}>
-            The TGW Community is a registered nonprofit. Donations may be tax-deductible.
-          </p>
+          <p style={{textAlign:"center",fontSize:"0.85rem",color:C.dark,lineHeight:1.5,marginTop:"1.5rem",marginBottom:0}}>Thank you for helping our community grow, one contribution at a time.</p>
         </div>
       </div>
     </div>

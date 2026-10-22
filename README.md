@@ -51,8 +51,8 @@ Scroll and hover effects are dependency-free helpers in `src/App.jsx`
 `.lift-card` hover classes in `src/App.css`. All motion is disabled under
 `prefers-reduced-motion`.
 
-The Events page lists the Weekly Walk, a "Something New Is Coming" card, and a
-Past Events gallery grid. Shop is intentionally absent until merch is
+The Events page has a short intro blurb, a "Next Walk" (March 2027) card, a
+"Something New Is Coming" card, and a Past Events gallery grid. Shop is intentionally absent until merch is
 available. Shopify donation configuration remains in `src/shopify.js`.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
