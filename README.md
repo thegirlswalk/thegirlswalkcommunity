@@ -10,7 +10,7 @@ muted, looping background video that fills the whole first screen, running
 under the nav: on Home the nav is see-through (same logo with a soft cream glow,
 cream links, soft dark fade) until the visitor scrolls or opens the phone menu, then it turns
 cream again (min 560px, 520px on phones). The hero heading is solid white, with
-"by ambitious women." underlined in pink (`Mark underline`): TGW's "2026 Walking Recap" Instagram reel, trimmed
+"by ambitious women." with a hand-drawn curved pink underline (`Mark underline`): TGW's "2026 Walking Recap" Instagram reel, trimmed
 to 0:04–0:38.8 to drop its text cards (`src/assets/hero-reel-wide.mp4` 1080×608
 crop for desktop, `hero-reel-tall.mp4` 540×960 for phones ≤768px, plus
 `hero-reel-poster-*.jpg` stills). It has a pause/play button, and visitors with

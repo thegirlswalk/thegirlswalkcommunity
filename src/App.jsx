@@ -137,6 +137,12 @@ function Mark({ children, color = C.yellow, delay = 0, underline = false }) {
     <span ref={ref} className={`mark${underline ? " mark-underline" : ""}${seen ? " is-visible" : ""}`}
       style={{"--mark": color, transitionDelay: delay ? `${delay}ms` : undefined}}>
       {children}
+      {underline && (
+        <svg className="mark-scribble" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M3 9 C 45 4, 120 3, 197 6" pathLength="1"
+            style={{transitionDelay: delay ? `${delay}ms` : undefined}}/>
+        </svg>
+      )}
     </span>
   );
 }
@@ -451,7 +457,6 @@ function HomePage({ setPage }) {
       <div className="section-padding" style={{padding:"4rem",background:C.cream,borderTop:BORDER,borderBottom:BORDER}}>
         <div className="section-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"2rem"}}>
           <div>
-            <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.dark,textTransform:"uppercase",marginBottom:"0.5rem"}}>From Previous Events</div>
             <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Past Events</h2>
             <GrowBar/>
           </div>
