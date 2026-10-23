@@ -628,7 +628,6 @@ function HomePage({ setPage }) {
       {/* ── PARTNERS SECTION ── */}
       <div style={{padding:"4.5rem 0 4rem",background:C.yellow,borderTop:BORDER,textAlign:"center",overflow:"hidden"}}>
         <div style={{marginBottom:"1.5rem",padding:"0 1.25rem"}}>
-          <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>Brands We Love</div>
           <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}><Words>Our Partners</Words></h2>
           <GrowBar center/>
         </div>
