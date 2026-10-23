@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Children, useEffect, useRef, useState } from "react";
 import tgwLogo from "./assets/tgw-logo-burgundy-glow.png";
 import { isShopifyConfigured, createCheckout, DONATION_VARIANTS } from "./shopify";
 import "./App.css";
@@ -151,6 +151,100 @@ function Mark({ children, color = C.yellow, delay = 0, underline = false }) {
 function GrowBar({ color = C.pink, center = false }) {
   const [ref, seen] = useInView();
   return <div ref={ref} aria-hidden="true" className={`grow-bar${center ? " grow-bar-center" : ""}${seen ? " is-visible" : ""}`} style={{background:color}}/>;
+}
+
+// Splits a heading into words that rise in one after another when scrolled into view.
+// Plain text is split on spaces; elements (e.g. <Mark>) move as a single word.
+function Words({ children, delay = 0 }) {
+  const [ref, seen] = useInView();
+  let n = 0;
+  const pieces = [];
+  Children.toArray(children).forEach((child, ci) => {
+    if (typeof child === "string") {
+      child.split(/(\s+)/).forEach((w, wi) => {
+        if (!w) return;
+        if (/^\s+$/.test(w)) pieces.push(w);
+        else pieces.push(<span key={`${ci}-${wi}`} className="word" style={{"--wi": n++}}>{w}</span>);
+      });
+    } else if (child?.type === "br") {
+      pieces.push(child);
+    } else {
+      pieces.push(<span key={ci} className="word" style={{"--wi": n++}}>{child}</span>);
+    }
+  });
+  return <span ref={ref} className={`words${seen ? " is-visible" : ""}`} style={{"--wd": `${delay}ms`}}>{pieces}</span>;
+}
+
+// Decorative brand-colour doodles that drift gently. The parent needs position:relative
+// and isolation:isolate so they sit behind its content.
+const DOODLE_SHAPES = {
+  sparkle:  <path d="M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z"/>,
+  heart:    <path d="M12 21.6l-1.4-1.3C5.4 15.6 2 12.5 2 8.6 2 5.5 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.5 22 8.6c0 3.9-3.4 7-8.6 11.7z"/>,
+  star:     <path d="M12 1l3 8 8 .5-6.2 5.1L19 22.5 12 18l-7 4.5 2.2-7.9L1 9.5 9 9z"/>,
+  ring:     <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="3"/>,
+  squiggle: <path d="M1 14Q5 4 9 12T17 12T23 10" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"/>,
+};
+
+function Doodles({ items }) {
+  return (
+    <div className="doodles" aria-hidden="true">
+      {items.map((d, i) => (
+        <svg key={i} viewBox="0 0 24 24" fill="currentColor" className={`doodle${d.hideSm ? " doodle-hide-sm" : ""}`}
+          style={{color:d.color,width:d.size,height:d.size,top:d.top,left:d.left,right:d.right,bottom:d.bottom,
+            "--rot":`${d.rot || 0}deg`,"--dur":`${d.dur || 6}s`,"--delay":`${d.delay || 0}s`}}>
+          {DOODLE_SHAPES[d.shape]}
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+const DOODLES_RIGHT = [
+  { shape:"sparkle",  color:C.pink,   size:44, top:"16%", right:"7%",  rot:-10, dur:5 },
+  { shape:"heart",    color:C.orange, size:30, top:"60%", right:"17%", rot:12,  dur:7,   delay:-2, hideSm:true },
+  { shape:"star",     color:C.yellow, size:38, top:"26%", right:"29%", rot:8,   dur:6,   delay:-1, hideSm:true },
+  { shape:"squiggle", color:C.blush,  size:58, bottom:"12%", right:"5%", rot:-6, dur:8, hideSm:true },
+  { shape:"ring",     color:C.pink,   size:22, top:"12%", right:"42%", dur:5.5, delay:-3, hideSm:true },
+];
+
+const DOODLES_SIDES = [
+  { shape:"sparkle",  color:C.pink,   size:40, top:"14%", left:"8%",   rot:-8, dur:5.5 },
+  { shape:"heart",    color:C.orange, size:28, bottom:"18%", left:"14%", rot:-14, dur:6.5, delay:-2, hideSm:true },
+  { shape:"star",     color:C.yellow, size:36, top:"20%", right:"10%", rot:10, dur:6,   delay:-1 },
+  { shape:"ring",     color:C.pink,   size:20, bottom:"22%", right:"16%", dur:5, delay:-3, hideSm:true },
+  { shape:"squiggle", color:C.blush,  size:54, top:"52%", right:"4%",  rot:-4, dur:8,   hideSm:true },
+];
+
+// Moves an element a little slower/faster than the page while scrolling. Uses the
+// parent's position so the element's own offset doesn't feed back. `clamp` limits
+// the offset to a fraction of the parent's height (for images scaled up to cover).
+function useParallax(speed, clamp) {
+  const ref = useRef(null);
+  const reduceMotion = usePrefersReducedMotion();
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || reduceMotion) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const r = el.parentElement.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) return;
+      let y = (r.top + r.height / 2 - window.innerHeight / 2) * speed;
+      if (clamp) y = Math.max(-r.height * clamp, Math.min(r.height * clamp, y));
+      el.style.translate = `0 ${y.toFixed(1)}px`;
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive:true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+      el.style.translate = "";
+    };
+  }, [speed, clamp, reduceMotion]);
+  return ref;
 }
 
 // Counts up from 0 when scrolled into view.
@@ -371,9 +465,10 @@ const HERO_BLURB = [
 // (untyped letters are invisible) so nothing shifts, and screen readers get it all at once.
 function TypedText({ parts, className, startDelay = 0, speed = 28, reduceMotion }) {
   const total = parts.reduce((n, p) => n + p.text.length, 0);
-  const [count, setCount] = useState(reduceMotion ? total : 0);
+  const [typed, setCount] = useState(0);
+  const count = reduceMotion ? total : typed;
   useEffect(() => {
-    if (reduceMotion) { setCount(total); return; }
+    if (reduceMotion) return;
     let timer;
     const start = setTimeout(() => {
       timer = setInterval(() => setCount(c => {
@@ -384,15 +479,15 @@ function TypedText({ parts, className, startDelay = 0, speed = 28, reduceMotion 
     return () => { clearTimeout(start); clearInterval(timer); };
   }, [reduceMotion, total, speed, startDelay]);
 
-  let left = count;
+  const starts = parts.map((_, i) => parts.slice(0, i).reduce((n, p) => n + p.text.length, 0));
   return (
     <p className={className}>
       <span className="sr-only">{parts.map(p => p.text).join("")}</span>
       <span aria-hidden="true">
         {parts.map((p, i) => {
+          const left = count - starts[i];
           const shown = Math.max(0, Math.min(p.text.length, left));
           const caretHere = left >= 0 && left < p.text.length && count < total;
-          left -= p.text.length;
           return (
             <span key={i} className={p.hl ? "typed-hl" : undefined}>
               {p.text.slice(0, shown)}
@@ -412,6 +507,7 @@ function HomeHero({ setPage }) {
   const isPhone = useMediaQuery("(max-width: 768px)");
   const [paused, setPaused] = useState(false);
   const videoRef = useRef(null);
+  const mediaRef = useParallax(-0.3);
   const src = isPhone ? heroReelTall : heroReelWide;
   const poster = isPhone ? heroPosterTall : heroPosterWide;
 
@@ -426,7 +522,7 @@ function HomeHero({ setPage }) {
   return (
     <section className="home-hero-wrap" aria-label="Welcome">
       <div className="home-hero">
-        <div className="home-hero-media">
+        <div className="home-hero-media" ref={mediaRef}>
           {reduceMotion ? (
             <img src={poster} alt="" fetchPriority="high" decoding="async"/>
           ) : (
@@ -438,7 +534,7 @@ function HomeHero({ setPage }) {
 
         <div className="home-hero-copy">
           <div className="home-hero-eyebrow">TGW Community · Toronto &amp; GTA</div>
-          <h1 className="home-hero-heading">The Girls <Mark underline color={C.pink} delay={500}>Walk</Mark></h1>
+          <h1 className="home-hero-heading"><Words delay={250}>The Girls <Mark underline color={C.pink} delay={900}>Walk</Mark></Words></h1>
           <TypedText className="home-hero-text" parts={HERO_BLURB} startDelay={700} reduceMotion={reduceMotion}/>
           <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap",justifyContent:"center"}}>
             <button onClick={()=>setPage("Events")} className="home-hero-btn" style={{
@@ -482,7 +578,7 @@ function HomePage({ setPage }) {
         <div className="section-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"2.5rem"}}>
           <div>
             <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>What's On</div>
-            <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}><Mark>Events</Mark></h2>
+            <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}><Words><Mark>Events</Mark></Words></h2>
           </div>
           <button className="lift" onClick={()=>setPage("Events")} style={{
             background:C.yellow,border:BORDER,color:C.dark,
@@ -507,7 +603,7 @@ function HomePage({ setPage }) {
       <div className="section-padding" style={{padding:"4rem",background:C.cream,borderTop:BORDER,borderBottom:BORDER}}>
         <div className="section-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"2rem"}}>
           <div>
-            <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Past Events</h2>
+            <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}><Words>Past Events</Words></h2>
             <GrowBar/>
           </div>
           <button className="lift" onClick={()=>setPage("Gallery")} style={{
@@ -521,10 +617,11 @@ function HomePage({ setPage }) {
       </div>
 
       {/* ── NEWSLETTER SIGNUP ── */}
-      <div id="newsletter" className="section-padding" style={{padding:"5rem 4rem",background:C.peach,textAlign:"center",scrollMarginTop:72}}>
+      <div id="newsletter" className="section-padding" style={{padding:"5rem 4rem",background:C.peach,textAlign:"center",scrollMarginTop:72,position:"relative",isolation:"isolate"}}>
+        <Doodles items={DOODLES_SIDES}/>
         <Reveal style={{maxWidth:560,margin:"0 auto"}}>
           <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.75rem"}}>STAY CONNECTED</div>
-          <h2 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 0.75rem"}}>JOIN OUR <Mark delay={200}>NEWSLETTER</Mark></h2>
+          <h2 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 0.75rem"}}><Words>JOIN OUR <Mark delay={200}>NEWSLETTER</Mark></Words></h2>
           <p style={{fontSize:"0.95rem",color:C.muted,lineHeight:1.7,marginBottom:"2rem"}}>
             Get updates on upcoming walks, events, and community stories — straight to your inbox.
           </p>
@@ -558,13 +655,11 @@ function HomePage({ setPage }) {
 
 function EventCard({ event, setPage }) {
   return (
-    <div onClick={()=>setPage("EventDetail_"+event.id)} style={{
+    <div className="lift-card" onClick={()=>setPage("EventDetail_"+event.id)} style={{
       background:C.cream,borderRadius:18,overflow:"hidden",cursor:"pointer",
-      border:BORDER,transition:"all 0.15s",height:"100%",display:"flex",flexDirection:"column",
+      border:BORDER,height:"100%",display:"flex",flexDirection:"column",
       boxShadow:HARD,
-    }}
-    onMouseEnter={e=>{e.currentTarget.style.transform="translate(-3px,-3px)";e.currentTarget.style.boxShadow=`9px 9px 0 ${C.yellow}`}}
-    onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow=HARD}}>
+    }}>
       <div style={{padding:"1.5rem",display:"flex",flexDirection:"column",flex:1}}>
         <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:event.color,textTransform:"uppercase",marginBottom:"0.35rem"}}>{event.date}</div>
         <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:C.dark,letterSpacing:"0.02em",lineHeight:1,marginBottom:"0.75rem"}}>{event.title}</div>
@@ -599,7 +694,7 @@ function EventDetailPage({ eventId, setPage }) {
         }}>← Back to Events</button>
         <div className="event-detail-banner-copy" style={{position:"absolute",bottom:"2rem",left:"3rem",right:"3rem"}}>
           <span style={{background:`${C.cream}2E`,color:C.cream,padding:"0.3rem 0.9rem",borderRadius:99,fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",border:`1px solid ${C.cream}33`}}>{event.type}</span>
-          <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3.5rem",color:C.cream,letterSpacing:"0.02em",margin:"0.75rem 0 0",lineHeight:1}}>{event.title}</h1>
+          <h1 className="page-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3.5rem",color:C.cream,letterSpacing:"0.02em",margin:"0.75rem 0 0",lineHeight:1}}><Words>{event.title}</Words></h1>
         </div>
       </div>
       <div style={{maxWidth:800,margin:"0 auto",padding:"3rem 2rem"}}>
@@ -639,8 +734,9 @@ function EventDetailPage({ eventId, setPage }) {
 function EventsPage({ setPage }) {
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
-      <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem"}}>
-        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>UPCOMING <Mark>EVENTS</Mark></h1>
+      <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem",position:"relative",isolation:"isolate"}}>
+        <Doodles items={DOODLES_RIGHT}/>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}><Words>UPCOMING <Mark>EVENTS</Mark></Words></h1>
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem",maxWidth:640}}>We host walks, challenges, and events to engage our community throughout the year and encourage continuous development.</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
@@ -650,7 +746,7 @@ function EventsPage({ setPage }) {
       </div>
       <div className="section-padding" style={{padding:"4rem",background:C.peach,borderTop:BORDER}}>
         <div style={{fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>Missed One?</div>
-        <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>Past Events</h2>
+        <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}><Words>Past Events</Words></h2>
         <div style={{marginBottom:"2rem"}}><GrowBar/></div>
         <EventGalleryGrid setPage={setPage}/>
       </div>
@@ -660,15 +756,16 @@ function EventsPage({ setPage }) {
 
 // ── ABOUT PAGE ──
 function AboutPage() {
+  const photoRef = useParallax(0.1, 0.12);
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="split-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",minHeight:480}}>
         <div className="about-photo" style={{overflow:"hidden",position:"relative"}}>
-          <img src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 58%"}}/>
+          <img ref={photoRef} src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 58%",scale:"1.3"}}/>
         </div>
         <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 4rem",display:"flex",flexDirection:"column",justifyContent:"center",borderLeft:BORDER}}>
           <div style={{width:"fit-content",background:C.yellow,color:C.dark,border:`1.5px solid ${C.dark}`,borderRadius:99,padding:"0.3rem 0.9rem",fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1.25rem"}}>Who We Are</div>
-          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"3.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1.5rem",lineHeight:1}}>BUILT FOR WOMEN WHO MOVE WITH <Mark delay={300}>intention.</Mark></h1>
+          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"3.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1.5rem",lineHeight:1}}><Words>BUILT FOR WOMEN WHO MOVE WITH <Mark delay={300}>intention.</Mark></Words></h1>
           <p style={{fontSize:"0.95rem",color:C.dark,lineHeight:1.8,marginBottom:"1.5rem"}}>
             The Girls Walk Community was founded in April 2026 with a simple belief: women are stronger when they move together. What started as walks through Toronto's neighbourhoods has grown into a thriving community of 3,000+ ambitious women — and growing.
           </p>
@@ -694,7 +791,7 @@ function AboutPage() {
       </div>
       <div className="section-padding" style={{padding:"5rem 4rem",background:C.cream}}>
         <div style={{textAlign:"center",marginBottom:"3rem"}}>
-          <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em"}}>WHAT WE <Mark color={C.orange}>DO</Mark></h2>
+          <h2 className="section-heading" style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"3rem",color:C.dark,letterSpacing:"0.02em"}}><Words>WHAT WE <Mark color={C.orange}>DO</Mark></Words></h2>
         </div>
         <div className="cards-grid-4" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"1.5rem"}}>
           {[
@@ -715,7 +812,7 @@ function AboutPage() {
       </div>
       <div style={{background:C.peach,borderTop:BORDER,padding:"4.5rem 0 4rem"}}>
         <Reveal className="section-padding" style={{textAlign:"center",padding:"0 4rem",marginBottom:"2.25rem"}}>
-          <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}>OUR COMMUNITY</h2>
+          <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}><Words>OUR COMMUNITY</Words></h2>
           <GrowBar center/>
           <p style={{fontSize:"0.95rem",color:C.dark,margin:"1rem 0 0"}}>Real moments from our walks and events. Drag or swipe to explore.</p>
         </Reveal>
@@ -735,22 +832,23 @@ const galleryEvents = [
   { slug:"walks",     src:galleryWalks,     label:"2026 Walk Dump",                   album:"1FF6P-zbOjjmi6Ic2yknDccQ3xypMVn3K" },
 ];
 
+const POLAROID_TILT = [-4, 3, -2.5, 4, -3];
+
+// Event tiles are tilted polaroids that bob gently; hovering straightens and enlarges one.
 function GalleryTile({ p, i, setPage }) {
   const [ref, seen] = useInView();
   return (
-        <button ref={ref} type="button" className={`gallery-event reveal lift-card${seen ? " is-visible" : ""}`}
-        onClick={()=>setPage(`Album_${p.slug}`)}
-        aria-label={`View ${p.label} photo gallery`}
-        style={{borderRadius:16,overflow:"hidden",position:"relative",border:BORDER,boxShadow:HARD_SM,"--reveal-delay":`${i*90}ms`}}>
-          <img src={p.src} alt="" loading="lazy" style={{width:"100%",height:"100%",objectFit:"cover",transition:"transform 0.4s"}}/>
-          <div style={{
-            position:"absolute",inset:0,
-            background:`linear-gradient(to top,${C.dark}8C,transparent 45%)`,
-            display:"flex",alignItems:"flex-end",padding:"0.9rem",
-          }}>
-            <span className="gallery-event-label" style={{fontFamily:DISPLAY,color:C.dark,background:C.cream,border:`1.5px solid ${C.dark}`,borderRadius:10,padding:"0.3rem 0.75rem",letterSpacing:"0.05em",lineHeight:1.1,textAlign:"left"}}>{p.label}</span>
-          </div>
-        </button>
+    <button ref={ref} type="button" className={`gallery-event reveal${seen ? " is-visible" : ""}`}
+      onClick={()=>setPage(`Album_${p.slug}`)}
+      aria-label={`View ${p.label} photo gallery`}
+      style={{"--reveal-delay":`${i*90}ms`,"--rot":`${POLAROID_TILT[i % POLAROID_TILT.length]}deg`}}>
+      <span className="polaroid-float" style={{"--float-dur":`${5 + (i % 3) * 1.3}s`,"--float-delay":`${-i * 1.7}s`}}>
+        <span className="polaroid">
+          <span className="polaroid-photo"><img src={p.src} alt="" loading="lazy"/></span>
+          <span className="polaroid-caption gallery-event-label">{p.label}</span>
+        </span>
+      </span>
+    </button>
   );
 }
 
@@ -765,8 +863,9 @@ function EventGalleryGrid({ setPage }) {
 function GalleryPage({ setPage }) {
   return (
     <div style={{paddingTop:68,minHeight:"100vh",background:C.peach}}>
-      <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem",borderBottom:BORDER}}>
-        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>COMMUNITY LIFE <Mark color={C.orange}>ON CAMERA</Mark></h1>
+      <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem",borderBottom:BORDER,position:"relative",isolation:"isolate"}}>
+        <Doodles items={DOODLES_RIGHT}/>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}><Words>COMMUNITY LIFE <Mark color={C.orange}>ON CAMERA</Mark></Words></h1>
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem"}}>Explore the gallery of photos for each of our events and walk.</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
@@ -777,11 +876,50 @@ function GalleryPage({ setPage }) {
 }
 
 // ── EVENT ALBUM PAGE ──
+const WALL_SHAPES = ["4 / 5", "1 / 1", "3 / 4"];
+
+// Album photos in columns that slowly scroll, alternating up and down. Hovering a column
+// (or focusing a photo) pauses it; the button pauses the whole wall.
+function PhotoWall({ photos, label, onOpen }) {
+  const isPhone = useMediaQuery("(max-width: 640px)");
+  const isTablet = useMediaQuery("(max-width: 1024px)");
+  const [paused, setPaused] = useState(false);
+  const n = isPhone ? 2 : isTablet ? 3 : 4;
+  const columns = Array.from({ length: n }, (_, c) =>
+    photos.map((src, i) => ({ src, i })).filter(p => p.i % n === c));
+
+  return (
+    <div className={`photo-wall${paused ? " is-paused" : ""}`}>
+      <button type="button" className="photo-wall-toggle lift" onClick={()=>setPaused(v=>!v)} aria-pressed={paused}>
+        {paused ? "▶ Play" : "❚❚ Pause"}
+      </button>
+      <div className="photo-wall-cols" style={{"--cols": n}}>
+        {columns.map((col, c) => (
+          <div className="photo-wall-col" key={c}>
+            <div className={`photo-wall-track${c % 2 ? " is-down" : ""}`}
+              style={{"--wall-dur":`${Math.max(col.length, 5) * 4.5}s`,"--wall-delay":`${-c * 7}s`}}>
+              {[0, 1].map(copy => col.map(({ src, i }) => (
+                <button type="button" key={`${copy}-${i}`} className="photo-wall-item"
+                  onClick={()=>onOpen(i)} style={{aspectRatio: WALL_SHAPES[i % WALL_SHAPES.length]}}
+                  aria-label={`Open photo ${i+1} of ${photos.length}`}
+                  aria-hidden={copy ? "true" : undefined} tabIndex={copy ? -1 : undefined}>
+                  <img src={src} alt={copy ? "" : `${label} — photo ${i+1}`} loading="lazy" decoding="async"/>
+                </button>
+              )))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function AlbumPage({ slug, setPage }) {
   const event = galleryEvents.find(e=>e.slug===slug);
   const photos = ALBUM_PHOTOS[slug] || [];
   const [index, setIndex] = useState(null);
   const open = index !== null;
+  const reduceMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (!open) return;
@@ -807,24 +945,29 @@ function AlbumPage({ slug, setPage }) {
 
   return (
     <div style={{paddingTop:68,minHeight:"100vh",background:C.cream}}>
-      <div className="section-padding page-banner" style={{background:C.cream,padding:"2.5rem 4rem 2.5rem",borderBottom:BORDER}}>
+      <div className="section-padding page-banner" style={{background:C.cream,padding:"2.5rem 4rem 2.5rem",borderBottom:BORDER,position:"relative",isolation:"isolate"}}>
+        <Doodles items={DOODLES_RIGHT}/>
         <button className="lift" onClick={()=>setPage("Gallery")} style={{
           background:"none",border:BORDER,color:C.dark,cursor:"pointer",
           padding:"0.5rem 1.2rem",borderRadius:99,fontSize:"0.8rem",fontWeight:800,letterSpacing:"0.06em",
           textTransform:"uppercase",fontFamily:"inherit",marginBottom:"1.5rem",
         }}>← Back to Gallery</button>
-        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}>{event.label}</h1>
+        <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}><Words>{event.label}</Words></h1>
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem"}}>Here’s all our highlights from the day</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem",background:C.peach}}>
-        <div className="album-grid">
-          {photos.map((src,i)=>(
-            <button type="button" key={src} className="album-photo" onClick={()=>setIndex(i)}
-              aria-label={`Open photo ${i+1} of ${photos.length}`}>
-              <img src={src} alt={`${event.label} — photo ${i+1}`} loading="lazy"/>
-            </button>
-          ))}
-        </div>
+        {reduceMotion ? (
+          <div className="album-grid">
+            {photos.map((src,i)=>(
+              <button type="button" key={src} className="album-photo" onClick={()=>setIndex(i)}
+                aria-label={`Open photo ${i+1} of ${photos.length}`}>
+                <img src={src} alt={`${event.label} — photo ${i+1}`} loading="lazy"/>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <PhotoWall photos={photos} label={event.label} onOpen={setIndex}/>
+        )}
         <div style={{textAlign:"center",marginTop:"3rem"}}>
           <p style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.dark,letterSpacing:"0.03em",margin:"0 0 1rem"}}>When’s our next event or walk? Join our newsletter to stay updated!</p>
           <button type="button" className="lift" onClick={goToNewsletter} style={{
@@ -896,7 +1039,7 @@ function DonatePage() {
         {/* LEFT — headline + pillars */}
         <div>
           <div style={{fontSize:"0.8rem",fontWeight:800,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"1rem"}}>Support the Community</div>
-          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"5rem",color:C.dark,letterSpacing:"0.01em",margin:"0 0 1.5rem",lineHeight:0.92}}>Grow the<br/>Movement.</h1>
+          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"5rem",color:C.dark,letterSpacing:"0.01em",margin:"0 0 1.5rem",lineHeight:0.92}}><Words>Grow the<br/>Movement.</Words></h1>
           <p style={{fontSize:"1.05rem",color:C.dark,maxWidth:440,lineHeight:1.6,margin:"0 0 2.5rem"}}>Your support helps us develop resources, expand opportunities, and grow together. Every contribution helps create welcoming spaces where women feel seen, connected, and supported.</p>
           <div style={{display:"grid",gap:"1.75rem"}}>
             {DONATE_PILLARS.map(p=>(
@@ -979,6 +1122,31 @@ export default function App() {
 
   useEffect(() => { window.scrollTo(0, 0); }, [page]);
 
+  // Cards tilt in 3D toward the cursor (mouse/trackpad only, not with reduced motion).
+  useEffect(() => {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let current = null;
+    const reset = el => { el.style.removeProperty("--rx"); el.style.removeProperty("--ry"); };
+    const onMove = e => {
+      const el = e.target.closest?.(".lift-card, .polaroid");
+      if (el !== current) { if (current) reset(current); current = el; }
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      el.style.setProperty("--rx", `${(-y * 8).toFixed(2)}deg`);
+      el.style.setProperty("--ry", `${(x * 8).toFixed(2)}deg`);
+    };
+    const onLeave = () => { if (current) reset(current); current = null; };
+    document.addEventListener("pointermove", onMove, { passive:true });
+    document.documentElement.addEventListener("pointerleave", onLeave);
+    return () => {
+      document.removeEventListener("pointermove", onMove);
+      document.documentElement.removeEventListener("pointerleave", onLeave);
+    };
+  }, []);
+
   const eventDetailMatch = page.startsWith("EventDetail_");
   const eventId = eventDetailMatch ? parseInt(page.split("_")[1]) : null;
   // Sections alternate cream/peach at every divider line, so the footer takes
@@ -1002,7 +1170,7 @@ export default function App() {
     <div style={{minHeight:"100vh",background:C.cream,color:C.dark,fontFamily:"'DM Sans','Segoe UI',sans-serif"}}>
       <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@1,800;1,900&family=DM+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet"/>
       <NavBar page={page} setPage={setPage}/>
-      {renderPage()}
+      <div key={page} className="page-enter">{renderPage()}</div>
       <Footer setPage={setPage} bg={endsOnPeach ? C.cream : C.peach}/>
     </div>
   );
