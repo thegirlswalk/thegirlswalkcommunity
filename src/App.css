@@ -308,16 +308,36 @@ a:focus-visible {
   to   { opacity: 1; transform: none; }
 }
 
+.home-hero-eyebrow {
+  display: inline-block;
+  margin: 0 0 1.1rem;
+  padding: 0.4rem 1rem;
+  border-radius: 99px;
+  background: #EB1169;
+  color: #FDF4EC;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 20px rgba(46,12,28,.3);
+}
+
 .home-hero-heading {
-  margin: 0 0 1rem;
-  font-family: 'Bebas Neue', 'Impact', sans-serif;
-  font-size: clamp(60px, 8.8vw, 140px);
-  font-weight: 400;
-  line-height: 0.86;
-  letter-spacing: 0.01em;
+  margin: 0 0 1.4rem;
+  font-family: 'Montserrat', 'Arial Black', sans-serif;
+  font-style: italic;
+  font-size: clamp(40px, 7vw, 104px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
   text-transform: uppercase;
   color: #FFFFFF;
   text-shadow: 0 2px 24px rgba(46,12,28,.35);
+}
+
+.home-hero-heading .mark-scribble {
+  bottom: -0.16em;
+  height: 0.22em;
 }
 
 .home-hero-heading-serif {

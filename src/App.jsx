@@ -242,9 +242,9 @@ const events = [
     id: 1,
     type: "Next Walk",
     title: "Our Next Walk",
-    date: "November 2026 · Stay updated",
+    date: "March 2027 · Stay updated",
     location: "Toronto & GTA",
-    desc: "Our next walk is in November 2026. It’s free and all paces are welcome — this is about connection, fresh air, and showing up for yourself and each other. Join our WhatsApp group for updates about this event.",
+    desc: "Our next walk is in March 2027. It’s free and all paces are welcome — this is about connection, fresh air, and showing up for yourself and each other. Join our WhatsApp group for updates about this event.",
     rsvp: false,
     color: C.pink,
     tag: "Free · All paces welcome",
@@ -273,12 +273,6 @@ function InfoCard({ eyebrow, title, desc, cta, onClick, href, bg }) {
     </div>
   );
 }
-
-const NextEventCard = () => (
-  <InfoCard eyebrow="Next Event" title="Something New Is Coming" bg={`linear-gradient(135deg, ${C.yellow}, ${C.orange})`}
-    desc="Our next event is in the works. Join our WhatsApp group or follow @thegirlswalk to hear first — and bring a friend!"
-    cta="Get Updates →" href={WHATSAPP_URL}/>
-);
 
 // ── NAVIGATION BAR ──
 function NavBar({ page, setPage }) {
@@ -431,7 +425,8 @@ function HomeHero({ setPage }) {
         <div className="home-hero-scrim" aria-hidden="true"/>
 
         <div className="home-hero-copy">
-          <h1 className="home-hero-heading">The Girls Walk</h1>
+          <div className="home-hero-eyebrow">TGW Community · Toronto &amp; GTA</div>
+          <h1 className="home-hero-heading">The Girls <Mark underline color={C.pink} delay={500}>Walk</Mark></h1>
           <TypedText className="home-hero-text" parts={HERO_BLURB} startDelay={700} reduceMotion={reduceMotion}/>
           <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap",justifyContent:"center"}}>
             <button onClick={()=>setPage("Events")} className="home-hero-btn" style={{
@@ -484,12 +479,11 @@ function HomePage({ setPage }) {
             textTransform:"uppercase",fontFamily:"inherit",boxShadow:HARD_SM,
           }}>View All →</button>
         </div>
-        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.25rem"}}>
+        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.25rem"}}>
           {events.map(e=>(
             <Reveal fill key={e.id}><EventCard event={e} setPage={setPage}/></Reveal>
           ))}
-          <Reveal fill delay={120}><NextEventCard/></Reveal>
-          <Reveal fill delay={240}>
+          <Reveal fill delay={120}>
             <InfoCard eyebrow="Missed One?" title="Relive Past Events" bg={C.blush}
               desc="From She’s the Room to the Pilates Picnic — see the photos from our community events and walks."
               cta="See the Photos →" onClick={()=>setPage("Gallery")}/>
@@ -554,34 +548,15 @@ function EventCard({ event, setPage }) {
   return (
     <div onClick={()=>setPage("EventDetail_"+event.id)} style={{
       background:C.cream,borderRadius:18,overflow:"hidden",cursor:"pointer",
-      border:BORDER,transition:"all 0.15s",
+      border:BORDER,transition:"all 0.15s",height:"100%",display:"flex",flexDirection:"column",
       boxShadow:HARD,
     }}
     onMouseEnter={e=>{e.currentTarget.style.transform="translate(-3px,-3px)";e.currentTarget.style.boxShadow=`9px 9px 0 ${C.yellow}`}}
     onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow=HARD}}>
-      <div style={{
-        minHeight:180,
-        position:"relative",
-        overflow:"hidden",
-        background:C.peach,
-        borderBottom:BORDER,
-        padding:"1.25rem",
-        display:"flex",
-        flexDirection:"column",
-        justifyContent:"space-between",
-      }}>
-        <span style={{
-          width:"fit-content",
-          background:C.cream,color:C.dark,
-          padding:"0.25rem 0.75rem",borderRadius:99,fontSize:"0.68rem",
-          fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase",
-        }}>{event.type}</span>
-        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:C.dark,letterSpacing:"0.03em",lineHeight:1}}>{event.location}</div>
-      </div>
-      <div style={{padding:"1.25rem"}}>
+      <div style={{padding:"1.5rem",display:"flex",flexDirection:"column",flex:1}}>
         <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:event.color,textTransform:"uppercase",marginBottom:"0.35rem"}}>{event.date}</div>
-        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.4rem",color:C.dark,letterSpacing:"0.02em",marginBottom:"0.5rem"}}>{event.title}</div>
-        <p style={{fontSize:"0.82rem",color:C.muted,lineHeight:1.6,marginBottom:"1rem"}}>{event.desc.slice(0,100)}...</p>
+        <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:C.dark,letterSpacing:"0.02em",lineHeight:1,marginBottom:"0.75rem"}}>{event.title}</div>
+        <p style={{fontSize:"0.9rem",color:C.dark,lineHeight:1.65,marginBottom:"1.25rem",flex:1}}>{event.desc}</p>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <span style={{fontSize:"0.72rem",fontWeight:700,color:event.color,background:`${event.color}15`,padding:"0.25rem 0.6rem",borderRadius:99}}>{event.tag}</span>
           <span style={{fontSize:"0.78rem",fontWeight:700,color:C.dark}}>Details →</span>
@@ -1013,7 +988,7 @@ export default function App() {
 
   return (
     <div style={{minHeight:"100vh",background:C.cream,color:C.dark,fontFamily:"'DM Sans','Segoe UI',sans-serif"}}>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet"/>
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@1,800;1,900&family=DM+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet"/>
       <NavBar page={page} setPage={setPage}/>
       {renderPage()}
       <Footer setPage={setPage} bg={endsOnPeach ? C.cream : C.peach}/>
