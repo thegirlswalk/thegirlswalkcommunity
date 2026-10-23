@@ -239,9 +239,21 @@ function PhotoStrip({ photos, label }) {
 
 const events = [
   {
+    id: 2,
+    type: "Next Event",
+    title: "November Event",
+    date: "November 2026 · Details TBA",
+    location: "Location TBA",
+    desc: "We have an event coming up in November 2026 — details are being finalised. Join our WhatsApp group to be the first to hear the date, location and how to sign up.",
+    rsvp: false,
+    color: C.pink,
+    tag: "Details coming soon",
+    joinUrl: WHATSAPP_URL,
+  },
+  {
     id: 1,
-    type: "Next Walk",
-    title: "Our Next Walk",
+    type: "Upcoming Walk",
+    title: "March Walk",
     date: "March 2027 · Stay updated",
     location: "Toronto & GTA",
     desc: "Our next walk is in March 2027. It’s free and all paces are welcome — this is about connection, fresh air, and showing up for yourself and each other. Join our WhatsApp group for updates about this event.",
@@ -252,23 +264,23 @@ const events = [
   },
 ];
 
-// Info cards shown alongside upcoming events (not clickable event detail pages)
-function InfoCard({ eyebrow, title, desc, cta, onClick, href, bg }) {
+const PILL_CTA = {
+  background:C.yellow,color:C.dark,border:`1.5px solid ${C.dark}`,borderRadius:99,
+  padding:"0.5rem 1.1rem",fontWeight:800,fontSize:"0.75rem",letterSpacing:"0.06em",textTransform:"uppercase",
+  fontFamily:"inherit",textDecoration:"none",cursor:"pointer",boxShadow:HARD_SM,whiteSpace:"nowrap",
+};
+
+// Info cards shown alongside upcoming events; laid out like EventCard so the row matches.
+function InfoCard({ eyebrow, title, desc, cta, onClick, href }) {
   const linkProps = href ? { href, target:"_blank", rel:"noopener noreferrer" } : {};
   const Tag = href ? "a" : "button";
   return (
-    <div className="lift-card" style={{background:C.cream,borderRadius:18,overflow:"hidden",border:BORDER,boxShadow:HARD,display:"flex",flexDirection:"column"}}>
-      <div style={{minHeight:180,background:bg,borderBottom:BORDER,padding:"1.25rem",display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
-        <span style={{width:"fit-content",background:C.cream,color:C.dark,padding:"0.25rem 0.75rem",borderRadius:99,fontSize:"0.68rem",fontWeight:800,letterSpacing:"0.1em",textTransform:"uppercase"}}>{eyebrow}</span>
-        <div style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.dark,letterSpacing:"0.03em",lineHeight:1}}>{title}</div>
-      </div>
-      <div style={{padding:"1.25rem",display:"flex",flexDirection:"column",flex:1}}>
-        <p style={{fontSize:"0.85rem",color:C.dark,lineHeight:1.6,margin:"0 0 1.25rem",flex:1}}>{desc}</p>
-        <Tag {...linkProps} onClick={onClick} className="lift" style={{
-          alignSelf:"flex-start",background:C.yellow,color:C.dark,border:`1.5px solid ${C.dark}`,borderRadius:99,
-          padding:"0.5rem 1.1rem",fontWeight:800,fontSize:"0.75rem",letterSpacing:"0.06em",textTransform:"uppercase",
-          fontFamily:"inherit",textDecoration:"none",cursor:"pointer",boxShadow:HARD_SM,
-        }}>{cta}</Tag>
+    <div className="lift-card" style={{background:C.cream,borderRadius:18,overflow:"hidden",border:BORDER,boxShadow:HARD,display:"flex",flexDirection:"column",height:"100%"}}>
+      <div style={{padding:"1.5rem",display:"flex",flexDirection:"column",flex:1}}>
+        <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:C.pink,textTransform:"uppercase",marginBottom:"0.35rem"}}>{eyebrow}</div>
+        <div style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.dark,letterSpacing:"0.02em",lineHeight:1,marginBottom:"0.75rem"}}>{title}</div>
+        <p style={{fontSize:"0.9rem",color:C.dark,lineHeight:1.65,margin:"0 0 1.25rem",flex:1}}>{desc}</p>
+        <Tag {...linkProps} onClick={onClick} className="lift" style={{...PILL_CTA,alignSelf:"flex-start"}}>{cta}</Tag>
       </div>
     </div>
   );
@@ -479,12 +491,12 @@ function HomePage({ setPage }) {
             textTransform:"uppercase",fontFamily:"inherit",boxShadow:HARD_SM,
           }}>View All →</button>
         </div>
-        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.25rem"}}>
+        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.25rem"}}>
           {events.map(e=>(
             <Reveal fill key={e.id}><EventCard event={e} setPage={setPage}/></Reveal>
           ))}
           <Reveal fill delay={120}>
-            <InfoCard eyebrow="Missed One?" title="Relive Past Events" bg={C.blush}
+            <InfoCard eyebrow="Missed One?" title="Relive Past Events"
               desc="From She’s the Room to the Pilates Picnic — see the photos from our community events and walks."
               cta="See the Photos →" onClick={()=>setPage("Gallery")}/>
           </Reveal>
@@ -557,9 +569,9 @@ function EventCard({ event, setPage }) {
         <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:event.color,textTransform:"uppercase",marginBottom:"0.35rem"}}>{event.date}</div>
         <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:C.dark,letterSpacing:"0.02em",lineHeight:1,marginBottom:"0.75rem"}}>{event.title}</div>
         <p style={{fontSize:"0.9rem",color:C.dark,lineHeight:1.65,marginBottom:"1.25rem",flex:1}}>{event.desc}</p>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:"0.75rem",flexWrap:"wrap"}}>
+          <span style={PILL_CTA}>Details →</span>
           <span style={{fontSize:"0.72rem",fontWeight:700,color:event.color,background:`${event.color}15`,padding:"0.25rem 0.6rem",borderRadius:99}}>{event.tag}</span>
-          <span style={{fontSize:"0.78rem",fontWeight:700,color:C.dark}}>Details →</span>
         </div>
       </div>
     </div>
@@ -632,7 +644,7 @@ function EventsPage({ setPage }) {
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem",maxWidth:640}}>We host walks, challenges, and events to engage our community throughout the year and encourage continuous development.</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
-        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"1fr",gap:"1.5rem",maxWidth:720,margin:"0 auto"}}>
+        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.5rem"}}>
           {events.map(e=><Reveal fill key={e.id}><EventCard event={e} setPage={setPage}/></Reveal>)}
         </div>
       </div>
