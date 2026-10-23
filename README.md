@@ -49,7 +49,13 @@ Scroll and hover effects are dependency-free helpers in `src/App.jsx`
 (`Reveal` fade-ups, `Mark` highlighter sweeps, `GrowBar` underline bars,
 `CountUp`, `PhotoStrip`) driven by IntersectionObserver, plus `.lift` /
 `.lift-card` hover classes in `src/App.css`. All motion is disabled under
-`prefers-reduced-motion`.
+`prefers-reduced-motion`. Page banners and the newsletter have plaid `Stripes`
+(`STRIPES` in `src/App.jsx`, colours from the community's madras nails) that
+wipe in and sway.
+
+Home has an "Our Partners" yellow section between Events and Past Events
+(`PARTNERS` in `src/App.jsx`); logos are transparent PNGs in
+`src/assets/partners/` shown on white cards.
 
 The Events page has a short intro blurb, a "Next Walk" (March 2027) card, a
 "Something New Is Coming" card, and a Past Events gallery grid. Shop is intentionally absent until merch is

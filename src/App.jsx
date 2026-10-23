@@ -17,6 +17,12 @@ import galleryMayFlower from "./assets/gallery-may-flower.jpg";
 import galleryPilates from "./assets/gallery-pilates-picnic.jpg";
 import galleryRoom from "./assets/gallery-shes-the-room.jpg";
 import galleryWalks from "./assets/gallery-2026-walk-dump.jpg"; // also used for About
+import partnerGinny from "./assets/partners/ginny.png";
+import partnerLoccitane from "./assets/partners/loccitane.png";
+import partnerChickfila from "./assets/partners/chickfila.png";
+import partnerGreenhouse from "./assets/partners/greenhouse.png";
+import partnerHeali from "./assets/partners/heali.png";
+import partnerEmmyEats from "./assets/partners/emmyeats.png";
 
 // Event album photos: Drive photos that show people (no scenery/object-only shots,
 // duplicates, or IMG_5069/5071/5042), resized. Files live in src/assets/albums/<slug>/.
@@ -54,6 +60,8 @@ const C = {
   dark:    "#46172C", // deep plum (primary text / dark sections)
   mid:     "#46172C", // secondary text uses the exact brand plum
   muted:   "#46172C",
+  green:   "#3F9B5A", // plaid accent (stripes only)
+  sky:     "#8CCBEB", // plaid accent (stripes only)
 };
 
 // ── BOLD EDITORIAL DESIGN TOKENS (ISWIS-inspired) ──────────────
@@ -131,18 +139,12 @@ function Reveal({ children, delay = 0, fill = false, className = "", style }) {
 }
 
 // Marker-style highlight that sweeps in left→right behind text.
-function Mark({ children, color = C.yellow, delay = 0, underline = false }) {
+function Mark({ children, color = C.yellow, delay = 0 }) {
   const [ref, seen] = useInView();
   return (
-    <span ref={ref} className={`mark${underline ? " mark-underline" : ""}${seen ? " is-visible" : ""}`}
+    <span ref={ref} className={`mark${seen ? " is-visible" : ""}`}
       style={{"--mark": color, transitionDelay: delay ? `${delay}ms` : undefined}}>
       {children}
-      {underline && (
-        <svg className="mark-scribble" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M3 9 C 45 4, 120 3, 197 6" pathLength="1"
-            style={{transitionDelay: delay ? `${delay}ms` : undefined}}/>
-        </svg>
-      )}
     </span>
   );
 }
@@ -175,45 +177,30 @@ function Words({ children, delay = 0 }) {
   return <span ref={ref} className={`words${seen ? " is-visible" : ""}`} style={{"--wd": `${delay}ms`}}>{pieces}</span>;
 }
 
-// Decorative brand-colour doodles that drift gently. The parent needs position:relative
-// and isolation:isolate so they sit behind its content.
-const DOODLE_SHAPES = {
-  sparkle:  <path d="M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z"/>,
-  heart:    <path d="M12 21.6l-1.4-1.3C5.4 15.6 2 12.5 2 8.6 2 5.5 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.5 22 8.6c0 3.9-3.4 7-8.6 11.7z"/>,
-  star:     <path d="M12 1l3 8 8 .5-6.2 5.1L19 22.5 12 18l-7 4.5 2.2-7.9L1 9.5 9 9z"/>,
-  ring:     <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="3"/>,
-  squiggle: <path d="M1 14Q5 4 9 12T17 12T23 10" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"/>,
-};
+// Plaid-style stripes (inspired by the community's madras nails) that wipe in from the
+// top and then sway slowly behind the content. `h` marks the crossing bands, which sway
+// vertically. The parent needs position:relative and isolation:isolate.
+const STRIPES = [
+  { color:C.dark,   w:9,  d:"M55 -10 L115 210" },
+  { color:C.green,  w:5,  d:"M100 -10 L160 210" },
+  { color:C.sky,    w:8,  d:"M150 -10 L210 210" },
+  { color:C.pink,   w:3,  d:"M196 -10 L256 210" },
+  { color:C.yellow, w:10, d:"M-10 52 L270 26",   h:true },
+  { color:C.orange, w:4,  d:"M-10 112 L270 86",  h:true },
+  { color:C.pink,   w:7,  d:"M-10 166 L270 140", h:true },
+];
 
-function Doodles({ items }) {
-  return (
-    <div className="doodles" aria-hidden="true">
-      {items.map((d, i) => (
-        <svg key={i} viewBox="0 0 24 24" fill="currentColor" className={`doodle${d.hideSm ? " doodle-hide-sm" : ""}`}
-          style={{color:d.color,width:d.size,height:d.size,top:d.top,left:d.left,right:d.right,bottom:d.bottom,
-            "--rot":`${d.rot || 0}deg`,"--dur":`${d.dur || 6}s`,"--delay":`${d.delay || 0}s`}}>
-          {DOODLE_SHAPES[d.shape]}
-        </svg>
+function Stripes({ sides = false }) {
+  const set = side => (
+    <svg key={side} className={`stripes stripes-${side}`} viewBox="0 0 260 200" preserveAspectRatio="none">
+      {STRIPES.map((st, i) => (
+        <path key={i} className={st.h ? "stripe stripe-h" : "stripe"} d={st.d} stroke={st.color} strokeWidth={st.w}
+          vectorEffect="non-scaling-stroke" style={{"--i": i}}/>
       ))}
-    </div>
+    </svg>
   );
+  return <div className="stripes-layer" aria-hidden="true">{sides ? [set("left"), set("right")] : set("right")}</div>;
 }
-
-const DOODLES_RIGHT = [
-  { shape:"sparkle",  color:C.pink,   size:44, top:"16%", right:"7%",  rot:-10, dur:5 },
-  { shape:"heart",    color:C.orange, size:30, top:"60%", right:"17%", rot:12,  dur:7,   delay:-2, hideSm:true },
-  { shape:"star",     color:C.yellow, size:38, top:"26%", right:"29%", rot:8,   dur:6,   delay:-1, hideSm:true },
-  { shape:"squiggle", color:C.blush,  size:58, bottom:"12%", right:"5%", rot:-6, dur:8, hideSm:true },
-  { shape:"ring",     color:C.pink,   size:22, top:"12%", right:"42%", dur:5.5, delay:-3, hideSm:true },
-];
-
-const DOODLES_SIDES = [
-  { shape:"sparkle",  color:C.pink,   size:40, top:"14%", left:"8%",   rot:-8, dur:5.5 },
-  { shape:"heart",    color:C.orange, size:28, bottom:"18%", left:"14%", rot:-14, dur:6.5, delay:-2, hideSm:true },
-  { shape:"star",     color:C.yellow, size:36, top:"20%", right:"10%", rot:10, dur:6,   delay:-1 },
-  { shape:"ring",     color:C.pink,   size:20, bottom:"22%", right:"16%", dur:5, delay:-3, hideSm:true },
-  { shape:"squiggle", color:C.blush,  size:54, top:"52%", right:"4%",  rot:-4, dur:8,   hideSm:true },
-];
 
 // Moves an element a little slower/faster than the page while scrolling. Uses the
 // parent's position so the element's own offset doesn't feed back. `clamp` limits
@@ -533,7 +520,7 @@ function HomeHero({ setPage }) {
         <div className="home-hero-scrim" aria-hidden="true"/>
 
         <div className="home-hero-copy">
-          <h1 className="home-hero-heading"><Words delay={250}>The Girls <Mark underline color={C.pink} delay={900}>Walk</Mark></Words></h1>
+          <h1 className="home-hero-heading"><Words delay={250}>The Girls Walk</Words> <span className="home-hero-sub">Community</span></h1>
           <TypedText className="home-hero-text" parts={HERO_BLURB} startDelay={700} reduceMotion={reduceMotion}/>
           <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap",justifyContent:"center"}}>
             <button onClick={()=>setPage("Events")} className="home-hero-btn" style={{
@@ -563,6 +550,15 @@ function HomeHero({ setPage }) {
     </section>
   );
 }
+
+const PARTNERS = [
+  { name:"GINNY",                  logo:partnerGinny },
+  { name:"L’Occitane en Provence", logo:partnerLoccitane },
+  { name:"Chick-fil-A",            logo:partnerChickfila },
+  { name:"Greenhouse Juice Co.",   logo:partnerGreenhouse },
+  { name:"heali",                  logo:partnerHeali },
+  { name:"Emmy Eats",              logo:partnerEmmyEats },
+];
 
 // ── HOME PAGE ──
 function HomePage({ setPage }) {
@@ -598,6 +594,26 @@ function HomePage({ setPage }) {
         </div>
       </div>
 
+      {/* ── PARTNERS SECTION ── */}
+      <div className="section-padding" style={{padding:"4.5rem 4rem",background:C.yellow,borderTop:BORDER,textAlign:"center"}}>
+        <div style={{marginBottom:"2.25rem"}}>
+          <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>Brands We Love</div>
+          <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}><Words>Our Partners</Words></h2>
+          <GrowBar center/>
+        </div>
+        <ul className="partners-grid" style={{listStyle:"none",padding:0}}>
+          {PARTNERS.map((p, i) => (
+            <li key={p.name}>
+              <Reveal fill delay={i * 70}>
+                <div className="partner-card lift-card">
+                  <img src={p.logo} alt={p.name} loading="lazy" decoding="async"/>
+                </div>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       {/* ── PHOTO GALLERY SECTION ── */}
       <div className="section-padding" style={{padding:"4rem",background:C.cream,borderTop:BORDER,borderBottom:BORDER}}>
         <div className="section-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"2rem"}}>
@@ -617,7 +633,7 @@ function HomePage({ setPage }) {
 
       {/* ── NEWSLETTER SIGNUP ── */}
       <div id="newsletter" className="section-padding" style={{padding:"5rem 4rem",background:C.peach,textAlign:"center",scrollMarginTop:72,position:"relative",isolation:"isolate"}}>
-        <Doodles items={DOODLES_SIDES}/>
+        <Stripes sides/>
         <Reveal style={{maxWidth:560,margin:"0 auto"}}>
           <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.75rem"}}>STAY CONNECTED</div>
           <h2 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 0.75rem"}}><Words>JOIN OUR <Mark delay={200}>NEWSLETTER</Mark></Words></h2>
@@ -734,7 +750,7 @@ function EventsPage({ setPage }) {
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem",position:"relative",isolation:"isolate"}}>
-        <Doodles items={DOODLES_RIGHT}/>
+        <Stripes/>
         <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}><Words>UPCOMING <Mark>EVENTS</Mark></Words></h1>
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem",maxWidth:640}}>We host walks, challenges, and events to engage our community throughout the year and encourage continuous development.</p>
       </div>
@@ -863,7 +879,7 @@ function GalleryPage({ setPage }) {
   return (
     <div style={{paddingTop:68,minHeight:"100vh",background:C.peach}}>
       <div className="section-padding page-banner" style={{background:C.cream,padding:"4rem 4rem 3rem",borderBottom:BORDER,position:"relative",isolation:"isolate"}}>
-        <Doodles items={DOODLES_RIGHT}/>
+        <Stripes/>
         <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}><Words>COMMUNITY LIFE <Mark color={C.orange}>ON CAMERA</Mark></Words></h1>
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem"}}>Explore the gallery of photos for each of our events and walk.</p>
       </div>
@@ -918,7 +934,7 @@ function AlbumPage({ slug, setPage }) {
   return (
     <div style={{paddingTop:68,minHeight:"100vh",background:C.cream}}>
       <div className="section-padding page-banner" style={{background:C.cream,padding:"2.5rem 4rem 2.5rem",borderBottom:BORDER,position:"relative",isolation:"isolate"}}>
-        <Doodles items={DOODLES_RIGHT}/>
+        <Stripes/>
         <button className="lift" onClick={()=>setPage("Gallery")} style={{
           background:"none",border:BORDER,color:C.dark,cursor:"pointer",
           padding:"0.5rem 1.2rem",borderRadius:99,fontSize:"0.8rem",fontWeight:800,letterSpacing:"0.06em",
