@@ -634,7 +634,7 @@ function HomePage({ setPage }) {
         </div>
         <PartnerStrip/>
         <p className="partners-cta">
-          Want to partner with us? <a href="https://instagram.com/thegirlswalkcommunity" target="_blank" rel="noopener noreferrer">Slide into our DMs →</a>
+          Want to partner with us? <a href="mailto:thegirlswalk@gmail.com?subject=Partnership%20enquiry">Send us an email! →</a>
         </p>
       </div>
 
