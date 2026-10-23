@@ -60,7 +60,7 @@ const C = {
 const DISPLAY = "'Bebas Neue','Impact',sans-serif";
 const HARD     = `6px 6px 0 ${C.dark}`;
 const HARD_SM  = `4px 4px 0 ${C.dark}`;
-const BORDER   = `3px solid ${C.dark}`;
+const BORDER   = `2px solid ${C.dark}`;
 
 // ── SCROLLING MARQUEE BAND ──
 function Marquee({ items, bg = C.yellow, color = C.dark, border }) {
@@ -242,9 +242,9 @@ const events = [
     id: 1,
     type: "Next Walk",
     title: "Our Next Walk",
-    date: "March 2027 · Stay updated",
+    date: "November 2026 · Stay updated",
     location: "Toronto & GTA",
-    desc: "Our next walk is in March 2027. All paces welcome — this is about connection, fresh air, and showing up for yourself and each other. Join our WhatsApp group to stay updated on the date and meeting spot.",
+    desc: "Our next walk is in November 2026. It’s free and all paces are welcome — this is about connection, fresh air, and showing up for yourself and each other. Join our WhatsApp group for updates about this event.",
     rsvp: false,
     color: C.pink,
     tag: "Free · All paces welcome",
@@ -265,7 +265,7 @@ function InfoCard({ eyebrow, title, desc, cta, onClick, href, bg }) {
       <div style={{padding:"1.25rem",display:"flex",flexDirection:"column",flex:1}}>
         <p style={{fontSize:"0.85rem",color:C.dark,lineHeight:1.6,margin:"0 0 1.25rem",flex:1}}>{desc}</p>
         <Tag {...linkProps} onClick={onClick} className="lift" style={{
-          alignSelf:"flex-start",background:C.yellow,color:C.dark,border:`2px solid ${C.dark}`,borderRadius:99,
+          alignSelf:"flex-start",background:C.yellow,color:C.dark,border:`1.5px solid ${C.dark}`,borderRadius:99,
           padding:"0.5rem 1.1rem",fontWeight:800,fontSize:"0.75rem",letterSpacing:"0.06em",textTransform:"uppercase",
           fontFamily:"inherit",textDecoration:"none",cursor:"pointer",boxShadow:HARD_SM,
         }}>{cta}</Tag>
@@ -316,7 +316,7 @@ function NavBar({ page, setPage }) {
         aria-label={open ? "Close navigation menu" : "Open navigation menu"}
         aria-expanded={open}
         style={{
-          display:"none", background:"transparent", border:`2px solid ${linkColor}`, cursor:"pointer",
+          display:"none", background:"transparent", border:`1.5px solid ${linkColor}`, cursor:"pointer",
           width:40, height:40, borderRadius:"50%", color:linkColor, fontSize:"1.2rem",
           alignItems:"center", justifyContent:"center", boxShadow:"0 4px 12px rgba(0,0,0,0.08)",
         }}
@@ -328,7 +328,7 @@ function NavBar({ page, setPage }) {
           <button className={`nav-link-button${l==="Donate" ? " nav-donate" : ""}`} key={l} aria-current={active===l ? "page" : undefined} onClick={()=>{setPage(l); setOpen(false);}} style={{
             background: l==="Donate" ? C.yellow : active===l ? C.dark : "transparent",
             color: l==="Donate" ? C.dark : active===l ? C.cream : linkColor,
-            border: `2px solid ${l==="Donate" || active===l ? C.dark : "transparent"}`,
+            border: `1.5px solid ${l==="Donate" || active===l ? C.dark : "transparent"}`,
             boxShadow: l==="Donate" && active===l ? `0 0 0 2px ${C.dark}` : "none",
             cursor:"pointer",
             padding:"0.4rem 0.85rem", borderRadius:99,
@@ -339,7 +339,7 @@ function NavBar({ page, setPage }) {
         ))}
         <a className="nav-cta-button" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{
           marginLeft:"0.5rem",
-          background:C.dark, color:C.cream, border:`2px solid ${C.dark}`, cursor:"pointer",
+          background:C.dark, color:C.cream, border:`1.5px solid ${C.dark}`, cursor:"pointer",
           padding:"0.5rem 1.2rem", borderRadius:99,
           fontWeight:800, fontSize:"0.8rem", letterSpacing:"0.05em",
           textTransform:"uppercase",
@@ -351,6 +351,55 @@ function NavBar({ page, setPage }) {
 }
 
 // ── HOME HERO VIDEO ── muted, looping community reel behind the headline.
+const HERO_BLURB = [
+  { text: "A space for ambitious women, by ambitious women, centred on " },
+  { text: "wellness", hl: true },
+  { text: ", " },
+  { text: "networking", hl: true },
+  { text: " and " },
+  { text: "growing together", hl: true },
+  { text: ". It’s a movement, literally." },
+];
+
+// Types the sentence out letter by letter. The full sentence is laid out from the start
+// (untyped letters are invisible) so nothing shifts, and screen readers get it all at once.
+function TypedText({ parts, className, startDelay = 0, speed = 28, reduceMotion }) {
+  const total = parts.reduce((n, p) => n + p.text.length, 0);
+  const [count, setCount] = useState(reduceMotion ? total : 0);
+  useEffect(() => {
+    if (reduceMotion) { setCount(total); return; }
+    let timer;
+    const start = setTimeout(() => {
+      timer = setInterval(() => setCount(c => {
+        if (c >= total) { clearInterval(timer); return c; }
+        return c + 1;
+      }), speed);
+    }, startDelay);
+    return () => { clearTimeout(start); clearInterval(timer); };
+  }, [reduceMotion, total, speed, startDelay]);
+
+  let left = count;
+  return (
+    <p className={className}>
+      <span className="sr-only">{parts.map(p => p.text).join("")}</span>
+      <span aria-hidden="true">
+        {parts.map((p, i) => {
+          const shown = Math.max(0, Math.min(p.text.length, left));
+          const caretHere = left >= 0 && left < p.text.length && count < total;
+          left -= p.text.length;
+          return (
+            <span key={i} className={p.hl ? "typed-hl" : undefined}>
+              {p.text.slice(0, shown)}
+              {caretHere && <span className="typed-caret"/>}
+              <span style={{visibility:"hidden"}}>{p.text.slice(shown)}</span>
+            </span>
+          );
+        })}
+      </span>
+    </p>
+  );
+}
+
 // Reduced motion shows the still poster instead; the button lets anyone pause it.
 function HomeHero({ setPage }) {
   const reduceMotion = usePrefersReducedMotion();
@@ -382,19 +431,14 @@ function HomeHero({ setPage }) {
         <div className="home-hero-scrim" aria-hidden="true"/>
 
         <div className="home-hero-copy">
-          <h1 className="home-hero-heading">
-            For Ambitious Women,
-            <span className="home-hero-heading-serif"><Mark underline color={C.pink} delay={550}>by ambitious women.</Mark></span>
-          </h1>
-          <p className="home-hero-text">
-            A space centred on wellness, networking and growing together. It’s a movement, literally.
-          </p>
-          <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap"}}>
+          <h1 className="home-hero-heading">The Girls Walk</h1>
+          <TypedText className="home-hero-text" parts={HERO_BLURB} startDelay={700} reduceMotion={reduceMotion}/>
+          <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap",justifyContent:"center"}}>
             <button onClick={()=>setPage("Events")} className="home-hero-btn" style={{
-              background:C.yellow,color:C.dark,border:`2px solid ${C.yellow}`,
+              background:C.yellow,color:C.dark,border:`1.5px solid ${C.yellow}`,
             }}>Sign up for an event →</button>
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="home-hero-btn" style={{
-              background:"transparent",color:C.cream,border:`2px solid rgba(253,244,236,0.85)`,
+              background:"transparent",color:C.cream,border:`1.5px solid rgba(253,244,236,0.85)`,
             }}>Join our WhatsApp</a>
           </div>
         </div>
@@ -613,9 +657,8 @@ function EventsPage({ setPage }) {
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem",maxWidth:640}}>We host walks, challenges, and events to engage our community throughout the year and encourage continuous development.</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem"}}>
-        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.5rem"}}>
+        <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"1fr",gap:"1.5rem",maxWidth:720,margin:"0 auto"}}>
           {events.map(e=><Reveal fill key={e.id}><EventCard event={e} setPage={setPage}/></Reveal>)}
-          <Reveal fill delay={120}><NextEventCard/></Reveal>
         </div>
       </div>
       <div className="section-padding" style={{padding:"4rem",background:C.peach,borderTop:BORDER}}>
@@ -637,7 +680,7 @@ function AboutPage() {
           <img src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 58%"}}/>
         </div>
         <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 4rem",display:"flex",flexDirection:"column",justifyContent:"center",borderLeft:BORDER}}>
-          <div style={{width:"fit-content",background:C.yellow,color:C.dark,border:`2px solid ${C.dark}`,borderRadius:99,padding:"0.3rem 0.9rem",fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1.25rem"}}>Who We Are</div>
+          <div style={{width:"fit-content",background:C.yellow,color:C.dark,border:`1.5px solid ${C.dark}`,borderRadius:99,padding:"0.3rem 0.9rem",fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1.25rem"}}>Who We Are</div>
           <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"3.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1.5rem",lineHeight:1}}>BUILT FOR WOMEN WHO MOVE WITH <Mark delay={300}>intention.</Mark></h1>
           <p style={{fontSize:"0.95rem",color:C.dark,lineHeight:1.8,marginBottom:"1.5rem"}}>
             The Girls Walk Community was founded in April 2026 with a simple belief: women are stronger when they move together. What started as walks through Toronto's neighbourhoods has grown into a thriving community of 3,000+ ambitious women — and growing.
@@ -718,7 +761,7 @@ function GalleryTile({ p, i, setPage }) {
             background:`linear-gradient(to top,${C.dark}8C,transparent 45%)`,
             display:"flex",alignItems:"flex-end",padding:"0.9rem",
           }}>
-            <span className="gallery-event-label" style={{fontFamily:DISPLAY,color:C.dark,background:C.cream,border:`2px solid ${C.dark}`,borderRadius:10,padding:"0.3rem 0.75rem",letterSpacing:"0.05em",lineHeight:1.1,textAlign:"left"}}>{p.label}</span>
+            <span className="gallery-event-label" style={{fontFamily:DISPLAY,color:C.dark,background:C.cream,border:`1.5px solid ${C.dark}`,borderRadius:10,padding:"0.3rem 0.75rem",letterSpacing:"0.05em",lineHeight:1.1,textAlign:"left"}}>{p.label}</span>
           </div>
         </button>
   );
@@ -771,7 +814,7 @@ function AlbumPage({ slug, setPage }) {
     setTimeout(() => document.getElementById("newsletter")?.scrollIntoView({ behavior:"smooth" }), 60);
   };
   const lightboxBtn = {
-    background:C.yellow,color:C.dark,border:`2px solid ${C.dark}`,borderRadius:99,cursor:"pointer",
+    background:C.yellow,color:C.dark,border:`1.5px solid ${C.dark}`,borderRadius:99,cursor:"pointer",
     fontWeight:800,fontFamily:"inherit",fontSize:"1.1rem",width:48,height:48,
   };
 
@@ -926,7 +969,7 @@ function Footer({ setPage, bg = C.cream }) {
       <div className="footer-links" style={{display:"flex",gap:"1.25rem"}}>
         {["Home","About","Events","Gallery","Donate"].map(p=>(
           <button key={p} onClick={()=>setPage(p)} style={{
-            background:p==="Donate"?C.yellow:"none",border:p==="Donate"?`2px solid ${C.dark}`:"none",
+            background:p==="Donate"?C.yellow:"none",border:p==="Donate"?`1.5px solid ${C.dark}`:"none",
             borderRadius:p==="Donate"?99:0,padding:p==="Donate"?"0.3rem 0.75rem":0,
             cursor:"pointer",fontSize:"0.75rem",fontWeight:p==="Donate"?800:600,color:C.dark,
             letterSpacing:"0.06em",textTransform:"uppercase",fontFamily:"inherit",transition:"color 0.2s",
