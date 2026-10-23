@@ -324,20 +324,6 @@ a:focus-visible {
   to   { opacity: 1; transform: none; }
 }
 
-.home-hero-eyebrow {
-  display: inline-block;
-  margin: 0 0 1.1rem;
-  padding: 0.4rem 1rem;
-  border-radius: 99px;
-  background: #EB1169;
-  color: #FDF4EC;
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  box-shadow: 0 6px 20px rgba(46,12,28,.3);
-}
-
 .home-hero-heading {
   margin: 0 0 1.4rem;
   font-family: 'Montserrat', 'Arial Black', sans-serif;

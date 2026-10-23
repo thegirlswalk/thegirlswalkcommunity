@@ -533,7 +533,6 @@ function HomeHero({ setPage }) {
         <div className="home-hero-scrim" aria-hidden="true"/>
 
         <div className="home-hero-copy">
-          <div className="home-hero-eyebrow">TGW Community · Toronto &amp; GTA</div>
           <h1 className="home-hero-heading"><Words delay={250}>The Girls <Mark underline color={C.pink} delay={900}>Walk</Mark></Words></h1>
           <TypedText className="home-hero-text" parts={HERO_BLURB} startDelay={700} reduceMotion={reduceMotion}/>
           <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap",justifyContent:"center"}}>
