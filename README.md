@@ -54,8 +54,11 @@ Scroll and hover effects are dependency-free helpers in `src/App.jsx`
 wipe in and sway.
 
 Home has an "Our Partners" yellow section between Events and Past Events
-(`PARTNERS` in `src/App.jsx`); logos are transparent PNGs in
-`src/assets/partners/` shown on white cards.
+(`PARTNERS` / `PartnerStrip` in `src/App.jsx`): transparent PNG logos from
+`src/assets/partners/` on tilted, bobbing sticker cards in an endless strip
+(auto-scrolls; drag or swipe; pauses on hover). Hover straightens the sticker
+and colours its shadow and name tag with the brand `accent`. It shares the
+`useAutoScroll` hook with the About `PhotoStrip`.
 
 The Events page has a short intro blurb, a "Next Walk" (March 2027) card, a
 "Something New Is Coming" card, and a Past Events gallery grid. Shop is intentionally absent until merch is

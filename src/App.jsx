@@ -259,8 +259,9 @@ function CountUp({ to, suffix = "" }) {
   );
 }
 
-// Auto-scrolling photo strip: drag with a mouse, swipe on touch; pauses on hover/touch/focus.
-function PhotoStrip({ photos, label }) {
+// Auto-scrolls a horizontal strip whose children are two identical halves (for a
+// seamless loop). Drag with a mouse, swipe on touch; pauses on hover/touch/focus.
+function useAutoScroll(speed = 0.045) {
   const ref = useRef(null);
   const paused = useRef(false);
   const drag = useRef(null);
@@ -279,7 +280,7 @@ function PhotoStrip({ photos, label }) {
       if (paused.current || drag.current) {
         pos = el.scrollLeft;
       } else {
-        pos += dt * 0.045;
+        pos += dt * speed;
         const half = el.scrollWidth / 2;
         if (pos >= half) pos -= half;
         el.scrollLeft = pos;
@@ -288,7 +289,7 @@ function PhotoStrip({ photos, label }) {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [reduceMotion]);
+  }, [reduceMotion, speed]);
 
   const onPointerDown = e => {
     if (e.pointerType !== "mouse") return;
@@ -301,14 +302,23 @@ function PhotoStrip({ photos, label }) {
   };
   const endDrag = () => { drag.current = null; };
   const pause = () => { clearTimeout(resumeTimer.current); paused.current = true; };
-  const resumeSoon = () => { resumeTimer.current = setTimeout(() => { paused.current = false; }, 1200); };
+  const resume = () => { paused.current = false; };
+  const resumeSoon = () => { resumeTimer.current = setTimeout(resume, 1200); };
 
+  return {
+    ref,
+    onPointerDown, onPointerMove, onPointerUp: endDrag, onPointerCancel: endDrag,
+    onMouseEnter: pause, onMouseLeave: resume,
+    onTouchStart: pause, onTouchEnd: resumeSoon,
+    onFocus: pause, onBlur: resume,
+  };
+}
+
+// Auto-scrolling photo strip (About page).
+function PhotoStrip({ photos, label }) {
+  const scroll = useAutoScroll();
   return (
-    <div ref={ref} className="photo-strip" tabIndex={0} role="region" aria-label={label}
-      onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag}
-      onMouseEnter={pause} onMouseLeave={() => { paused.current = false; }}
-      onTouchStart={pause} onTouchEnd={resumeSoon}
-      onFocus={pause} onBlur={() => { paused.current = false; }}>
+    <div {...scroll} className="photo-strip" tabIndex={0} role="region" aria-label={label}>
       {[...photos, ...photos].map((p, i) => (
         <div key={i} className="photo-strip-item" aria-hidden={i >= photos.length}>
           <img src={p.src} alt={i < photos.length ? p.alt : ""} loading="lazy" draggable={false}/>
@@ -551,14 +561,35 @@ function HomeHero({ setPage }) {
   );
 }
 
+// `accent` colours each sticker's shadow on hover; `tilt` gives the wall a hand-stuck look.
 const PARTNERS = [
-  { name:"GINNY",                  logo:partnerGinny },
-  { name:"L’Occitane en Provence", logo:partnerLoccitane },
-  { name:"Chick-fil-A",            logo:partnerChickfila },
-  { name:"Greenhouse Juice Co.",   logo:partnerGreenhouse },
-  { name:"heali",                  logo:partnerHeali },
-  { name:"Emmy Eats",              logo:partnerEmmyEats },
+  { name:"GINNY",                  logo:partnerGinny,      accent:"#F2501E", tilt:-4 },
+  { name:"L’Occitane en Provence", logo:partnerLoccitane,  accent:C.dark,    tilt:3 },
+  { name:"Chick-fil-A",            logo:partnerChickfila,  accent:"#DD0031", tilt:-2 },
+  { name:"Greenhouse Juice Co.",   logo:partnerGreenhouse, accent:C.green,   tilt:4 },
+  { name:"heali",                  logo:partnerHeali,      accent:"#3FB6A8", tilt:-3 },
+  { name:"Emmy Eats",              logo:partnerEmmyEats,   accent:C.orange,  tilt:2 },
 ];
+
+// Partner logos as tilted, bobbing stickers in an endless strip you can drag or swipe.
+function PartnerStrip() {
+  const scroll = useAutoScroll(0.06);
+  // Two sets per half so each half is wider than large screens; the strip loops on halves.
+  const half = [...PARTNERS, ...PARTNERS];
+  return (
+    <div {...scroll} className="photo-strip partner-strip" tabIndex={0} role="region" aria-label="Our partners — drag or swipe to see more">
+      {[...half, ...half].map((p, i) => (
+        <figure key={i} className="partner-sticker" aria-hidden={i >= PARTNERS.length}
+          style={{"--tilt": `${p.tilt}deg`, "--accent": p.accent, "--i": i % PARTNERS.length}}>
+          <div className="partner-card">
+            <img src={p.logo} alt={i < PARTNERS.length ? p.name : ""} loading="lazy" draggable={false}/>
+          </div>
+          <figcaption className="partner-name">{p.name}</figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
 
 // ── HOME PAGE ──
 function HomePage({ setPage }) {
@@ -595,23 +626,16 @@ function HomePage({ setPage }) {
       </div>
 
       {/* ── PARTNERS SECTION ── */}
-      <div className="section-padding" style={{padding:"4.5rem 4rem",background:C.yellow,borderTop:BORDER,textAlign:"center"}}>
-        <div style={{marginBottom:"2.25rem"}}>
+      <div style={{padding:"4.5rem 0 4rem",background:C.yellow,borderTop:BORDER,textAlign:"center",overflow:"hidden"}}>
+        <div style={{marginBottom:"1.5rem",padding:"0 1.25rem"}}>
           <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.5rem"}}>Brands We Love</div>
           <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}><Words>Our Partners</Words></h2>
           <GrowBar center/>
         </div>
-        <ul className="partners-grid" style={{listStyle:"none",padding:0}}>
-          {PARTNERS.map((p, i) => (
-            <li key={p.name}>
-              <Reveal fill delay={i * 70}>
-                <div className="partner-card lift-card">
-                  <img src={p.logo} alt={p.name} loading="lazy" decoding="async"/>
-                </div>
-              </Reveal>
-            </li>
-          ))}
-        </ul>
+        <PartnerStrip/>
+        <p className="partners-cta">
+          Want to partner with us? <a href="https://instagram.com/thegirlswalkcommunity" target="_blank" rel="noopener noreferrer">Slide into our DMs →</a>
+        </p>
       </div>
 
       {/* ── PHOTO GALLERY SECTION ── */}
