@@ -875,41 +875,15 @@ function GalleryPage({ setPage }) {
 }
 
 // ── EVENT ALBUM PAGE ──
-const WALL_SHAPES = ["4 / 5", "1 / 1", "3 / 4"];
-
-// Album photos in columns that slowly scroll, alternating up and down. Hovering a column
-// (or focusing a photo) pauses it; the button pauses the whole wall.
-function PhotoWall({ photos, label, onOpen }) {
-  const isPhone = useMediaQuery("(max-width: 640px)");
-  const isTablet = useMediaQuery("(max-width: 1024px)");
-  const [paused, setPaused] = useState(false);
-  const n = isPhone ? 2 : isTablet ? 3 : 4;
-  const columns = Array.from({ length: n }, (_, c) =>
-    photos.map((src, i) => ({ src, i })).filter(p => p.i % n === c));
-
+// Album photos sit still in a masonry grid and fade up gently as they scroll into view.
+function AlbumPhoto({ src, i, total, label, onOpen }) {
+  const [ref, seen] = useInView();
   return (
-    <div className={`photo-wall${paused ? " is-paused" : ""}`}>
-      <button type="button" className="photo-wall-toggle lift" onClick={()=>setPaused(v=>!v)} aria-pressed={paused}>
-        {paused ? "▶ Play" : "❚❚ Pause"}
-      </button>
-      <div className="photo-wall-cols" style={{"--cols": n}}>
-        {columns.map((col, c) => (
-          <div className="photo-wall-col" key={c}>
-            <div className={`photo-wall-track${c % 2 ? " is-down" : ""}`}
-              style={{"--wall-dur":`${Math.max(col.length, 5) * 4.5}s`,"--wall-delay":`${-c * 7}s`}}>
-              {[0, 1].map(copy => col.map(({ src, i }) => (
-                <button type="button" key={`${copy}-${i}`} className="photo-wall-item"
-                  onClick={()=>onOpen(i)} style={{aspectRatio: WALL_SHAPES[i % WALL_SHAPES.length]}}
-                  aria-label={`Open photo ${i+1} of ${photos.length}`}
-                  aria-hidden={copy ? "true" : undefined} tabIndex={copy ? -1 : undefined}>
-                  <img src={src} alt={copy ? "" : `${label} — photo ${i+1}`} loading="lazy" decoding="async"/>
-                </button>
-              )))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+    <button ref={ref} type="button" className={`album-photo reveal${seen ? " is-visible" : ""}`}
+      onClick={()=>onOpen(i)} aria-label={`Open photo ${i+1} of ${total}`}
+      style={{"--reveal-delay":`${(i % 3) * 80}ms`}}>
+      <img src={src} alt={`${label} — photo ${i+1}`} loading="lazy" decoding="async"/>
+    </button>
   );
 }
 
@@ -918,7 +892,6 @@ function AlbumPage({ slug, setPage }) {
   const photos = ALBUM_PHOTOS[slug] || [];
   const [index, setIndex] = useState(null);
   const open = index !== null;
-  const reduceMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (!open) return;
@@ -955,18 +928,11 @@ function AlbumPage({ slug, setPage }) {
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem"}}>Here’s all our highlights from the day</p>
       </div>
       <div className="section-padding" style={{padding:"3rem 4rem",background:C.peach}}>
-        {reduceMotion ? (
-          <div className="album-grid">
-            {photos.map((src,i)=>(
-              <button type="button" key={src} className="album-photo" onClick={()=>setIndex(i)}
-                aria-label={`Open photo ${i+1} of ${photos.length}`}>
-                <img src={src} alt={`${event.label} — photo ${i+1}`} loading="lazy"/>
-              </button>
-            ))}
-          </div>
-        ) : (
-          <PhotoWall photos={photos} label={event.label} onOpen={setIndex}/>
-        )}
+        <div className="album-grid">
+          {photos.map((src,i)=>(
+            <AlbumPhoto key={src} src={src} i={i} total={photos.length} label={event.label} onOpen={setIndex}/>
+          ))}
+        </div>
         <div style={{textAlign:"center",marginTop:"3rem"}}>
           <p style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.dark,letterSpacing:"0.03em",margin:"0 0 1rem"}}>When’s our next event or walk? Join our newsletter to stay updated!</p>
           <button type="button" className="lift" onClick={goToNewsletter} style={{
@@ -979,9 +945,9 @@ function AlbumPage({ slug, setPage }) {
 
       {open && (
         <div role="dialog" aria-modal="true" aria-label={`${event.label} — photo ${index+1} of ${photos.length}`}
-          onClick={()=>setIndex(null)}
+          className="lightbox" onClick={()=>setIndex(null)}
           style={{position:"fixed",inset:0,zIndex:300,background:`${C.dark}F2`,display:"flex",alignItems:"center",justifyContent:"center",padding:"4.5rem 1rem 1rem"}}>
-          <img src={photos[index]} alt={`${event.label} — photo ${index+1}`} onClick={e=>e.stopPropagation()}
+          <img key={index} className="lightbox-img" src={photos[index]} alt={`${event.label} — photo ${index+1}`} onClick={e=>e.stopPropagation()}
             style={{maxWidth:"100%",maxHeight:"100%",objectFit:"contain",borderRadius:12,border:`3px solid ${C.cream}`}}/>
           <button type="button" aria-label="Close" autoFocus onClick={()=>setIndex(null)} style={{...lightboxBtn,position:"absolute",top:"1rem",right:"1rem"}}>✕</button>
           <button type="button" aria-label="Previous photo" onClick={e=>{e.stopPropagation();setIndex((index-1+photos.length)%photos.length);}} style={{...lightboxBtn,position:"absolute",left:"1rem",top:"50%",transform:"translateY(-50%)"}}>←</button>
