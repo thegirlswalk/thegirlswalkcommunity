@@ -4,11 +4,12 @@
 // talks to your Shopify admin — it only uses the PUBLIC Storefront token.
 //
 // ── HOW TO GO LIVE (fill in the 3 blanks below) ─────────────────────
-// 1. Create your Shopify store, then in Admin:
-//    Settings → Apps and sales channels → Develop apps → Create an app
-//    → Configure Storefront API scopes (check: unauthenticated_read_product_listings,
-//      unauthenticated_write_checkouts, unauthenticated_read_checkouts)
-//    → Install app → copy the "Storefront API access token".
+// 1. Create your Shopify store, then in Admin install the free "Headless"
+//    sales channel (Shopify App Store) → Create storefront → copy the PUBLIC
+//    Storefront API access token. (The old Settings → Develop apps flow was
+//    retired in Jan 2026.) This site runs in the browser, so never use the
+//    private token here. Check the storefront's permissions include product
+//    listings and checkouts/carts.
 // 2. Paste your store domain + that token below.
 // 3. For donations: create a product named "Donation" with a variant for
 //    each amount ($10/$25/$50/$100). Open each variant and copy its ID from
