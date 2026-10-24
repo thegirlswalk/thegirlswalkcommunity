@@ -11,10 +11,10 @@ under the nav: on Home the nav is see-through (same logo with a soft cream glow,
 cream links, soft dark fade) until the visitor scrolls or opens the phone menu, then it turns
 cream again (min 560px, 520px on phones). The hero heading is solid white, with
 "by ambitious women." given a hand-drawn curved pink underline (`Mark underline`).
-The video is TGW's events recap edit (soft blur is intentional), trimmed to its
-first 58.6s to drop the CapCut ending (`src/assets/hero-reel-wide.mp4` 720×406
+The video is TGW's walks & events recap (portrait source), trimmed to 99.5s to drop
+its black ending, muted, 24fps (`src/assets/hero-reel-wide.mp4` 720×405
 crop for desktop, `hero-reel-tall.mp4` 540×960 for phones ≤768px, plus
-`hero-reel-poster-*.jpg` stills of the group shot at 0:01.8). It has a pause/play button, and visitors with
+`hero-reel-poster-*.jpg` stills of the opening group shot). It has a pause/play button, and visitors with
 reduced motion see the still only. Burgundy is used as an
 accent: the marquee is yellow with burgundy text and white dot separators, and the footer is cream. Burgundy `#46172C`
 and butter yellow `#FFE99B` lead (buttons and accents). Page sections alternate
