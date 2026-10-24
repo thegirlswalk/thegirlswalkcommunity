@@ -259,6 +259,46 @@ function CountUp({ to, suffix = "" }) {
   );
 }
 
+// Thin line-art icons (single burgundy stroke) used instead of emoji.
+const ICON_PATHS = {
+  community: <>
+    <circle cx="23" cy="22" r="7"/><path d="M9 50c0-8.5 6.3-15 14-15s14 6.5 14 15"/>
+    <circle cx="43" cy="20" r="6"/><path d="M35 33.5c2.3-1.6 5-2.5 8-2.5 7.2 0 13 6 13 14.5"/>
+  </>,
+  wellness: <>
+    <path d="M32 13c6.5 7 8.5 16 0 27-8.5-11-6.5-20 0-27z"/>
+    <path d="M29.5 40C21 39 14 33 12 23c8 .3 14.5 4.3 17.5 11"/>
+    <path d="M34.5 40C43 39 50 33 52 23c-8 .3-14.5 4.3-17.5 11"/>
+    <path d="M28 41.5c-9 2.2-17 .3-22-5.5 5.5-3 12-3.4 18-.8"/>
+    <path d="M36 41.5c9 2.2 17 .3 22-5.5-5.5-3-12-3.4-18-.8"/>
+    <path d="M20 50h24"/>
+  </>,
+  growth: <>
+    <path d="M32 54V29"/>
+    <path d="M32 37c-1.5-9-8.5-14.5-20-14.5 1 10.5 8 15.5 20 14.5z"/>
+    <path d="M32 31c.5-10.5 8-16.5 20-16.5-.8 11.5-8 17-20 16.5z"/>
+    <path d="M20 54h24"/>
+  </>,
+  cheers: <>
+    <g transform="rotate(10 18 48)"><path d="M12 10h12l-1.6 17a4.4 4.4 0 0 1-8.8 0z"/><path d="M13 19h10.2M18 31.5V48M12.5 48h11"/></g>
+    <g transform="rotate(-10 46 48)"><path d="M40 10h12l-1.6 17a4.4 4.4 0 0 1-8.8 0z"/><path d="M40.8 19H51M46 31.5V48M40.5 48h11"/></g>
+    <path d="M32 7V2M27 8l-2.5-2.5M37 8l2.5-2.5"/>
+  </>,
+  calendar: <><rect x="10" y="14" width="44" height="40" rx="5"/><path d="M10 26h44M22 8v10M42 8v10"/></>,
+  pin: <><path d="M32 56S15 40.5 15 27a17 17 0 0 1 34 0c0 13.5-17 29-17 29z"/><circle cx="32" cy="27" r="6"/></>,
+  ticket: <><path d="M8 18h48v8a6 6 0 0 0 0 12v8H8v-8a6 6 0 0 0 0-12z"/><path d="M38 18v28" strokeDasharray="3 4"/></>,
+  chat: <path d="M10 14h44v28H26l-12 10V42h-4z"/>,
+};
+
+function LineIcon({ name, size = 56, className, style }) {
+  return (
+    <svg className={className} style={style} width={size} height={size} viewBox="0 0 64 64" fill="none"
+      stroke="currentColor" strokeWidth={size < 32 ? 3.5 : 1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {ICON_PATHS[name]}
+    </svg>
+  );
+}
+
 // Auto-scrolls a horizontal strip whose children are two identical halves (for a
 // seamless loop). Drag with a mouse, swipe on touch; pauses on hover/touch/focus.
 function useAutoScroll(speed = 0.045) {
@@ -573,7 +613,7 @@ const PARTNERS = [
 
 // Partner logos as tilted, bobbing stickers in an endless strip you can drag or swipe.
 function PartnerStrip() {
-  const scroll = useAutoScroll(0.06);
+  const scroll = useAutoScroll(0.03);
   // Two sets per half so each half is wider than large screens; the strip loops on halves.
   const half = [...PARTNERS, ...PARTNERS];
   return (
@@ -737,9 +777,9 @@ function EventDetailPage({ eventId, setPage }) {
       </div>
       <div style={{maxWidth:800,margin:"0 auto",padding:"3rem 2rem"}}>
         <div className="detail-info-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginBottom:"2rem"}}>
-          {[["📅",event.date],["📍",event.location],["🎟",event.tag],["💬","Join our WhatsApp for updates"]].map(([icon,text])=>(
+          {[["calendar",event.date],["pin",event.location],["ticket",event.tag],["chat","Join our WhatsApp for updates"]].map(([icon,text])=>(
             <div key={text} style={{background:C.cream,borderRadius:12,padding:"1rem 1.25rem",display:"flex",alignItems:"flex-start",gap:"0.75rem",border:BORDER,boxShadow:HARD_SM}}>
-              <span style={{fontSize:"1.2rem"}}>{icon}</span>
+              <LineIcon name={icon} size={22} style={{color:C.dark,flexShrink:0,marginTop:1}}/>
               <span style={{fontSize:"0.88rem",color:C.dark,lineHeight:1.5,fontWeight:500}}>{text}</span>
             </div>
           ))}
@@ -833,14 +873,14 @@ function AboutPage() {
         </div>
         <div className="cards-grid-4" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"1.5rem"}}>
           {[
-            {emoji:"🤝🏾",title:"Community & Connection",desc:"Building genuine friendships and meaningful relationships with women navigating similar seasons of life."},
-            {emoji:"🧘🏾‍♀️",title:"Wellness & Movement",desc:"Creating opportunities to move our bodies, care for our minds, and make wellness part of everyday life."},
-            {emoji:"🌱",title:"Personal & Professional Growth",desc:"Making room for networking, learning, accountability, and conversations that inspire women to grow."},
-            {emoji:"🥂",title:"Experiences & Shared Moments",desc:"Bringing women together through thoughtfully curated events, workshops, social gatherings, and seasonal experiences."},
-          ].map(({emoji,title,desc},i)=>(
+            {icon:"community",title:"Community & Connection",desc:"Building genuine friendships and meaningful relationships with women navigating similar seasons of life."},
+            {icon:"wellness",title:"Wellness & Movement",desc:"Creating opportunities to move our bodies, care for our minds, and make wellness part of everyday life."},
+            {icon:"growth",title:"Personal & Professional Growth",desc:"Making room for networking, learning, accountability, and conversations that inspire women to grow."},
+            {icon:"cheers",title:"Experiences & Shared Moments",desc:"Bringing women together through thoughtfully curated events, workshops, social gatherings, and seasonal experiences."},
+          ].map(({icon,title,desc},i)=>(
             <Reveal fill key={title} delay={i*110}>
               <div className="lift-card" style={{background:C.cream,borderRadius:18,padding:"2rem 1.5rem",textAlign:"center",border:BORDER,boxShadow:`4px 4px 0 ${C.yellow}`}}>
-                <div className="emoji-pop" style={{fontSize:"2.5rem",marginBottom:"1rem"}}>{emoji}</div>
+                <LineIcon name={icon} size={60} className="icon-pop" style={{color:C.dark,marginBottom:"0.9rem"}}/>
                 <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.3rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"0.5rem"}}>{title}</div>
                 <p style={{fontSize:"0.85rem",color:C.muted,lineHeight:1.6}}>{desc}</p>
               </div>

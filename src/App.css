@@ -113,7 +113,7 @@ img {
     box-shadow: 9px 9px 0 #FFE99B !important;
   }
 
-  .lift-card:hover .emoji-pop {
+  .lift-card:hover .icon-pop {
     transform: scale(1.18) rotate(-6deg);
   }
 
@@ -142,8 +142,9 @@ img {
   box-shadow: none !important;
 }
 
-.emoji-pop {
+.icon-pop {
   display: inline-block;
+  vertical-align: top;
   transition: transform 0.3s cubic-bezier(.3,1.6,.5,1);
 }
 
@@ -305,16 +306,20 @@ a:focus-visible {
 }
 
 .home-hero-sub {
-  display: block;
-  margin-top: 0.35em;
-  font-size: 0.34em;
+  display: table;
+  margin: 0.55em auto 0;
+  padding: 0.5em 0.9em 0.5em calc(0.9em + 0.38em);
+  font-size: 0.26em;
   font-style: normal;
   font-weight: 800;
-  letter-spacing: 0.42em;
-  /* balances the trailing letter-spacing so the word stays centred */
-  text-indent: 0.42em;
+  line-height: 1;
+  letter-spacing: 0.38em;
   color: #46172C;
-  text-shadow: 0 0 22px rgba(253,244,236,.75), 0 0 6px rgba(253,244,236,.5);
+  text-shadow: none;
+  background: #FFE1CF;
+  border: 1.5px solid #46172C;
+  border-radius: 99px;
+  box-shadow: 0 6px 20px rgba(46,12,28,.25);
   animation: hero-sub-in 0.9s cubic-bezier(.2,.7,.2,1) 0.9s both;
 }
 
@@ -640,7 +645,7 @@ a:focus-visible {
   flex-direction: column;
   align-items: center;
   gap: 0.85rem;
-  animation: sticker-bob 3.6s ease-in-out calc(var(--i) * -0.6s) infinite alternate;
+  animation: sticker-bob 5s ease-in-out calc(var(--i) * -0.6s) infinite alternate;
 }
 
 .partner-card {
@@ -653,9 +658,9 @@ a:focus-visible {
   overflow: hidden;
   padding: 1.1rem 1.3rem;
   background: #fff;
-  border: 2px solid #46172C;
+  border: 1px solid rgba(70,23,44,.35);
   border-radius: 18px;
-  box-shadow: 5px 5px 0 #46172C;
+  box-shadow: 0 8px 22px rgba(70,23,44,.12);
   transform: rotate(var(--tilt));
   transition: transform 0.35s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s ease;
 }
@@ -676,7 +681,7 @@ a:focus-visible {
   text-transform: uppercase;
   color: #46172C;
   background: #FDF4EC;
-  border: 1.5px solid #46172C;
+  border: 1px solid rgba(70,23,44,.3);
   border-radius: 99px;
   padding: 0.3rem 0.75rem;
   white-space: nowrap;
@@ -687,7 +692,7 @@ a:focus-visible {
 @media (hover: hover) {
   .partner-sticker:hover .partner-card {
     transform: rotate(0deg) scale(1.1) translateY(-6px);
-    box-shadow: 8px 10px 0 var(--accent);
+    box-shadow: 0 14px 30px rgba(70,23,44,.16), 0 0 0 2px var(--accent);
   }
 
   .partner-sticker:hover .partner-card img {
@@ -786,14 +791,14 @@ a:focus-visible {
   .grow-bar { transform: none; transition: none; }
   .lift,
   .lift-card,
-  .emoji-pop,
+  .icon-pop,
   .nav-cta-button,
   .photo-strip-item img { transition: none; }
   .lift:hover,
   .lift:active,
   .lift-card:hover,
   .nav-cta-button:hover,
-  .lift-card:hover .emoji-pop,
+  .lift-card:hover .icon-pop,
   .photo-strip-item:hover img { transform: none; }
   .gallery-event img,
   .album-photo img { transition: none !important; }

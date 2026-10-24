@@ -49,7 +49,8 @@ Scroll and hover effects are dependency-free helpers in `src/App.jsx`
 (`Reveal` fade-ups, `Mark` highlighter sweeps, `GrowBar` underline bars,
 `CountUp`, `PhotoStrip`) driven by IntersectionObserver, plus `.lift` /
 `.lift-card` hover classes in `src/App.css`. All motion is disabled under
-`prefers-reduced-motion`. Page banners and the newsletter have plaid `Stripes`
+`prefers-reduced-motion`. Icons are thin burgundy line-art SVGs (`LineIcon` /
+`ICON_PATHS` in `src/App.jsx`), not emoji. Page banners and the newsletter have plaid `Stripes`
 (`STRIPES` in `src/App.jsx`, colours from the community's madras nails) that
 wipe in and sway.
 
