@@ -183,29 +183,35 @@ function Words({ children, delay = 0 }) {
 // isolation:isolate. `left`/`corner` pick which pieces to show.
 const WAVE_COLORS = ["#EBC3B0", "#C97D93", "#A9A23A", "#D9B45E", "#A04C6E", "#5B1730"];
 
-const LEFT_BAND = (() => {
-  const shapes = WAVE_COLORS.map((_, i) => {
-    const base = 130 - i * 20;
-    const pts = [];
-    for (let y = 0; y <= 1000; y += 20) {
-      const x = base + 26 * Math.sin(y / 120 + 0.6) + 12 * Math.sin(y / 47 + i * 0.4);
-      pts.push(`${x.toFixed(1)} ${y}`);
-    }
-    return `M0 -1 L${pts.join(" L")} L0 1001Z`;
-  });
-  return shapes;
-})();
+// Each left band repeats every WAVE_PERIOD units and is drawn 1.5 periods past both ends,
+// so sliding it up by one period (CSS `waves-flow`) loops seamlessly.
+const WAVE_PERIOD = 500;
+const LEFT_BAND = WAVE_COLORS.map((_, i) => {
+  const base = 130 - i * 20;
+  const pts = [];
+  for (let y = -WAVE_PERIOD; y <= 1000 + WAVE_PERIOD; y += 10) {
+    const t = (2 * Math.PI * y) / WAVE_PERIOD;
+    const x = base + 22 * Math.sin(t + 0.6) + 9 * Math.sin(2 * t + i * 0.5);
+    pts.push(`${x.toFixed(1)} ${y}`);
+  }
+  return `M0 ${-WAVE_PERIOD} L${pts.join(" L")} L0 ${1000 + WAVE_PERIOD}Z`;
+});
 
+// Arcs run a little past 0–90° so the gentle sway never uncovers the corner.
 const CORNER_BAND = WAVE_COLORS.map((_, i) => {
   const r = 280 - i * 38;
   const pts = [];
-  for (let t = 0; t <= 90; t += 3) {
+  for (let t = -12; t <= 102; t += 3) {
     const a = (t * Math.PI) / 180;
     const rr = r + 16 * Math.sin(a * 5 + i * 0.5);
     pts.push(`${(300 - rr * Math.cos(a)).toFixed(1)} ${(rr * Math.sin(a)).toFixed(1)}`);
   }
-  return `M301 -1 L${pts.join(" L")} L301 ${(r + 20).toFixed(0)}Z`;
+  return `M340 -40 L${pts.join(" L")} L340 ${(r + 40).toFixed(0)}Z`;
 });
+
+const bandPaths = (shapes) => shapes.map((d, i) => (
+  <path key={i} className="wave-band" d={d} fill={WAVE_COLORS[i]} style={{"--i": i}}/>
+));
 
 function WaveBands({ left = true, right = false, corner = true, onScroll = false }) {
   const [ref, seen] = useInView();
@@ -214,19 +220,19 @@ function WaveBands({ left = true, right = false, corner = true, onScroll = false
     <div ref={ref} className={cls} aria-hidden="true">
       {left && (
         <svg className="waves waves-left" viewBox="0 0 170 1000" preserveAspectRatio="none">
-          {LEFT_BAND.map((d, i) => <path key={i} d={d} fill={WAVE_COLORS[i]}/>)}
+          <g className="waves-flow">{bandPaths(LEFT_BAND)}</g>
         </svg>
       )}
       {right && (
         <svg className="waves waves-right" viewBox="0 0 170 1000" preserveAspectRatio="none">
           <g transform="translate(170 0) scale(-1 1)">
-            {LEFT_BAND.map((d, i) => <path key={i} d={d} fill={WAVE_COLORS[i]}/>)}
+            <g className="waves-flow waves-flow-alt">{bandPaths(LEFT_BAND)}</g>
           </g>
         </svg>
       )}
       {corner && (
         <svg className="waves waves-corner" viewBox="0 0 300 300" preserveAspectRatio="xMaxYMin meet">
-          {CORNER_BAND.map((d, i) => <path key={i} d={d} fill={WAVE_COLORS[i]}/>)}
+          <g className="waves-sway">{bandPaths(CORNER_BAND)}</g>
         </svg>
       )}
     </div>

@@ -63,7 +63,9 @@ Scroll and hover effects are dependency-free helpers in `src/App.jsx`
 `prefers-reduced-motion`. Icons are thin burgundy line-art SVGs (`LineIcon` /
 `ICON_PATHS` in `src/App.jsx`), not emoji. The Events, Gallery and album pages
 have retro concentric `WaveBands` (left edge + top-right corner; `WAVE_COLORS`
-in `src/App.jsx`), and the newsletter has wave bands on both sides
+in `src/App.jsx`) that keep moving: the side bands drift in a seamless loop
+(`waves-flow`), each band pulses in turn (`wave-breathe`), and the corner sways
+and ripples (`waves-sway`); all paused under reduced motion, and the newsletter has wave bands on both sides
 (`<WaveBands right corner={false} onScroll/>`) that sweep in when it scrolls into
 view, behind a stacked email field + Subscribe button.
 

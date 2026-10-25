@@ -614,6 +614,52 @@ a:focus-visible {
   from { transform: var(--from); opacity: 0; }
 }
 
+/* Continuous motion: bands drift like liquid and pulse one after another */
+.waves-flow {
+  animation: waves-flow 22s linear infinite;
+}
+
+.waves-flow-alt {
+  animation-duration: 26s;
+  animation-direction: reverse;
+}
+
+@keyframes waves-flow {
+  to { transform: translateY(-500px); }
+}
+
+.wave-band {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation: wave-breathe 5s ease-in-out calc(var(--i) * -0.45s) infinite alternate;
+}
+
+@keyframes wave-breathe {
+  from { transform: scaleX(0.95); }
+  to   { transform: scaleX(1.05); }
+}
+
+.waves-sway {
+  transform-box: view-box;
+  transform-origin: 300px 0;
+  animation: waves-sway 12s ease-in-out infinite alternate;
+}
+
+.waves-sway .wave-band {
+  transform-origin: 300px 0;
+  animation-name: wave-ripple;
+}
+
+@keyframes waves-sway {
+  from { transform: rotate(-5deg); }
+  to   { transform: rotate(5deg); }
+}
+
+@keyframes wave-ripple {
+  from { transform: scale(0.95); }
+  to   { transform: scale(1.05); }
+}
+
 .waves-right {
   top: 0;
   right: 0;
@@ -985,6 +1031,9 @@ a:focus-visible {
   .typed-caret { animation: none; }
   .words .word { opacity: 1; transform: none; transition: none; }
   .waves,
+  .waves-flow,
+  .waves-sway,
+  .wave-band,
   .home-hero-sub,
   .page-enter,
   .polaroid-float,
