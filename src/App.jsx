@@ -23,7 +23,7 @@ import partnerLoccitane from "./assets/partners/loccitane.png";
 import partnerChickfila from "./assets/partners/chickfila.png";
 import partnerGreenhouse from "./assets/partners/greenhouse.png";
 import partnerHeali from "./assets/partners/heali.png";
-import partnerEmmyEats from "./assets/partners/emmyeats.png";
+import partnerEatsByEmee from "./assets/partners/eatsbyemee.png";
 import partnerZakilo from "./assets/partners/zakilobakes.png";
 import partnerScnt from "./assets/partners/scnt.png";
 import partnerGoodForm from "./assets/partners/goodform.png";
@@ -659,7 +659,7 @@ const PARTNERS = [
   { name:"Chick-fil-A",            logo:partnerChickfila,  accent:"#DD0031", tilt:-2 },
   { name:"Greenhouse Juice Co.",   logo:partnerGreenhouse, accent:C.green,   tilt:4 },
   { name:"heali",                  logo:partnerHeali,      accent:"#3FB6A8", tilt:-3 },
-  { name:"Emmy Eats",              logo:partnerEmmyEats,   accent:C.orange,  tilt:2 },
+  { name:"Eats by Emee",           logo:partnerEatsByEmee, accent:C.orange,  tilt:2 },
   { name:"Zakilo Bakes",           logo:partnerZakilo,     accent:"#C77DA0", tilt:-3 },
   { name:"scnt",                   logo:partnerScnt,       accent:"#5A3317", tilt:3 },
   { name:"The Good Form",          logo:partnerGoodForm,   accent:C.blush,   tilt:-2 },
