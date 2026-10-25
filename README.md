@@ -23,10 +23,9 @@ accent: the Home marquee is burgundy with yellow text and peach dot separators, 
 The WhatsApp invite link is `WHATSAPP_URL` in `src/App.jsx`. Burgundy `#46172C`
 and butter yellow `#FFE99B` lead (buttons and accents). Page sections alternate
 between cream `#FDF4EC` (main background) and peach `#FFE1CF` at every divider
-line (Home Events and Newsletter, Events-page Past Events, About stats and Our
-Community, Gallery grid, album photo grids are peach); the footer takes the opposite colour of each page's last
+line (Home Events and Newsletter, Events-page Past Events, Gallery grid, album photo grids are peach); the footer takes the opposite colour of each page's last
 section (`endsOnPeach` in `App`), and hot pink `#EB1169` is used only as a small
-accent.
+accent (the About page is the exception, with colour-blocked sections).
 
 The Gallery page's five event covers are configured in `galleryEvents` in
 `src/App.jsx` (`src/assets/gallery-*.jpg`). Each card opens an on-site album
@@ -45,16 +44,23 @@ with 2+ people; no solo, founder/exec, scenery, object, or near-duplicate shots.
 Albums include all Drive photos that show people, excluding scenery/object-only
 shots (food, products, signs, empty rooms, landscapes), exact duplicates, and
 `IMG_5069` (swan), `IMG_5071` (founder), and `IMG_5042` (exec), which are never
-used anywhere. The
-About photo is the large 2026 Walk Dump group shot from the
-website reference doc (`src/assets/gallery-2026-walk-dump.jpg`, also the Walk
-Dump cover), next to the "Built for women who move with intention" copy. Below it, the About page has count-up stats (3,000+ women in our
-community, 20+ events & walks so far) and an "Our Community" auto-scrolling, draggable
-photo strip of 11 hand-picked group shots with no near-duplicates, interleaved
-so neighbouring photos come from different events (`STRIP_PICKS` in `src/App.jsx`),
-shown borderless and flush. The About page also has an "Our Events" section
-(`EventStory`: photo, short story, "Read the full story" toggle and "See all
-photos" album link per event) and ends with the Our Partners strip.
+used anywhere.
+
+The About page layout is inspired by leadingvibe.org/about (`AboutPage` in
+`src/App.jsx`, `.about-*` styles at the end of `src/App.css`): a cream hero with
+three tilted group photos (brunch 085, the 2026 Walk Dump shot
+`src/assets/gallery-2026-walk-dump.jpg`, May Flowers 016) that drop in and
+parallax, a spinning pink blob, and a looping italic Instrument Serif "About Us"
+marquee; an orange "Who We Are" statement with a curved top, highlighted belief
+line and count-up stats (3,000+ women in our community, 20+ events & walks so
+far); a plum panel of overlapping photo + colour-card blocks for Our Mission,
+Approach, Vision and What We Do (`ABOUT_STORIES`, `ABOUT_PILLARS`; photos
+unclip/zoom and cards slide in on scroll, stacking on phones); a peach "Our
+Events" section (`EventStory`: photo, short story, "Read the full story" toggle
+and "See all photos" album link per event); a hot-pink "Our Community"
+auto-scrolling, draggable photo strip of 11 hand-picked group shots with no
+near-duplicates, interleaved so neighbouring photos come from different events
+(`STRIP_PICKS` in `src/App.jsx`); and the Our Partners strip.
 
 Scroll and hover effects are dependency-free helpers in `src/App.jsx`
 (`Reveal` fade-ups, `Mark` highlighter sweeps, `GrowBar` underline bars,
