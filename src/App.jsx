@@ -945,25 +945,29 @@ const ABOUT_PILLARS = [
   {icon:"cheers",title:"Experiences & Shared Moments",desc:"Bringing women together through thoughtfully curated events, workshops, social gatherings, and seasonal experiences."},
 ];
 
-// Concentric wavy rings in the wave-band colours; each ring turns slowly (alternating
-// directions), so the wavy edges ripple like the Home waves, but in a circle.
-const RIPPLE_RINGS = WAVE_COLORS.map((_, i) => {
-  const r = 140 - i * 22;
+// Retro striped coil: six parallel stripes in the wave-band colours winding out from the
+// centre (an Archimedean spiral whose turns nest exactly), so it reads like the WaveBands
+// stripes rolled up. It draws in once, then turns slowly so the stripes seem to flow.
+const COIL_STRIPE = 8;
+const COIL_STRIPES = WAVE_COLORS.map((_, i) => {
+  const step = (WAVE_COLORS.length * COIL_STRIPE) / (2 * Math.PI);
   const pts = [];
-  for (let t = 0; t < 360; t += 3) {
-    const a = (t * Math.PI) / 180;
-    const rr = r + 6 * Math.sin(a * (7 - i % 3) + i);
-    pts.push(`${(150 + rr * Math.cos(a)).toFixed(1)} ${(150 + rr * Math.sin(a)).toFixed(1)}`);
+  for (let t = 0; t <= 4 * Math.PI + 0.001; t += 0.05) {
+    const r = 6 + i * COIL_STRIPE + step * t;
+    pts.push(`${(150 + r * Math.cos(t)).toFixed(1)} ${(150 + r * Math.sin(t)).toFixed(1)}`);
   }
-  return `M${pts.join(" L")}Z`;
+  return `M${pts.join(" L")}`;
 });
 
-function RippleRings({ className }) {
+function SpiralCoil({ className }) {
   return (
-    <svg className={`about-ripple ${className}`} viewBox="0 0 300 300" aria-hidden="true">
-      {RIPPLE_RINGS.map((d, i) => (
-        <path key={i} className="about-ripple-ring" d={d} fill={WAVE_COLORS[i]} style={{"--i": i}}/>
-      ))}
+    <svg className={`about-coil ${className}`} viewBox="0 0 300 300" aria-hidden="true">
+      <g className="about-coil-spin">
+        {COIL_STRIPES.map((d, i) => (
+          <path key={i} className="about-coil-stripe" d={d} pathLength="1" fill="none"
+            stroke={WAVE_COLORS[i]} strokeWidth={COIL_STRIPE + 0.6} strokeLinecap="round" style={{"--i": i}}/>
+        ))}
+      </g>
     </svg>
   );
 }
@@ -974,7 +978,7 @@ function AboutPage({ setPage }) {
   return (
     <div style={{minHeight:"100vh",background:C.cream}}>
       <section className="about-hero">
-        <RippleRings className="about-ripple-hero"/>
+        <SpiralCoil className="about-coil-hero"/>
         <h1 className="sr-only">About Us</h1>
         <div className="about-hero-photo">
           <div ref={photoRef} className="about-hero-photo-inner">
@@ -1010,7 +1014,7 @@ function AboutPage({ setPage }) {
       </section>
 
       <section className="about-intent">
-        <RippleRings className="about-ripple-intent"/>
+        <SpiralCoil className="about-coil-intent"/>
         <div className="about-intent-grid">
           <div className="about-intent-head">
             <h2 className="about-intent-title about-serif"><Words>Built for women who move with <em>intention.</em></Words></h2>
@@ -1372,7 +1376,7 @@ export default function App() {
 
   return (
     <div style={{minHeight:"100vh",background:C.cream,color:C.dark,fontFamily:"'DM Sans','Segoe UI',sans-serif"}}>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@1,800;1,900&family=DM+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@1,800;1,900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
       <NavBar page={page} setPage={setPage}/>
       <div key={page} className="page-enter">{renderPage()}</div>
       <Footer setPage={setPage} bg={endsOnPeach ? C.cream : C.peach}/>
