@@ -680,7 +680,7 @@ function PartnerStrip() {
 
 function PartnersSection() {
   return (
-    <div style={{padding:"4.5rem 0 4rem",background:C.yellow,borderTop:BORDER,textAlign:"center",overflow:"hidden"}}>
+    <div style={{padding:"4.5rem 0 4rem",background:"#FFFFFF",borderTop:BORDER,textAlign:"center",overflow:"hidden"}}>
       <div style={{marginBottom:"1.5rem",padding:"0 1.25rem"}}>
         <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}><Words>Our Partners</Words></h2>
         <GrowBar center/>
@@ -1134,13 +1134,13 @@ function AlbumPage({ slug, setPage }) {
       {open && (
         <div role="dialog" aria-modal="true" aria-label={`${event.label} — photo ${index+1} of ${photos.length}`}
           className="lightbox" onClick={()=>setIndex(null)}
-          style={{position:"fixed",inset:0,zIndex:300,background:`${C.dark}F2`,display:"flex",alignItems:"center",justifyContent:"center",padding:"4.5rem 1rem 1rem"}}>
+          style={{position:"fixed",inset:0,zIndex:300,background:`${C.peach}F2`,display:"flex",alignItems:"center",justifyContent:"center",padding:"4.5rem 1rem 1rem"}}>
           <img key={index} className="lightbox-img" src={photos[index]} alt={`${event.label} — photo ${index+1}`} onClick={e=>e.stopPropagation()}
             style={{maxWidth:"100%",maxHeight:"100%",objectFit:"contain",borderRadius:12,border:`3px solid ${C.cream}`}}/>
           <button type="button" aria-label="Close" autoFocus onClick={()=>setIndex(null)} style={{...lightboxBtn,position:"absolute",top:"1rem",right:"1rem"}}>✕</button>
           <button type="button" aria-label="Previous photo" onClick={e=>{e.stopPropagation();setIndex((index-1+photos.length)%photos.length);}} style={{...lightboxBtn,position:"absolute",left:"1rem",top:"50%",transform:"translateY(-50%)"}}>←</button>
           <button type="button" aria-label="Next photo" onClick={e=>{e.stopPropagation();setIndex((index+1)%photos.length);}} style={{...lightboxBtn,position:"absolute",right:"1rem",top:"50%",transform:"translateY(-50%)"}}>→</button>
-          <div style={{position:"absolute",top:"1.4rem",left:"1rem",color:C.cream,fontSize:"0.85rem",fontWeight:700}}>{index+1} / {photos.length}</div>
+          <div style={{position:"absolute",top:"1.4rem",left:"1rem",color:C.dark,fontSize:"0.85rem",fontWeight:700}}>{index+1} / {photos.length}</div>
         </div>
       )}
     </div>

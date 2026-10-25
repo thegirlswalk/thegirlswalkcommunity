@@ -11,7 +11,7 @@ under the nav: on Home the nav is see-through (same logo with a soft cream glow,
 cream links, soft dark fade) until the visitor scrolls or opens the phone menu, then it turns
 cream again (min 560px, 520px on phones). The hero heading is solid white with
 "COMMUNITY" beneath it in spaced peach italics (`.home-hero-sub`), and
-the typed blurb (`HERO_BLURB`) shows "for ambitious women, by ambitious women" in pink.
+the typed blurb (`HERO_BLURB`) is all white, with its key phrases in bold.
 The video is TGW's walks & events recap (portrait source), trimmed to 98.2s to drop
 its black ending, muted, 24fps (`src/assets/hero-reel-wide.mp4` 720×405
 crop for desktop, `hero-reel-tall.mp4` 540×960 for phones ≤768px, plus
@@ -69,7 +69,7 @@ and ripples (`waves-sway`); all paused under reduced motion, and the newsletter 
 (`<WaveBands right corner={false} onScroll/>`) that sweep in when it scrolls into
 view, behind a stacked email field + Subscribe button.
 
-Home (and the end of About) has an "Our Partners" yellow section (on Home, between Events and Past Events)
+Home (and the end of About) has an "Our Partners" white section (on Home, between Events and Past Events)
 (`PARTNERS` / `PartnerStrip` in `src/App.jsx`): transparent PNG logos from
 `src/assets/partners/` on tilted, bobbing sticker cards in an endless strip
 (auto-scrolls; drag or swipe; pauses on hover). Hover straightens the sticker

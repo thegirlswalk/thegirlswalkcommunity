@@ -318,13 +318,8 @@ a:focus-visible {
   text-shadow: 0 1px 12px rgba(46,12,28,.45);
 }
 
-.typed-hl {
-  color: #FF8944;
-  font-weight: 700;
-}
-
+.typed-hl,
 .typed-pink {
-  color: #FF5FA2;
   font-weight: 700;
 }
 
