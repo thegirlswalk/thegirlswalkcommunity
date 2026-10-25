@@ -18,16 +18,16 @@ import galleryMayFlower from "./assets/gallery-may-flower.jpg";
 import galleryPilates from "./assets/gallery-pilates-picnic.jpg";
 import galleryRoom from "./assets/gallery-shes-the-room.jpg";
 import galleryWalks from "./assets/gallery-2026-walk-dump.jpg"; // also used for About
-import aboutBrunch from "./assets/albums/brunch/085.jpg";
-import aboutFlowers from "./assets/albums/mayflower/016.jpg";
-import aboutTulips from "./assets/albums/walks/031.jpg";
-import aboutPilates from "./assets/albums/pilates/064.jpg";
 import partnerGinny from "./assets/partners/ginny.png";
 import partnerLoccitane from "./assets/partners/loccitane.png";
 import partnerChickfila from "./assets/partners/chickfila.png";
 import partnerGreenhouse from "./assets/partners/greenhouse.png";
 import partnerHeali from "./assets/partners/heali.png";
 import partnerEmmyEats from "./assets/partners/emmyeats.png";
+import partnerZakilo from "./assets/partners/zakilobakes.png";
+import partnerScnt from "./assets/partners/scnt.png";
+import partnerGoodForm from "./assets/partners/goodform.png";
+import partnerMercified from "./assets/partners/mercifiedoven.png";
 
 // Event album photos: Drive photos that show people (no scenery/object-only shots,
 // duplicates, or IMG_5069/5071/5042), resized. Files live in src/assets/albums/<slug>/.
@@ -660,6 +660,10 @@ const PARTNERS = [
   { name:"Greenhouse Juice Co.",   logo:partnerGreenhouse, accent:C.green,   tilt:4 },
   { name:"heali",                  logo:partnerHeali,      accent:"#3FB6A8", tilt:-3 },
   { name:"Emmy Eats",              logo:partnerEmmyEats,   accent:C.orange,  tilt:2 },
+  { name:"Zakilo Bakes",           logo:partnerZakilo,     accent:"#C77DA0", tilt:-3 },
+  { name:"scnt",                   logo:partnerScnt,       accent:"#5A3317", tilt:3 },
+  { name:"The Good Form",          logo:partnerGoodForm,   accent:C.blush,   tilt:-2 },
+  { name:"Mercified Oven",         logo:partnerMercified,  accent:"#F26A1B", tilt:4 },
 ];
 
 // Partner logos as tilted, bobbing stickers in an endless strip you can drag or swipe.
@@ -933,7 +937,7 @@ function EventStory({ ev, i, setPage }) {
   );
 }
 
-// ── ABOUT PAGE ── (layout inspired by leadingvibe.org/about)
+// ── ABOUT PAGE ──
 const ABOUT_PILLARS = [
   {icon:"community",title:"Community & Connection",desc:"Building genuine friendships and meaningful relationships with women navigating similar seasons of life."},
   {icon:"wellness",title:"Wellness & Movement",desc:"Creating opportunities to move our bodies, care for our minds, and make wellness part of everyday life."},
@@ -941,83 +945,41 @@ const ABOUT_PILLARS = [
   {icon:"cheers",title:"Experiences & Shared Moments",desc:"Bringing women together through thoughtfully curated events, workshops, social gatherings, and seasonal experiences."},
 ];
 
-const ABOUT_STORIES = [
-  {lead:"Our", word:"Mission", bg:C.orange, src:aboutTulips, alt:"A group of women from the community smiling together in a tulip garden", body:[
-    "Our mission is to create safe, uplifting, and intentional spaces where women can connect through walks, curated events, and shared experiences that promote wellness, confidence, meaningful friendships, and genuine networking opportunities.",
-  ]},
-  {lead:"Our", word:"Approach", bg:C.blush, src:aboutPilates, alt:"Women raising their arms together during a Pilates session in the park", body:[
-    "Through movement and community-centred programming, we create opportunities for women to step outside their routines, explore new experiences, exchange ideas, and build relationships that extend beyond a single gathering. From intentional outdoor walks to thoughtfully curated events, every experience is designed to bring women together in ways that encourage personal growth, professional development, and a deeper sense of belonging.",
-  ]},
-  {lead:"Our", word:"Vision", bg:C.yellow, src:galleryRoom, alt:"Women gathered at the She’s the Room event", body:[
-    "At TheGirlsWalk, we believe that the right community can inspire us to dream bigger, move with intention, and become better versions of ourselves. We are building more than a walking community; we are creating a space where ambitious women can show up authentically, feel supported, and grow alongside one another.",
-    <strong key="v">Our vision is to build a community where women connect, grow, and walk together, every step of the way.</strong>,
-  ]},
-  {lead:"What", word:"We Do", bg:C.peach, src:galleryBrunch, alt:"Women at the Meet the Girls brunch", pillars:true},
-];
+// Concentric wavy rings in the wave-band colours; each ring turns slowly (alternating
+// directions), so the wavy edges ripple like the Home waves, but in a circle.
+const RIPPLE_RINGS = WAVE_COLORS.map((_, i) => {
+  const r = 140 - i * 22;
+  const pts = [];
+  for (let t = 0; t < 360; t += 3) {
+    const a = (t * Math.PI) / 180;
+    const rr = r + 6 * Math.sin(a * (7 - i % 3) + i);
+    pts.push(`${(150 + rr * Math.cos(a)).toFixed(1)} ${(150 + rr * Math.sin(a)).toFixed(1)}`);
+  }
+  return `M${pts.join(" L")}Z`;
+});
 
-function AboutBlob({ className, color }) {
+function RippleRings({ className }) {
   return (
-    <svg className={`about-blob ${className}`} viewBox="0 0 200 200" aria-hidden="true">
-      <g fill={color}>
-        <circle cx="100" cy="56" r="44"/><circle cx="144" cy="100" r="44"/>
-        <circle cx="100" cy="144" r="44"/><circle cx="56" cy="100" r="44"/>
-        <circle cx="100" cy="100" r="50"/>
-      </g>
+    <svg className={`about-ripple ${className}`} viewBox="0 0 300 300" aria-hidden="true">
+      {RIPPLE_RINGS.map((d, i) => (
+        <path key={i} className="about-ripple-ring" d={d} fill={WAVE_COLORS[i]} style={{"--i": i}}/>
+      ))}
     </svg>
   );
 }
 
-function AboutHeroPhoto({ src, alt, tilt, delay, speed, pos, main }) {
-  const ref = useParallax(speed, 0.06);
-  return (
-    <div className={`about-hero-photo${main ? " about-hero-photo-main" : ""}`} style={{"--tilt":`${tilt}deg`,"--d":`${delay}ms`}}>
-      <div ref={ref} className="about-hero-photo-inner">
-        <img src={src} alt={alt} style={{objectPosition:pos}}/>
-      </div>
-    </div>
-  );
-}
-
-function AboutStory({ story, flip }) {
-  const [ref, seen] = useInView();
-  const cardRef = useParallax(-0.05);
-  return (
-    <article ref={ref} className={`about-story${flip ? " about-story-flip" : ""}${seen ? " is-visible" : ""}`}>
-      <div className="about-story-photo"><img src={story.src} alt={story.alt} loading="lazy"/></div>
-      <div className="about-story-card-wrap">
-        <div ref={cardRef}>
-          <div className="about-story-card" style={{background:story.bg}}>
-            <h2 className="about-story-title about-serif"><Words>{story.lead}<br/><em>{story.word}</em></Words></h2>
-            <GrowBar color={C.dark}/>
-            {story.body?.map((b, k) => <p key={k}>{b}</p>)}
-            {story.pillars && (
-              <ul className="about-pillars">
-                {ABOUT_PILLARS.map(({icon,title,desc}) => (
-                  <li key={title}>
-                    <LineIcon name={icon} size={30}/>
-                    <div><strong>{title}</strong><span>{desc}</span></div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-      </div>
-    </article>
-  );
-}
-
 function AboutPage({ setPage }) {
+  const photoRef = useParallax(-0.05, 0.06);
   const marquee = Array.from({length: 8});
   return (
     <div style={{minHeight:"100vh",background:C.cream}}>
       <section className="about-hero">
-        <AboutBlob className="about-blob-hero" color={C.blush}/>
+        <RippleRings className="about-ripple-hero"/>
         <h1 className="sr-only">About Us</h1>
-        <div className="about-hero-photos">
-          <AboutHeroPhoto src={aboutBrunch} alt="Friends in matching loungewear at the Meet the Girls brunch" tilt={-7} delay={150} speed={0.06} pos="center 30%"/>
-          <AboutHeroPhoto main src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" tilt={0} delay={0} speed={-0.04} pos="center 58%"/>
-          <AboutHeroPhoto src={aboutFlowers} alt="Women holding bouquets at the May Flowers event" tilt={6} delay={300} speed={0.1} pos="center 35%"/>
+        <div className="about-hero-photo">
+          <div ref={photoRef} className="about-hero-photo-inner">
+            <img src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk"/>
+          </div>
         </div>
         <div className="about-marquee" aria-hidden="true">
           <div className="about-marquee-track">
@@ -1029,7 +991,7 @@ function AboutPage({ setPage }) {
       <section className="about-statement">
         <Reveal><div className="about-eyebrow">Who We Are</div></Reveal>
         <p className="about-statement-text about-serif">
-          <Words>TheGirlsWalk Community was founded by Chidindu Chikwekwem in April 2026 with a simple belief:</Words>{" "}
+          <Words>TheGirlsWalk Community was founded in April 2026 with a simple belief:</Words>{" "}
           <Mark delay={400}><em>women are stronger when they move together.</em></Mark>
         </p>
         <GrowBar color={C.dark} center/>
@@ -1047,15 +1009,41 @@ function AboutPage({ setPage }) {
         </div>
       </section>
 
-      <section className="about-panel">
-        <AboutBlob className="about-blob-panel" color={C.yellow}/>
-        {ABOUT_STORIES.map((story, i) => <AboutStory key={story.word} story={story} flip={i % 2 === 1}/>)}
+      <section className="about-intent">
+        <RippleRings className="about-ripple-intent"/>
+        <div className="about-intent-grid">
+          <div className="about-intent-head">
+            <h2 className="about-intent-title about-serif"><Words>Built for women who move with <em>intention.</em></Words></h2>
+            <GrowBar color={C.orange}/>
+          </div>
+          <div className="about-intent-copy">
+            <Reveal><p>Our mission is to create safe, uplifting, and intentional spaces where women can connect through walks, curated events, and shared experiences that promote wellness, confidence, meaningful friendships, and genuine networking opportunities.</p></Reveal>
+            <Reveal><p>Through movement and community-centred programming, we create opportunities for women to step outside their routines, explore new experiences, exchange ideas, and build relationships that extend beyond a single gathering. From intentional outdoor walks to thoughtfully curated events, every experience is designed to bring women together in ways that encourage personal growth, professional development, and a deeper sense of belonging.</p></Reveal>
+            <Reveal><p>At TheGirlsWalk, we believe that the right community can inspire us to dream bigger, move with intention, and become better versions of ourselves. We are building more than a walking community; we are creating a space where ambitious women can show up authentically, feel supported, and grow alongside one another.</p></Reveal>
+            <Reveal><p className="about-intent-vision">Our vision is to build a community where women connect, grow, and walk together, every step of the way.</p></Reveal>
+          </div>
+        </div>
+        <div className="about-pillars-wrap">
+          <h2 className="about-section-title about-serif" style={{color:C.cream}}><Words>What We <em>Do</em></Words></h2>
+          <GrowBar color={C.orange} center/>
+          <div className="about-pillars">
+            {ABOUT_PILLARS.map(({icon,title,desc}, i) => (
+              <Reveal fill key={title} delay={i*110}>
+                <div className="about-pillar lift-card">
+                  <LineIcon name={icon} size={56} className="icon-pop"/>
+                  <h3>{title}</h3>
+                  <p>{desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="about-events section-padding">
         <div style={{textAlign:"center",marginBottom:"3rem"}}>
           <h2 className="about-section-title about-serif"><Words>Our <em>Events</em></Words></h2>
-          <GrowBar color={C.pink} center/>
+          <GrowBar color={C.orange} center/>
           <p style={{fontSize:"1rem",color:C.dark,margin:"1.25rem 0 0"}}>The stories behind our gatherings so far.</p>
         </div>
         <div className="event-stories">
@@ -1063,14 +1051,14 @@ function AboutPage({ setPage }) {
         </div>
       </section>
 
-      <section className="about-community">
-        <Reveal className="section-padding" style={{padding:"0 4rem",marginBottom:"2.5rem"}}>
-          <h2 className="about-section-title about-serif"><Words>Our <em>Community</em></Words></h2>
-          <GrowBar color={C.yellow} center/>
-          <p className="about-community-sub">Real moments from our walks and events. Drag or swipe to explore.</p>
+      <div style={{background:C.cream,borderTop:BORDER,padding:"4.5rem 0 0"}}>
+        <Reveal className="section-padding" style={{textAlign:"center",padding:"0 4rem",marginBottom:"2.25rem"}}>
+          <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3rem",color:C.dark,letterSpacing:"0.02em",margin:0}}><Words>OUR COMMUNITY</Words></h2>
+          <GrowBar color={C.orange} center/>
+          <p style={{fontSize:"0.95rem",color:C.dark,margin:"1rem 0 0"}}>Real moments from our walks and events. Drag or swipe to explore.</p>
         </Reveal>
         <PhotoStrip photos={COMMUNITY_STRIP} label="Photos from our community — scroll sideways to see more"/>
-      </section>
+      </div>
       <PartnersSection/>
     </div>
   );

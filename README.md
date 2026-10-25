@@ -46,21 +46,22 @@ shots (food, products, signs, empty rooms, landscapes), exact duplicates, and
 `IMG_5069` (swan), `IMG_5071` (founder), and `IMG_5042` (exec), which are never
 used anywhere.
 
-The About page layout is inspired by leadingvibe.org/about (`AboutPage` in
-`src/App.jsx`, `.about-*` styles at the end of `src/App.css`): a cream hero with
-three tilted group photos (brunch 085, the 2026 Walk Dump shot
-`src/assets/gallery-2026-walk-dump.jpg`, May Flowers 016) that drop in and
-parallax, a spinning pink blob, and a looping italic Instrument Serif "About Us"
-marquee; an orange "Who We Are" statement with a curved top, highlighted belief
-line and count-up stats (3,000+ women in our community, 20+ events & walks so
-far); a plum panel of overlapping photo + colour-card blocks for Our Mission,
-Approach, Vision and What We Do (`ABOUT_STORIES`, `ABOUT_PILLARS`; photos
-unclip/zoom and cards slide in on scroll, stacking on phones); a peach "Our
-Events" section (`EventStory`: photo, short story, "Read the full story" toggle
-and "See all photos" album link per event); a hot-pink "Our Community"
-auto-scrolling, draggable photo strip of 11 hand-picked group shots with no
-near-duplicates, interleaved so neighbouring photos come from different events
-(`STRIP_PICKS` in `src/App.jsx`); and the Our Partners strip.
+The About page (`AboutPage` in `src/App.jsx`, `.about-*` styles at the end of
+`src/App.css`) has a cream hero with a single centred, parallaxing group photo
+(the 2026 Walk Dump shot `src/assets/gallery-2026-walk-dump.jpg`), slowly
+rotating concentric wavy rings in the `WAVE_COLORS` palette (`RippleRings`),
+and a looping burgundy italic Instrument Serif "About Us" marquee with orange
+stars; an orange "Who We Are" statement with a curved top, highlighted belief
+line ("TheGirlsWalk Community was founded in April 2026 with a simple belief")
+and count-up stats (3,000+ women in our community, 20+ events & walks so far);
+a plum "Built for women who move with intention." section with a sticky heading,
+the mission / approach / belief / vision copy, and four cream "What We Do"
+cards (`ABOUT_PILLARS`); a peach "Our Events" section (`EventStory`: photo,
+short story, "Read the full story" toggle and "See all photos" album link per
+event); a cream "Our Community" auto-scrolling, draggable photo strip of 11
+hand-picked group shots with no near-duplicates, interleaved so neighbouring
+photos come from different events (`STRIP_PICKS` in `src/App.jsx`); and the
+Our Partners strip. Accents on About are orange (`#FF8944`).
 
 Scroll and hover effects are dependency-free helpers in `src/App.jsx`
 (`Reveal` fade-ups, `Mark` highlighter sweeps, `GrowBar` underline bars,
