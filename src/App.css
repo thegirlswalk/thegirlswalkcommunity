@@ -1276,30 +1276,13 @@ a:focus-visible {
 
 .about-serif em { font-style: normal; }
 
-/* Striped coil: stripes draw in one after another, then the whole coil turns slowly */
-.about-coil {
-  position: absolute;
-  z-index: -1;
-  pointer-events: none;
+/* Events-page corner waves, smaller, top-right of the About hero only */
+.about-hero .waves-layer { top: 64px; }
+
+.about-hero .waves-corner {
+  width: clamp(120px, 14vw, 210px);
+  height: clamp(120px, 14vw, 210px);
 }
-
-.about-coil-spin {
-  transform-box: view-box;
-  transform-origin: 150px 150px;
-  animation: coil-turn 60s linear infinite;
-}
-
-.about-coil-stripe {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: coil-draw 2.2s cubic-bezier(.3,.6,.2,1) calc(0.3s + var(--i) * 0.12s) forwards;
-}
-
-@keyframes coil-turn { to { rotate: -360deg; } }
-@keyframes coil-draw { to { stroke-dashoffset: 0; } }
-
-.about-coil-hero { width: clamp(240px, 28vw, 420px); top: 30px; right: clamp(-190px, -10vw, -90px); }
-.about-coil-intent { width: clamp(240px, 26vw, 380px); bottom: -120px; left: -130px; }
 
 .about-hero {
   position: relative;
@@ -1356,14 +1339,14 @@ a:focus-visible {
   align-items: center;
   gap: 0.35em;
   padding-right: 0.35em;
-  font-family: 'Bebas Neue', 'Impact', sans-serif;
-  font-size: clamp(4rem, 10vw, 9.5rem);
-  letter-spacing: 0.02em;
-  line-height: 1;
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(3.5rem, 9vw, 8.5rem);
+  line-height: 1.1;
   color: #46172C;
 }
 
-.about-marquee-star { font-size: 0.4em; color: #FF8944; }
+.about-marquee-star { font-style: normal; font-size: 0.4em; color: #FF8944; }
 
 @keyframes about-marquee { to { transform: translateX(-50%); } }
 
@@ -1524,8 +1507,7 @@ a:focus-visible {
   .about-hero { padding-top: calc(64px + 2rem); }
   .about-hero-photo { width: 88vw; aspect-ratio: 4 / 3; border-radius: 20px; }
   .about-marquee { margin-top: -1.6rem; }
-  .about-coil-hero { width: 190px; top: 40px; right: -100px; }
-  .about-coil-intent { width: 200px; bottom: -90px; left: -100px; }
+  .about-hero .waves-corner { width: 90px; height: 90px; }
   .about-statement { padding: 4rem 1.25rem 7rem; border-radius: 50% 50% 0 0 / 40px 40px 0 0; }
   .about-stats { gap: 2rem; }
   .about-intent { padding: 4.5rem 1.25rem 5.5rem; border-radius: 28px 28px 0 0; }
@@ -1540,9 +1522,6 @@ a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .about-coil-spin,
-  .about-coil-stripe,
   .about-hero-photo,
   .about-marquee-track { animation: none; }
-  .about-coil-stripe { stroke-dashoffset: 0; }
 }

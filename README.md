@@ -3,8 +3,9 @@
 ## TGW brand and event gallery
 
 The site uses the official TGW palette and two fonts throughout: Bebas Neue
-headings and DM Sans body text (the homepage hero title alone uses the logo's
-Montserrat Black Italic). The header is cream with the
+headings and DM Sans body text (exceptions: the homepage hero title uses the
+logo's Montserrat Black Italic, and the About "About Us" marquee uses Instrument
+Serif italic). The header is cream with the
 yellow-and-burgundy TGW Community logo (`src/assets/tgw-logo-burgundy-yellow.png`) and burgundy nav
 links. The homepage hero (`HomeHero` in `src/App.jsx`) is an edge-to-edge,
 muted, looping background video that fills the whole first screen, running
@@ -50,9 +51,9 @@ used anywhere.
 The About page (`AboutPage` in `src/App.jsx`, `.about-*` styles at the end of
 `src/App.css`) has a cream hero with a single centred, parallaxing group photo
 (the 2026 Walk Dump shot `src/assets/gallery-2026-walk-dump.jpg`), slowly
-a retro striped coil (`SpiralCoil`: six `WAVE_COLORS` stripes in a spiral that
-draw in, then turn slowly; also bottom-left of the plum section), and a
-looping burgundy Bebas Neue "About Us" marquee with orange
+a smaller copy of the Events-page wave corner in the top-right only
+(`<WaveBands left={false}/>`, sized by `.about-hero .waves-corner`), and a
+looping burgundy italic Instrument Serif "About Us" marquee with orange
 stars; an orange "Who We Are" statement with a curved top, highlighted belief
 line ("TheGirlsWalk Community was founded in April 2026 with a simple belief")
 and count-up stats (3,000+ women in our community, 20+ events & walks so far);
