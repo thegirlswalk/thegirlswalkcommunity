@@ -9,15 +9,17 @@ links. The homepage hero (`HomeHero` in `src/App.jsx`) is an edge-to-edge,
 muted, looping background video that fills the whole first screen, running
 under the nav: on Home the nav is see-through (same logo with a soft cream glow,
 cream links, soft dark fade) until the visitor scrolls or opens the phone menu, then it turns
-cream again (min 560px, 520px on phones). The hero heading is solid white, and
+cream again (min 560px, 520px on phones). The hero heading is solid white with
+"COMMUNITY" beneath it in spaced peach italics (`.home-hero-sub`), and
 the typed blurb (`HERO_BLURB`) shows "for ambitious women, by ambitious women" in pink.
-The video is TGW's walks & events recap (portrait source), trimmed to 99.5s to drop
+The video is TGW's walks & events recap (portrait source), trimmed to 98.2s to drop
 its black ending, muted, 24fps (`src/assets/hero-reel-wide.mp4` 720×405
 crop for desktop, `hero-reel-tall.mp4` 540×960 for phones ≤768px, plus
 `hero-reel-poster-*.jpg` stills of the opening group shot). It has a pause/play button, and visitors with
 reduced motion see the still only. Burgundy is used as an
 accent: the Home marquee is burgundy with yellow text and peach dot separators, and the footer is a single
-"© 2026 TGW Community" line plus nav and socials. Hard shadows are kept light (`HARD` 3px / `HARD_SM` 2px).
+"© 2026 TGW Community" line plus nav and socials. The look is flat: 1px burgundy outlines (`BORDER`), no solid offset
+"sticker" shadows, and hovers just lift slightly (polaroids keep a soft blurred shadow).
 The WhatsApp invite link is `WHATSAPP_URL` in `src/App.jsx`. Burgundy `#46172C`
 and butter yellow `#FFE99B` lead (buttons and accents). Page sections alternate
 between cream `#FDF4EC` (main background) and peach `#FFE1CF` at every divider
@@ -61,8 +63,9 @@ Scroll and hover effects are dependency-free helpers in `src/App.jsx`
 `prefers-reduced-motion`. Icons are thin burgundy line-art SVGs (`LineIcon` /
 `ICON_PATHS` in `src/App.jsx`), not emoji. The Events, Gallery and album pages
 have retro concentric `WaveBands` (left edge + top-right corner; `WAVE_COLORS`
-in `src/App.jsx`), and the newsletter has a CSS plaid (`.plaid`) fading in from
-the right behind a stacked email field + Subscribe button.
+in `src/App.jsx`), and the newsletter has wave bands on both sides
+(`<WaveBands right corner={false} onScroll/>`) that sweep in when it scrolls into
+view, behind a stacked email field + Subscribe button.
 
 Home (and the end of About) has an "Our Partners" yellow section (on Home, between Events and Past Events)
 (`PARTNERS` / `PartnerStrip` in `src/App.jsx`): transparent PNG logos from

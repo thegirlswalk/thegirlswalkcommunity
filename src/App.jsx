@@ -68,9 +68,7 @@ const C = {
 
 // ── BOLD EDITORIAL DESIGN TOKENS (ISWIS-inspired) ──────────────
 const DISPLAY = "'Bebas Neue','Impact',sans-serif";
-const HARD     = `3px 3px 0 ${C.dark}`;
-const HARD_SM  = `2px 2px 0 ${C.dark}`;
-const BORDER   = `2px solid ${C.dark}`;
+const BORDER   = `1px solid ${C.dark}`;
 
 // ── SCROLLING MARQUEE BAND ──
 function Marquee({ items, bg = C.yellow, color = C.dark, dot = "#FFFFFF", border }) {
@@ -209,12 +207,21 @@ const CORNER_BAND = WAVE_COLORS.map((_, i) => {
   return `M301 -1 L${pts.join(" L")} L301 ${(r + 20).toFixed(0)}Z`;
 });
 
-function WaveBands({ left = true, corner = true }) {
+function WaveBands({ left = true, right = false, corner = true, onScroll = false }) {
+  const [ref, seen] = useInView();
+  const cls = "waves-layer" + (onScroll ? " waves-on-scroll" + (seen ? " is-visible" : "") : "");
   return (
-    <div className="waves-layer" aria-hidden="true">
+    <div ref={ref} className={cls} aria-hidden="true">
       {left && (
         <svg className="waves waves-left" viewBox="0 0 170 1000" preserveAspectRatio="none">
           {LEFT_BAND.map((d, i) => <path key={i} d={d} fill={WAVE_COLORS[i]}/>)}
+        </svg>
+      )}
+      {right && (
+        <svg className="waves waves-right" viewBox="0 0 170 1000" preserveAspectRatio="none">
+          <g transform="translate(170 0) scale(-1 1)">
+            {LEFT_BAND.map((d, i) => <path key={i} d={d} fill={WAVE_COLORS[i]}/>)}
+          </g>
         </svg>
       )}
       {corner && (
@@ -428,9 +435,9 @@ const events = [
 ];
 
 const PILL_CTA = {
-  background:C.yellow,color:C.dark,border:`1.5px solid ${C.dark}`,borderRadius:99,
+  background:C.yellow,color:C.dark,border:`1px solid ${C.dark}`,borderRadius:99,
   padding:"0.5rem 1.1rem",fontWeight:800,fontSize:"0.75rem",letterSpacing:"0.06em",textTransform:"uppercase",
-  fontFamily:"inherit",textDecoration:"none",cursor:"pointer",boxShadow:HARD_SM,whiteSpace:"nowrap",
+  fontFamily:"inherit",textDecoration:"none",cursor:"pointer",whiteSpace:"nowrap",
 };
 
 // Info cards shown alongside upcoming events; laid out like EventCard so the row matches.
@@ -438,7 +445,7 @@ function InfoCard({ eyebrow, title, desc, cta, onClick, href }) {
   const linkProps = href ? { href, target:"_blank", rel:"noopener noreferrer" } : {};
   const Tag = href ? "a" : "button";
   return (
-    <div className="lift-card" style={{background:"#FFFFFF",borderRadius:18,overflow:"hidden",border:BORDER,boxShadow:HARD,display:"flex",flexDirection:"column",height:"100%"}}>
+    <div className="lift-card" style={{background:"#FFFFFF",borderRadius:18,overflow:"hidden",border:BORDER,display:"flex",flexDirection:"column",height:"100%"}}>
       <div style={{padding:"1.5rem",display:"flex",flexDirection:"column",flex:1}}>
         <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:C.pink,textTransform:"uppercase",marginBottom:"0.35rem"}}>{eyebrow}</div>
         <div style={{fontFamily:DISPLAY,fontSize:"2rem",color:C.dark,letterSpacing:"0.02em",lineHeight:1,marginBottom:"0.75rem"}}>{title}</div>
@@ -485,7 +492,7 @@ function NavBar({ page, setPage }) {
         aria-label={open ? "Close navigation menu" : "Open navigation menu"}
         aria-expanded={open}
         style={{
-          display:"none", background:"transparent", border:`1.5px solid ${linkColor}`, cursor:"pointer",
+          display:"none", background:"transparent", border:`1px solid ${linkColor}`, cursor:"pointer",
           width:40, height:40, borderRadius:"50%", color:linkColor, fontSize:"1.2rem",
           alignItems:"center", justifyContent:"center", boxShadow:"0 4px 12px rgba(0,0,0,0.08)",
         }}
@@ -497,8 +504,8 @@ function NavBar({ page, setPage }) {
           <button className={`nav-link-button${l==="Donate" ? " nav-donate" : ""}`} key={l} aria-current={active===l ? "page" : undefined} onClick={()=>{setPage(l); setOpen(false);}} style={{
             background: l==="Donate" ? C.yellow : active===l ? C.dark : "transparent",
             color: l==="Donate" ? C.dark : active===l ? C.cream : linkColor,
-            border: `1.5px solid ${l==="Donate" || active===l ? C.dark : "transparent"}`,
-            boxShadow: l==="Donate" && active===l ? `0 0 0 2px ${C.dark}` : "none",
+            border: `1px solid ${l==="Donate" || active===l ? C.dark : "transparent"}`,
+            boxShadow: l==="Donate" && active===l ? `0 0 0 1px ${C.dark}` : "none",
             cursor:"pointer",
             padding:"0.4rem 0.85rem", borderRadius:99,
             fontWeight:700, fontSize:"0.78rem", letterSpacing:"0.04em",
@@ -508,7 +515,7 @@ function NavBar({ page, setPage }) {
         ))}
         <a className="nav-cta-button" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{
           marginLeft:"0.5rem",
-          background:C.dark, color:C.cream, border:`1.5px solid ${C.dark}`, cursor:"pointer",
+          background:C.dark, color:C.cream, border:`1px solid ${C.dark}`, cursor:"pointer",
           padding:"0.5rem 1.2rem", borderRadius:99,
           fontWeight:800, fontSize:"0.8rem", letterSpacing:"0.05em",
           textTransform:"uppercase",
@@ -608,10 +615,10 @@ function HomeHero({ setPage }) {
           <TypedText className="home-hero-text" parts={HERO_BLURB} startDelay={700} reduceMotion={reduceMotion}/>
           <div style={{display:"flex",gap:"0.75rem",flexWrap:"wrap",justifyContent:"center"}}>
             <button onClick={()=>setPage("Events")} className="home-hero-btn" style={{
-              background:C.yellow,color:C.dark,border:`1.5px solid ${C.yellow}`,
+              background:C.yellow,color:C.dark,border:`1px solid ${C.yellow}`,
             }}>Sign up for an event →</button>
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="home-hero-btn" style={{
-              background:"transparent",color:C.cream,border:`1.5px solid rgba(253,244,236,0.85)`,
+              background:"transparent",color:C.cream,border:`1px solid rgba(253,244,236,0.85)`,
             }}>Join our WhatsApp</a>
           </div>
         </div>
@@ -721,7 +728,7 @@ function HomePage({ setPage }) {
             background:C.yellow,border:BORDER,color:C.dark,
             cursor:"pointer",padding:"0.6rem 1.4rem",borderRadius:99,
             fontWeight:800,fontSize:"0.78rem",letterSpacing:"0.06em",
-            textTransform:"uppercase",fontFamily:"inherit",boxShadow:HARD_SM,
+            textTransform:"uppercase",fontFamily:"inherit",
           }}>View All →</button>
         </div>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.25rem"}}>
@@ -750,7 +757,7 @@ function HomePage({ setPage }) {
             background:C.dark,border:BORDER,color:C.cream,
             cursor:"pointer",padding:"0.6rem 1.4rem",borderRadius:99,
             fontWeight:800,fontSize:"0.78rem",letterSpacing:"0.06em",
-            textTransform:"uppercase",fontFamily:"inherit",boxShadow:HARD_SM,
+            textTransform:"uppercase",fontFamily:"inherit",
           }}>View Gallery →</button>
         </div>
         <PastEventCards setPage={setPage}/>
@@ -758,7 +765,7 @@ function HomePage({ setPage }) {
 
       {/* ── NEWSLETTER SIGNUP ── */}
       <div id="newsletter" className="section-padding newsletter" style={{padding:"5.5rem 4rem",background:C.peach,textAlign:"center",scrollMarginTop:72,position:"relative",isolation:"isolate",overflow:"hidden"}}>
-        <div className="plaid" aria-hidden="true"/>
+        <WaveBands right corner={false} onScroll/>
         <Reveal style={{maxWidth:620,margin:"0 auto"}}>
           <div style={{fontSize:"0.8rem",fontWeight:700,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"0.75rem"}}>Stay Connected</div>
           <h2 className="section-heading" style={{fontFamily:DISPLAY,fontSize:"3.4rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1rem",lineHeight:1}}><Words>JOIN OUR <Mark delay={200}>NEWSLETTER</Mark></Words></h2>
@@ -787,7 +794,6 @@ function EventCard({ event, setPage }) {
     <div className="lift-card" onClick={()=>setPage("EventDetail_"+event.id)} style={{
       background:"#FFFFFF",borderRadius:18,overflow:"hidden",cursor:"pointer",
       border:BORDER,height:"100%",display:"flex",flexDirection:"column",
-      boxShadow:HARD,
     }}>
       <div style={{padding:"1.5rem",display:"flex",flexDirection:"column",flex:1}}>
         <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:event.color,textTransform:"uppercase",marginBottom:"0.35rem"}}>{event.date}</div>
@@ -829,7 +835,7 @@ function EventDetailPage({ eventId, setPage }) {
       <div style={{maxWidth:800,margin:"0 auto",padding:"3rem 2rem"}}>
         <div className="detail-info-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1rem",marginBottom:"2rem"}}>
           {[["calendar",event.date],["pin",event.location],["ticket",event.tag],["chat","Join our WhatsApp for updates"]].map(([icon,text])=>(
-            <div key={text} style={{background:C.cream,borderRadius:12,padding:"1rem 1.25rem",display:"flex",alignItems:"flex-start",gap:"0.75rem",border:BORDER,boxShadow:HARD_SM}}>
+            <div key={text} style={{background:C.cream,borderRadius:12,padding:"1rem 1.25rem",display:"flex",alignItems:"flex-start",gap:"0.75rem",border:BORDER}}>
               <LineIcon name={icon} size={22} style={{color:C.dark,flexShrink:0,marginTop:1}}/>
               <span style={{fontSize:"0.88rem",color:C.dark,lineHeight:1.5,fontWeight:500}}>{text}</span>
             </div>
@@ -844,14 +850,12 @@ function EventDetailPage({ eventId, setPage }) {
             padding:"1rem 2.5rem",borderRadius:99,fontWeight:800,fontSize:"1rem",
             letterSpacing:"0.05em",textTransform:"uppercase",fontFamily:"inherit",
             textDecoration:"none",
-            boxShadow:HARD,
           }}>{event.ticketUrl ? "Get Tickets on Eventbrite →" : "Join the Walk →"}</a>
         ) : (
           <button style={{
             background:C.yellow,color:C.dark,border:BORDER,cursor:"pointer",
             padding:"1rem 2.5rem",borderRadius:99,fontWeight:800,fontSize:"1rem",
             letterSpacing:"0.05em",textTransform:"uppercase",fontFamily:"inherit",
-            boxShadow:HARD,
           }}>{event.rsvp ? "Reserve My Spot →" : "Join the Walk →"}</button>
         )}
       </div>
@@ -929,7 +933,7 @@ function AboutPage({ setPage }) {
           <img ref={photoRef} src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 58%",scale:"1.3"}}/>
         </div>
         <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 4rem",display:"flex",flexDirection:"column",justifyContent:"center",borderLeft:BORDER}}>
-          <div style={{width:"fit-content",background:C.yellow,color:C.dark,border:`1.5px solid ${C.dark}`,borderRadius:99,padding:"0.3rem 0.9rem",fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1.25rem"}}>Who We Are</div>
+          <div style={{width:"fit-content",background:C.yellow,color:C.dark,border:`1px solid ${C.dark}`,borderRadius:99,padding:"0.3rem 0.9rem",fontSize:"0.72rem",fontWeight:800,letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:"1.25rem"}}>Who We Are</div>
           <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"3.5rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1.5rem",lineHeight:1}}><Words>BUILT FOR WOMEN WHO MOVE WITH <Mark delay={300}>intention.</Mark></Words></h1>
           <div className="about-copy">
             <p>TheGirlsWalk Community was founded by Chidindu Chikwekwem in April 2026 with a simple belief: women are stronger when they move together. What began with a vision to bring women together through intentional walks in parks across Toronto and the Greater Toronto Area (GTA) has grown into a thriving community of 3,000+ ambitious women, and growing.</p>
@@ -947,7 +951,7 @@ function AboutPage({ setPage }) {
             {to:20, suffix:"+", label:"Events & walks so far", bg:C.cream},
           ].map((st,i)=>(
             <Reveal fill key={st.label} delay={i*120}>
-              <div className="lift-card" style={{background:st.bg,border:BORDER,borderRadius:18,boxShadow:HARD_SM,padding:"1.75rem 1.5rem",textAlign:"center"}}>
+              <div className="lift-card" style={{background:st.bg,border:BORDER,borderRadius:18,padding:"1.75rem 1.5rem",textAlign:"center"}}>
                 <div style={{fontFamily:DISPLAY,fontSize:"clamp(3.2rem,6vw,4.5rem)",lineHeight:1,color:C.dark,letterSpacing:"0.02em"}}><CountUp to={st.to} suffix={st.suffix}/></div>
                 <div style={{fontSize:"0.78rem",fontWeight:800,letterSpacing:"0.12em",textTransform:"uppercase",color:C.dark,marginTop:"0.4rem"}}>{st.label}</div>
               </div>
@@ -967,7 +971,7 @@ function AboutPage({ setPage }) {
             {icon:"cheers",title:"Experiences & Shared Moments",desc:"Bringing women together through thoughtfully curated events, workshops, social gatherings, and seasonal experiences."},
           ].map(({icon,title,desc},i)=>(
             <Reveal fill key={title} delay={i*110}>
-              <div className="lift-card" style={{background:C.cream,borderRadius:18,padding:"2rem 1.5rem",textAlign:"center",border:BORDER,boxShadow:`4px 4px 0 ${C.yellow}`}}>
+              <div className="lift-card" style={{background:C.cream,borderRadius:18,padding:"2rem 1.5rem",textAlign:"center",border:BORDER}}>
                 <LineIcon name={icon} size={60} className="icon-pop" style={{color:C.dark,marginBottom:"0.9rem"}}/>
                 <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.3rem",color:C.dark,letterSpacing:"0.05em",marginBottom:"0.5rem"}}>{title}</div>
                 <p style={{fontSize:"0.85rem",color:C.muted,lineHeight:1.6}}>{desc}</p>
@@ -1089,7 +1093,7 @@ function AlbumPage({ slug, setPage }) {
     setTimeout(() => document.getElementById("newsletter")?.scrollIntoView({ behavior:"smooth" }), 60);
   };
   const lightboxBtn = {
-    background:C.yellow,color:C.dark,border:`1.5px solid ${C.dark}`,borderRadius:99,cursor:"pointer",
+    background:C.yellow,color:C.dark,border:`1px solid ${C.dark}`,borderRadius:99,cursor:"pointer",
     fontWeight:800,fontFamily:"inherit",fontSize:"1.1rem",width:48,height:48,
   };
 
@@ -1116,7 +1120,7 @@ function AlbumPage({ slug, setPage }) {
           <button type="button" className="lift" onClick={goToNewsletter} style={{
             display:"inline-block",background:C.yellow,color:C.dark,border:BORDER,borderRadius:99,cursor:"pointer",
             padding:"0.85rem 1.75rem",fontWeight:800,fontSize:"0.85rem",letterSpacing:"0.05em",
-            textTransform:"uppercase",fontFamily:"inherit",boxShadow:HARD_SM,
+            textTransform:"uppercase",fontFamily:"inherit",
           }}>Join here →</button>
         </div>
       </div>
@@ -1193,7 +1197,7 @@ function DonatePage() {
         </div>
 
         {/* RIGHT — donation card */}
-        <div className="donation-card" style={{background:C.cream,borderRadius:24,padding:"2.75rem",border:BORDER,boxShadow:HARD}}>
+        <div className="donation-card" style={{background:C.cream,borderRadius:24,padding:"2.75rem",border:BORDER}}>
           <h3 style={{fontFamily:DISPLAY,fontSize:"1.9rem",color:C.dark,letterSpacing:"0.04em",margin:"0 0 1.75rem"}}>CHOOSE AN AMOUNT</h3>
           <div className="amount-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"0.9rem",marginBottom:"0.9rem"}}>
             {amounts.map(a=>{
@@ -1203,7 +1207,6 @@ function DonatePage() {
                   padding:"1.15rem",borderRadius:14,cursor:"pointer",fontWeight:800,fontSize:"1.25rem",
                   border:BORDER,
                   background:active?C.yellow:C.cream,
-                  boxShadow:active?HARD_SM:"none",
                   color:C.dark,fontFamily:DISPLAY,letterSpacing:"0.05em",transition:"all 0.15s",
                 }}>${a}</button>
               );
@@ -1220,7 +1223,6 @@ function DonatePage() {
             color:C.dark,border:BORDER,borderRadius:99,padding:"1.15rem",
             fontWeight:800,fontSize:"1.1rem",letterSpacing:"0.05em",cursor:"pointer",
             textTransform:"uppercase",fontFamily:DISPLAY,
-            boxShadow:HARD,
           }}>Donate ${amount||0} →</button>
           <p style={{textAlign:"center",fontSize:"0.85rem",color:C.dark,lineHeight:1.5,marginTop:"1.5rem",marginBottom:0}}>Thank you for helping our community grow, one contribution at a time.</p>
         </div>
@@ -1239,7 +1241,7 @@ function Footer({ setPage, bg = C.cream }) {
       <div className="footer-links" style={{display:"flex",gap:"1.25rem"}}>
         {["Home","About","Events","Gallery","Donate"].map(p=>(
           <button key={p} onClick={()=>setPage(p)} style={{
-            background:p==="Donate"?C.yellow:"none",border:p==="Donate"?`1.5px solid ${C.dark}`:"none",
+            background:p==="Donate"?C.yellow:"none",border:p==="Donate"?`1px solid ${C.dark}`:"none",
             borderRadius:p==="Donate"?99:0,padding:p==="Donate"?"0.3rem 0.75rem":0,
             cursor:"pointer",fontSize:"0.75rem",fontWeight:p==="Donate"?800:600,color:C.dark,
             letterSpacing:"0.06em",textTransform:"uppercase",fontFamily:"inherit",transition:"color 0.2s",

@@ -105,12 +105,11 @@ img {
 
 @media (hover: hover) {
   .lift:hover {
-    transform: translate(-2px, -2px);
+    transform: translateY(-2px);
   }
 
   .lift-card:hover {
-    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translate(-3px, -3px);
-    box-shadow: 4px 4px 0 #FFE99B !important;
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-3px);
   }
 
   .lift-card:hover .icon-pop {
@@ -119,27 +118,11 @@ img {
 
   .nav-cta-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 3px 0 #EB1169;
   }
-
-  /* rotate/scale are separate properties, so the wiggle stacks on top of the lift transform */
-  .lift:hover,
-  .home-hero-btn:hover,
-  .nav-cta-button:hover {
-    animation: btn-wiggle 0.5s ease;
-  }
-}
-
-@keyframes btn-wiggle {
-  0%   { rotate: 0deg;  scale: 1; }
-  30%  { rotate: -3deg; scale: 1.06; }
-  60%  { rotate: 2deg;  scale: 1.04; }
-  100% { rotate: 0deg;  scale: 1; }
 }
 
 .lift:active {
-  transform: translate(2px, 2px);
-  box-shadow: none !important;
+  transform: translateY(0);
 }
 
 .icon-pop {
@@ -298,20 +281,16 @@ a:focus-visible {
 }
 
 .home-hero-sub {
-  display: table;
-  margin: 0.55em auto 0;
-  padding: 0.5em 0.9em 0.5em calc(0.9em + 0.38em);
-  font-size: 0.26em;
-  font-style: normal;
+  display: block;
+  margin: 0.35em auto 0;
+  padding-left: 0.4em;
+  font-size: 0.3em;
+  font-style: italic;
   font-weight: 800;
   line-height: 1;
-  letter-spacing: 0.38em;
-  color: #46172C;
-  text-shadow: none;
-  background: #FFE1CF;
-  border: 1.5px solid #46172C;
-  border-radius: 99px;
-  box-shadow: 0 6px 20px rgba(46,12,28,.25);
+  letter-spacing: 0.4em;
+  color: #FAD6B6;
+  text-shadow: 0 2px 14px rgba(46,12,28,.45);
   animation: hero-sub-in 0.9s cubic-bezier(.2,.7,.2,1) 0.9s both;
 }
 
@@ -485,9 +464,9 @@ a:focus-visible {
   height: 100%;
   padding: 0.6rem 0.6rem 0;
   background: #FDF4EC;
-  border: 1.5px solid #46172C;
+  border: 1px solid #46172C;
   border-radius: 6px;
-  box-shadow: 3px 3px 0 #46172C;
+  box-shadow: 0 6px 18px rgba(70,23,44,.12);
   transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) rotate(var(--rot, 0deg)) scale(var(--s, 1));
   transition: transform 0.8s cubic-bezier(.25,.8,.3,1), box-shadow 0.8s ease;
 }
@@ -496,7 +475,7 @@ a:focus-visible {
 .gallery-event:focus-visible .polaroid {
   --rot: 0deg;
   --s: 1.025;
-  box-shadow: 4px 4px 0 #46172C;
+  box-shadow: 0 10px 26px rgba(70,23,44,.16);
 }
 
 .polaroid-photo {
@@ -507,7 +486,7 @@ a:focus-visible {
   min-height: 0;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border: 1.5px solid #46172C;
+  border: 1px solid #46172C;
   border-radius: 3px;
   background: #FFE1CF;
 }
@@ -555,14 +534,13 @@ a:focus-visible {
   width: 100%;
   margin: 0 0 1rem;
   padding: 0;
-  border: 1.5px solid #46172C;
+  border: 1px solid #46172C;
   border-radius: 14px;
   overflow: hidden;
   background: none;
   cursor: pointer;
   break-inside: avoid;
-  box-shadow: 2px 2px 0 #46172C;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
 .album-photo img {
@@ -575,7 +553,6 @@ a:focus-visible {
 .album-photo:hover,
 .album-photo:focus-visible {
   transform: translateY(-3px);
-  box-shadow: 3px 4px 0 #46172C;
 }
 
 .album-photo:hover img,
@@ -637,26 +614,26 @@ a:focus-visible {
   from { transform: var(--from); opacity: 0; }
 }
 
+.waves-right {
+  top: 0;
+  right: 0;
+  width: clamp(56px, 6.5vw, 104px);
+  height: 100%;
+  --from: translateX(40%);
+}
+
+/* Newsletter: bands sweep in once the section scrolls into view */
+.waves-on-scroll .waves {
+  animation-play-state: paused;
+}
+
+.waves-on-scroll.is-visible .waves {
+  animation-play-state: running;
+}
+
 /* Keep page text clear of the left band */
 .wave-page .section-padding {
   padding-left: max(4rem, calc(clamp(56px, 6.5vw, 104px) + 2rem)) !important;
-}
-
-/* ── Newsletter: plaid fading in from the right ── */
-.plaid {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.55;
-  background-color: #F6DCCB;
-  background-image:
-    repeating-linear-gradient(45deg, transparent 0 34px, rgba(70,23,44,.35) 34px 36px, transparent 36px 40px, rgba(70,23,44,.35) 40px 42px, transparent 42px 120px),
-    repeating-linear-gradient(-45deg, transparent 0 34px, rgba(70,23,44,.35) 34px 36px, transparent 36px 40px, rgba(70,23,44,.35) 40px 42px, transparent 42px 120px),
-    repeating-linear-gradient(45deg, rgba(201,61,110,.5) 0 26px, transparent 26px 60px, rgba(235,17,105,.22) 60px 74px, transparent 74px 120px),
-    repeating-linear-gradient(-45deg, rgba(201,61,110,.5) 0 26px, transparent 26px 60px, rgba(235,17,105,.22) 60px 74px, transparent 74px 120px);
-  -webkit-mask-image: linear-gradient(90deg, transparent 30%, rgba(0,0,0,.35) 55%, #000 90%);
-  mask-image: linear-gradient(90deg, transparent 30%, rgba(0,0,0,.35) 55%, #000 90%);
 }
 
 .newsletter-form {
@@ -667,7 +644,7 @@ a:focus-visible {
 .newsletter-form input {
   width: 100%;
   padding: 1.1rem 1.6rem;
-  border: 1.5px solid #46172C;
+  border: 1px solid #46172C;
   border-radius: 99px;
   background: #FFFFFF;
   color: #46172C;
@@ -684,7 +661,7 @@ a:focus-visible {
 .newsletter-form button {
   width: 100%;
   padding: 1.1rem;
-  border: 1.5px solid #46172C;
+  border: 1px solid #46172C;
   border-radius: 99px;
   background: #46172C;
   color: #FDF4EC;
@@ -714,10 +691,9 @@ a:focus-visible {
   height: 100%;
   padding: 0;
   overflow: hidden;
-  border: 1.5px solid #46172C;
+  border: 1px solid #46172C;
   border-radius: 18px;
   background: #FFFFFF;
-  box-shadow: 3px 3px 0 #46172C;
   color: #46172C;
   font: inherit;
   text-align: left;
@@ -761,7 +737,7 @@ a:focus-visible {
   width: 100%;
   height: clamp(200px, 19vw, 280px);
   overflow: hidden;
-  border-top: 1.5px solid #46172C;
+  border-top: 1px solid #46172C;
 }
 
 .past-card-photo img {
@@ -811,7 +787,7 @@ a:focus-visible {
   aspect-ratio: 4 / 3;
   padding: 0;
   overflow: hidden;
-  border: 1.5px solid #46172C;
+  border: 1px solid #46172C;
   border-radius: 18px;
   background: none;
   cursor: pointer;
@@ -1074,7 +1050,7 @@ a:focus-visible {
     gap: 0.5rem !important;
     padding: 1rem;
     background: #FDF4EC;
-    border: 1.5px solid #46172C;
+    border: 1px solid #46172C;
     border-radius: 20px;
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
   }
@@ -1131,6 +1107,11 @@ a:focus-visible {
 
   .wave-page .section-padding {
     padding-left: calc(26px + 1rem) !important;
+  }
+
+  .newsletter.section-padding {
+    padding-left: calc(26px + 1rem) !important;
+    padding-right: calc(26px + 1rem) !important;
   }
 
   .past-cards {
