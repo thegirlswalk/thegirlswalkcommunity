@@ -1307,35 +1307,18 @@ a:focus-visible {
   from { opacity: 0; transform: translateY(60px) scale(0.96); }
 }
 
-.about-marquee {
+.about-title {
   position: relative;
   z-index: 2;
-  margin-top: -3.4rem;
-  overflow: hidden;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.about-marquee-track {
-  display: inline-flex;
-  animation: about-marquee 30s linear infinite;
-}
-
-.about-marquee-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  padding-right: 0.35em;
+  margin: -3.4rem 0 0;
+  text-align: center;
   font-family: 'Instrument Serif', Georgia, serif;
   font-style: italic;
+  font-weight: 400;
   font-size: clamp(3.5rem, 9vw, 8.5rem);
   line-height: 1.1;
   color: #46172C;
 }
-
-.about-marquee-star { font-style: normal; font-size: 0.4em; color: #FF8944; }
-
-@keyframes about-marquee { to { transform: translateX(-50%); } }
 
 .about-statement {
   position: relative;
@@ -1512,7 +1495,7 @@ a:focus-visible {
 @media (max-width: 768px) {
   .about-hero { padding-top: calc(64px + 2rem); }
   .about-hero-photo { width: 88vw; aspect-ratio: 4 / 3; border-radius: 20px; }
-  .about-marquee { margin-top: -1.6rem; }
+  .about-title { margin-top: -1.6rem; }
   .about-statement { padding: 4rem 1.25rem 7rem; border-radius: 50% 50% 0 0 / 40px 40px 0 0; }
   .about-stats { gap: 2rem; }
   .about-intent { padding: 4.5rem 1.25rem 5.5rem; }
@@ -1528,8 +1511,7 @@ a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .about-hero-photo,
-  .about-marquee-track { animation: none; }
+  .about-hero-photo { animation: none; }
 }
 
 /* ── Donate: embedded Zeffy form ── */

@@ -969,21 +969,15 @@ const ABOUT_PILLARS = [
 
 function AboutPage({ setPage }) {
   const photoRef = useParallax(-0.05, 0.06);
-  const marquee = Array.from({length: 8});
   return (
     <div style={{minHeight:"100vh",background:C.cream}}>
       <section className="about-hero">
-        <h1 className="sr-only">About Us</h1>
         <div className="about-hero-photo">
           <div ref={photoRef} className="about-hero-photo-inner">
             <img src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk"/>
           </div>
         </div>
-        <div className="about-marquee" aria-hidden="true">
-          <div className="about-marquee-track">
-            {marquee.map((_, i) => <span key={i} className="about-marquee-item">About Us<span className="about-marquee-star">✦</span></span>)}
-          </div>
-        </div>
+        <h1 className="about-title">About Us</h1>
       </section>
 
       <section className="about-statement">
