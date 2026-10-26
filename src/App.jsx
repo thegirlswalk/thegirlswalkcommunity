@@ -976,8 +976,7 @@ function AboutPage({ setPage }) {
           <img ref={photoRef} src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 58%",scale:"1.3"}}/>
         </div>
         <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 4rem",display:"flex",flexDirection:"column",justifyContent:"center",borderLeft:BORDER}}>
-          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1.25rem",lineHeight:1}}><Words>ABOUT <Mark delay={300}>US</Mark></Words></h1>
-          <p style={{fontSize:"1.05rem",color:C.dark,lineHeight:1.7,margin:0,maxWidth:460}}>A space centred on wellness, networking and growing together.</p>
+          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}><Words>ABOUT <Mark delay={300}>US</Mark></Words></h1>
         </div>
       </div>
 
