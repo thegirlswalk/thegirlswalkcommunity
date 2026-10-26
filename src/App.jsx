@@ -971,16 +971,19 @@ function AboutPage({ setPage }) {
   const photoRef = useParallax(0.1, 0.12);
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
-      <div className="split-grid about-split" style={{display:"grid",gridTemplateColumns:"minmax(320px,1fr) 3fr",minHeight:600}}>
+      <div className="split-grid about-split" style={{display:"grid",gridTemplateColumns:"minmax(320px,1fr) 3fr",minHeight:600,position:"relative"}}>
         <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 2.5rem",display:"flex",flexDirection:"column",justifyContent:"center",position:"relative"}}>
-          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1,whiteSpace:"nowrap"}}><Words>ABOUT <Mark delay={300}>US</Mark></Words></h1>
-          <span className="about-split-dot" aria-hidden="true"/>
+          <h1 className="page-heading about-split-title" style={{fontFamily:DISPLAY,fontSize:"clamp(4.5rem, 5.8vw, 7.5rem)",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1,whiteSpace:"nowrap"}}><Words>ABOUT <Mark delay={300}>US</Mark></Words></h1>
         </div>
         <div className="about-photo" style={{position:"relative"}}>
           <div className="about-photo-frame" style={{position:"absolute",inset:"2rem",overflow:"hidden",borderRadius:24,border:BORDER,boxShadow:"0 18px 40px rgba(70,23,44,0.16)"}}>
             <img ref={photoRef} src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 45%",scale:"1.15"}}/>
           </div>
         </div>
+        <svg className="about-split-line" viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden="true">
+          <path className="about-split-line-accent" d="M6 17 C 180 15.5, 330 19, 520 16.5 S 820 14.5, 994 17.5"/>
+          <path className="about-split-line-main" d="M4 11 C 160 8.5, 300 13, 470 10.5 S 780 8, 996 11.5"/>
+        </svg>
       </div>
 
       <section className="about-statement">
