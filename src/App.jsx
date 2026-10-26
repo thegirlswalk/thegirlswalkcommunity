@@ -968,17 +968,18 @@ const ABOUT_PILLARS = [
 ];
 
 function AboutPage({ setPage }) {
-  const photoRef = useParallax(-0.05, 0.06);
+  const photoRef = useParallax(0.1, 0.12);
   return (
-    <div style={{minHeight:"100vh",background:C.cream}}>
-      <section className="about-hero">
-        <div className="about-hero-photo">
-          <div ref={photoRef} className="about-hero-photo-inner">
-            <img src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk"/>
-          </div>
+    <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
+      <div className="split-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",minHeight:480,borderBottom:BORDER}}>
+        <div className="about-photo" style={{overflow:"hidden",position:"relative"}}>
+          <img ref={photoRef} src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 58%",scale:"1.3"}}/>
         </div>
-        <h1 className="about-title">About Us</h1>
-      </section>
+        <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 4rem",display:"flex",flexDirection:"column",justifyContent:"center",borderLeft:BORDER}}>
+          <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:"0 0 1.25rem",lineHeight:1}}><Words>ABOUT <Mark delay={300}>US</Mark></Words></h1>
+          <p style={{fontSize:"1.05rem",color:C.dark,lineHeight:1.7,margin:0,maxWidth:460}}>A space centred on wellness, networking and growing together.</p>
+        </div>
+      </div>
 
       <section className="about-statement">
         <Reveal><div className="about-eyebrow">Who We Are</div></Reveal>
@@ -1337,7 +1338,7 @@ export default function App() {
 
   return (
     <div style={{minHeight:"100vh",background:C.cream,color:C.dark,fontFamily:"'DM Sans','Segoe UI',sans-serif"}}>
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@1,800;1,900&family=DM+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet"/>
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@1,800;1,900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
       <NavBar page={page} setPage={setPage}/>
       <div key={page} className="page-enter">{renderPage()}</div>
       <Footer setPage={setPage} bg={endsOnPeach ? C.cream : C.peach}/>
