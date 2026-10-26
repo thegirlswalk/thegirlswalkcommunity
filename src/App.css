@@ -1551,7 +1551,11 @@ a:focus-visible {
 .donate-embed.is-payment { height: 1550px; }
 
 @media (max-width: 768px) {
-  .donate-intro { position: static; }
+  /* Phones: heading + intro, then the form, then the three pillars. */
+  .donate-grid { row-gap: 0 !important; }
+  .donate-intro { display: contents; }
+  .donate-grid .donation-card { order: 1; }
+  .donate-pillars { order: 2; margin-top: 3rem; }
   .donate-embed { height: 600px; }
   .donate-embed.is-payment { height: 1650px; }
 }

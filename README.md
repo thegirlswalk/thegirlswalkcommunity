@@ -96,7 +96,8 @@ available. The Donate page embeds the Zeffy donation form inline
 handles amounts, payment and receipts. The iframe height follows Zeffy's
 `zeffy-embed:step-changed` messages (short for the amount steps, tall for the
 `payment` step), and a "Form not loading?" link opens the public form
-(`DONATE_URL`). `src/shopify.js` is no longer used by the Donate page.
+(`DONATE_URL`). On phones the form sits right under the heading and intro, above
+the three pillars (`.donate-grid` / `.donate-pillars` order in `src/App.css`). `src/shopify.js` is no longer used by the Donate page.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

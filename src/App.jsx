@@ -1230,7 +1230,7 @@ function DonatePage() {
   }, []);
   return (
     <div style={{paddingTop:68,minHeight:"100vh",background:C.cream}}>
-      <div className="section-padding split-grid" style={{
+      <div className="section-padding split-grid donate-grid" style={{
         display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3.5rem",alignItems:"start",
         maxWidth:1200,margin:"0 auto",padding:"4.5rem 4rem",
       }}>
@@ -1239,7 +1239,7 @@ function DonatePage() {
           <div style={{fontSize:"0.8rem",fontWeight:800,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"1rem"}}>Support the Community</div>
           <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"5rem",color:C.dark,letterSpacing:"0.01em",margin:"0 0 1.5rem",lineHeight:0.92}}><Words>Grow the<br/>Movement.</Words></h1>
           <p style={{fontSize:"1.05rem",color:C.dark,maxWidth:440,lineHeight:1.6,margin:"0 0 2.5rem"}}>Your support helps us develop resources, expand opportunities, and grow together. Every contribution helps create welcoming spaces where women feel seen, connected, and supported.</p>
-          <div style={{display:"grid",gap:"1.75rem"}}>
+          <div className="donate-pillars" style={{display:"grid",gap:"1.75rem"}}>
             {DONATE_PILLARS.map(p=>(
               <div key={p.title}>
                 <LineIcon name={p.icon} size={44} className="icon-pop" style={{color:C.dark,marginBottom:"0.4rem"}}/>
