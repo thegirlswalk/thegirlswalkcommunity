@@ -53,9 +53,9 @@ used anywhere.
 
 The About page (`AboutPage` in `src/App.jsx`, `.about-*` styles at the end of
 `src/App.css`) opens with the original split top: the parallaxing 2026 Walk Dump group
-photo (`src/assets/gallery-2026-walk-dump.jpg`) taking the left two-thirds and a cream panel
-with just an "ABOUT US" heading on the right (no scrolling
-banner); an orange "Who We Are" statement with a curved top, highlighted belief
+photo (`src/assets/gallery-2026-walk-dump.jpg`) taking the right two-thirds and a cream panel
+with just an "ABOUT US" heading on the left (heading above the photo on phones; no
+scrolling banner); an orange "Who We Are" statement with a curved top, highlighted belief
 line ("TheGirlsWalk Community was founded in April 2026 with a simple belief")
 and count-up stats (3,000+ women in our community, 20+ events & walks so far),
 meeting the next section in a wavy orange edge with drifting gold / rose / berry
