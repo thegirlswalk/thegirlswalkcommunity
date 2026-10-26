@@ -1,6 +1,5 @@
 import { Children, useEffect, useRef, useState } from "react";
 import tgwLogo from "./assets/tgw-logo-burgundy-glow.png";
-import { isShopifyConfigured, createCheckout, DONATION_VARIANTS } from "./shopify";
 import { EVENT_STORIES } from "./eventStories";
 import "./App.css";
 
@@ -1203,10 +1202,11 @@ function AlbumPage({ slug, setPage }) {
 }
 
 // ── DONATE PAGE ──
-// Zeffy donation form. The Donate button opens it in a new tab. ?amount= is
-// appended, but Zeffy doesn't currently pre-fill from it, so donors re-pick the
-// amount there. Set to "" to disable.
+// Zeffy donation form, embedded inline on the Donate page (Zeffy handles the
+// amount, payment and receipts). DONATE_URL is the public form link used as a
+// fallback for anyone whose browser blocks the embedded form.
 const DONATE_URL = "https://www.zeffy.com/en-CA/donation-form/thegirlswalk-community-donations-campaign";
+const DONATE_EMBED_URL = "https://www.zeffy.com/embed/donation-form/thegirlswalk-community-donations-campaign";
 
 const DONATE_PILLARS = [
   { icon:"book", title:"Develop Resources", desc:"We create tools and resources that support women at every stage." },
@@ -1215,35 +1215,27 @@ const DONATE_PILLARS = [
 ];
 
 function DonatePage() {
-  const [selected, setSelected] = useState(25);
-  const [custom, setCustom] = useState("");
-  const amounts = [10,25,50,100];
-  const amount = custom ? Number(custom) : selected;
-  const handleDonate = async () => {
-    // Preferred: headless Shopify checkout for the selected preset amount.
-    const variantId = DONATION_VARIANTS[amount];
-    if (isShopifyConfigured() && variantId) {
-      try {
-        const url = await createCheckout([{ merchandiseId: variantId, quantity: 1 }]);
-        window.location.href = url;
-        return;
-      } catch (err) {
-        console.error("Shopify checkout failed:", err);
-      }
-    }
-    // Fallback: external donate link (Zeffy) if one is configured.
-    if (!DONATE_URL) return;
-    const sep = DONATE_URL.includes("?") ? "&" : "?";
-    window.open(`${DONATE_URL}${amount ? `${sep}amount=${amount}` : ""}`, "_blank", "noopener,noreferrer");
-  };
+  // Zeffy posts {type:"zeffy-embed:step-changed", step} as the donor moves
+  // through the form; the payment step is much taller than the others.
+  const [zeffyStep, setZeffyStep] = useState("amount");
+  useEffect(() => {
+    const onMessage = (e) => {
+      if (!/^https:\/\/([a-z0-9-]+\.)*zeffy\.com$/.test(e.origin)) return;
+      let data = e.data;
+      if (typeof data === "string") { try { data = JSON.parse(data); } catch { return; } }
+      if (data?.type === "zeffy-embed:step-changed" && typeof data.step === "string") setZeffyStep(data.step);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
   return (
     <div style={{paddingTop:68,minHeight:"100vh",background:C.cream}}>
       <div className="section-padding split-grid" style={{
-        display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3.5rem",alignItems:"center",
+        display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3.5rem",alignItems:"start",
         maxWidth:1200,margin:"0 auto",padding:"4.5rem 4rem",
       }}>
         {/* LEFT — headline + pillars */}
-        <div>
+        <div className="donate-intro">
           <div style={{fontSize:"0.8rem",fontWeight:800,letterSpacing:"0.2em",color:C.pink,textTransform:"uppercase",marginBottom:"1rem"}}>Support the Community</div>
           <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"5rem",color:C.dark,letterSpacing:"0.01em",margin:"0 0 1.5rem",lineHeight:0.92}}><Words>Grow the<br/>Movement.</Words></h1>
           <p style={{fontSize:"1.05rem",color:C.dark,maxWidth:440,lineHeight:1.6,margin:"0 0 2.5rem"}}>Your support helps us develop resources, expand opportunities, and grow together. Every contribution helps create welcoming spaces where women feel seen, connected, and supported.</p>
@@ -1258,35 +1250,14 @@ function DonatePage() {
           </div>
         </div>
 
-        {/* RIGHT — donation card */}
-        <div className="donation-card" style={{background:C.cream,borderRadius:24,padding:"2.75rem",border:BORDER}}>
-          <h3 style={{fontFamily:DISPLAY,fontSize:"1.9rem",color:C.dark,letterSpacing:"0.04em",margin:"0 0 1.75rem"}}>CHOOSE AN AMOUNT</h3>
-          <div className="amount-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"0.9rem",marginBottom:"0.9rem"}}>
-            {amounts.map(a=>{
-              const active = !custom && selected===a;
-              return (
-                <button key={a} aria-pressed={active} onClick={()=>{setSelected(a);setCustom("");}} style={{
-                  padding:"1.15rem",borderRadius:14,cursor:"pointer",fontWeight:800,fontSize:"1.25rem",
-                  border:BORDER,
-                  background:active?C.yellow:C.cream,
-                  color:C.dark,fontFamily:DISPLAY,letterSpacing:"0.05em",transition:"all 0.15s",
-                }}>${a}</button>
-              );
-            })}
-          </div>
-          <input type="number" min="1" inputMode="numeric" aria-label="Custom donation amount"
-            value={custom} onChange={e=>setCustom(e.target.value)} placeholder="Or enter custom amount" style={{
-            width:"100%",background:C.cream,border:BORDER,borderRadius:14,
-            padding:"1.05rem 1.1rem",fontSize:"1rem",outline:"none",
-            fontFamily:"inherit",color:C.dark,marginBottom:"1.5rem",boxSizing:"border-box",
-          }}/>
-          <button onClick={handleDonate} style={{
-            width:"100%",background:C.yellow,
-            color:C.dark,border:BORDER,borderRadius:99,padding:"1.15rem",
-            fontWeight:800,fontSize:"1.1rem",letterSpacing:"0.05em",cursor:"pointer",
-            textTransform:"uppercase",fontFamily:DISPLAY,
-          }}>Donate ${amount||0} →</button>
-          <p style={{textAlign:"center",fontSize:"0.85rem",color:C.dark,lineHeight:1.5,marginTop:"1.5rem",marginBottom:0}}>Thank you for helping our community grow, one contribution at a time.</p>
+        {/* RIGHT — embedded Zeffy donation form */}
+        <div className="donation-card">
+          <iframe className={`donate-embed${zeffyStep === "payment" ? " is-payment" : ""}`} title="Donation form powered by Zeffy" src={DONATE_EMBED_URL}
+            allow="payment" allowpaymentrequest="true"/>
+          <p style={{textAlign:"center",fontSize:"0.85rem",color:C.dark,lineHeight:1.5,margin:"1.25rem 1rem 0"}}>
+            Thank you for helping our community grow, one contribution at a time.{" "}
+            <a href={DONATE_URL} target="_blank" rel="noopener noreferrer" style={{color:C.dark,fontWeight:800,textDecoration:"underline",textDecorationColor:C.orange,textDecorationThickness:2,textUnderlineOffset:4}}>Form not loading? Open it here →</a>
+          </p>
         </div>
       </div>
     </div>

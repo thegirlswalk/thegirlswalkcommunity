@@ -91,9 +91,12 @@ and colours its shadow and name tag with the brand `accent`. It shares the
 
 The Events page has a short intro blurb, white November 2026 and March 2027
 event cards, and a Past Events polaroid grid. Shop is intentionally absent until merch is
-available. The Donate button opens the Zeffy donation form (`DONATE_URL` in
-`src/App.jsx`) in a new tab; Zeffy doesn't pre-fill the chosen amount, so donors
-pick it again there. Shopify donation configuration remains in `src/shopify.js`.
+available. The Donate page embeds the Zeffy donation form inline
+(`DONATE_EMBED_URL` in `src/App.jsx`, `.donate-embed` in `src/App.css`); Zeffy
+handles amounts, payment and receipts. The iframe height follows Zeffy's
+`zeffy-embed:step-changed` messages (short for the amount steps, tall for the
+`payment` step), and a "Form not loading?" link opens the public form
+(`DONATE_URL`). `src/shopify.js` is no longer used by the Donate page.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
