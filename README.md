@@ -27,7 +27,11 @@ and butter yellow `#FFE99B` lead (buttons and accents). Page sections alternate
 between cream `#FDF4EC` (main background) and peach `#FFE1CF` at every divider
 line (Home Events and Newsletter, Events-page Past Events, Gallery grid, album photo grids are peach); the footer takes the opposite colour of each page's last
 section (`endsOnPeach` in `App`), and hot pink `#EB1169` is used only as a small
-accent (the About page is the exception, with colour-blocked sections).
+accent (eyebrows and event dates; the About page is the exception, with
+colour-blocked sections). All underlines (`GrowBar` bars, nav hover, link
+underlines) and the event-card tag pills are brand orange `#FF8944`. The
+favicon / apple-touch icon (`public/favicon.png`, `public/apple-touch-icon.png`)
+is the burgundy TGW wordmark on cream.
 
 The Gallery page's five event covers are configured in `galleryEvents` in
 `src/App.jsx` (`src/assets/gallery-*.jpg`). Each card opens an on-site album
@@ -50,14 +54,13 @@ used anywhere.
 
 The About page (`AboutPage` in `src/App.jsx`, `.about-*` styles at the end of
 `src/App.css`) has a cream hero with a single centred, parallaxing group photo
-(the 2026 Walk Dump shot `src/assets/gallery-2026-walk-dump.jpg`), slowly
-a smaller copy of the Events-page wave corner in the top-right only
-(`<WaveBands left={false}/>`, sized by `.about-hero .waves-corner`), and a
+(the 2026 Walk Dump shot `src/assets/gallery-2026-walk-dump.jpg`) and a
 looping burgundy italic Instrument Serif "About Us" marquee with orange
 stars; an orange "Who We Are" statement with a curved top, highlighted belief
 line ("TheGirlsWalk Community was founded in April 2026 with a simple belief")
-and count-up stats (3,000+ women in our community, 20+ events & walks so far);
-a plum "Built for women who move with intention." section with a sticky heading,
+and count-up stats (3,000+ women in our community, 20+ events & walks so far),
+meeting the next section in a wavy orange edge with drifting gold / rose / berry
+bands (`AboutWaveDivider`); a plum "Built for women who move with intention." section with a sticky heading,
 the mission / approach / belief / vision copy, and four cream "What We Do"
 cards (`ABOUT_PILLARS`); a peach "Our Events" section (`EventStory`: photo,
 short story, "Read the full story" toggle and "See all photos" album link per
@@ -88,7 +91,9 @@ and colours its shadow and name tag with the brand `accent`. It shares the
 
 The Events page has a short intro blurb, white November 2026 and March 2027
 event cards, and a Past Events polaroid grid. Shop is intentionally absent until merch is
-available. Shopify donation configuration remains in `src/shopify.js`.
+available. The Donate button opens the Zeffy donation form (`DONATE_URL` in
+`src/App.jsx`) in a new tab; Zeffy doesn't pre-fill the chosen amount, so donors
+pick it again there. Shopify donation configuration remains in `src/shopify.js`.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

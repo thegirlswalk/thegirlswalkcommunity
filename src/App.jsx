@@ -154,7 +154,7 @@ function Mark({ children, color = C.yellow, delay = 0 }) {
 }
 
 // Short accent bar that grows out under a heading.
-function GrowBar({ color = C.pink, center = false }) {
+function GrowBar({ color = C.orange, center = false }) {
   const [ref, seen] = useInView();
   return <div ref={ref} aria-hidden="true" className={`grow-bar${center ? " grow-bar-center" : ""}${seen ? " is-visible" : ""}`} style={{background:color}}/>;
 }
@@ -240,6 +240,29 @@ function WaveBands({ left = true, right = false, corner = true, onScroll = false
         </svg>
       )}
     </div>
+  );
+}
+
+// Wavy orange edge + retro bands where the About "Who We Are" (orange) section
+// meets the plum section. The group drifts sideways one wave period on a loop.
+const DIVIDER_PERIOD = 300;
+function wavePath(y, amp, width) {
+  let d = `M0 ${y} Q${DIVIDER_PERIOD / 4} ${y - amp} ${DIVIDER_PERIOD / 2} ${y}`;
+  for (let x = DIVIDER_PERIOD; x <= width; x += DIVIDER_PERIOD / 2) d += ` T${x} ${y}`;
+  return d;
+}
+const DIVIDER_W = 1500;
+const DIVIDER_BANDS = ["#D9B45E", "#C97D93", "#A04C6E"];
+function AboutWaveDivider() {
+  return (
+    <svg className="about-wave-divider" viewBox="0 0 1200 64" preserveAspectRatio="none" aria-hidden="true">
+      <g className="about-wave-drift">
+        {DIVIDER_BANDS.map((c, i) => (
+          <path key={c} d={wavePath(25.5 + i * 7, 12, DIVIDER_W)} fill="none" stroke={c} strokeWidth="7"/>
+        ))}
+        <path d={`${wavePath(22, 12, DIVIDER_W)} L${DIVIDER_W} 0 L0 0 Z`} fill="#FF8944"/>
+      </g>
+    </svg>
   );
 }
 
@@ -792,7 +815,7 @@ function HomePage({ setPage }) {
           </form>
           <p style={{fontSize:"0.95rem",color:C.dark,marginTop:"1.5rem"}}>
             Or join our WhatsApp group for live updates:{" "}
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{color:C.dark,fontWeight:800,textDecoration:"underline",textDecorationColor:C.pink,textDecorationThickness:2,textUnderlineOffset:4}}>
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{color:C.dark,fontWeight:800,textDecoration:"underline",textDecorationColor:C.orange,textDecorationThickness:2,textUnderlineOffset:4}}>
               Join WhatsApp →
             </a>
           </p>
@@ -815,7 +838,7 @@ function EventCard({ event, setPage }) {
         <p style={{fontSize:"0.9rem",color:C.dark,lineHeight:1.65,marginBottom:"1.25rem",flex:1}}>{event.desc}</p>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:"0.75rem",flexWrap:"wrap"}}>
           <span style={PILL_CTA}>Details →</span>
-          <span style={{fontSize:"0.72rem",fontWeight:700,color:event.color,background:`${event.color}15`,padding:"0.25rem 0.6rem",borderRadius:99}}>{event.tag}</span>
+          <span style={{fontSize:"0.72rem",fontWeight:700,color:C.dark,background:C.orange,padding:"0.25rem 0.6rem",borderRadius:99}}>{event.tag}</span>
         </div>
       </div>
     </div>
@@ -951,7 +974,6 @@ function AboutPage({ setPage }) {
   return (
     <div style={{minHeight:"100vh",background:C.cream}}>
       <section className="about-hero">
-        <WaveBands left={false}/>
         <h1 className="sr-only">About Us</h1>
         <div className="about-hero-photo">
           <div ref={photoRef} className="about-hero-photo-inner">
@@ -987,6 +1009,7 @@ function AboutPage({ setPage }) {
       </section>
 
       <section className="about-intent">
+        <AboutWaveDivider/>
         <div className="about-intent-grid">
           <div className="about-intent-head">
             <h2 className="about-intent-title about-serif"><Words>Built for women who move with <em>intention.</em></Words></h2>
@@ -1043,7 +1066,7 @@ function AboutPage({ setPage }) {
 // ── GALLERY PAGE ──
 // First event is the featured (largest) box. `slug` maps to src/assets/albums/<slug>/.
 const galleryEvents = [
-  { slug:"room",      src:galleryRoom,      title:"She’s the Room",        date:"09/25/26", album:"1LDG2X3GuL1hOwd-cAnbfLOIxYQFPLnnb" },
+  { slug:"room",      src:galleryRoom,      title:"She’s the Room",        date:"09/24/26", album:"1LDG2X3GuL1hOwd-cAnbfLOIxYQFPLnnb" },
   { slug:"pilates",   src:galleryPilates,   title:"The Pilates Picnic",    date:"07/19/26", album:"1yOequ_B8dEz-Nm0fI79nOHBZr4YeSfb2" },
   { slug:"mayflower", src:galleryMayFlower, title:"May Flowers",           date:"05/09/26", album:"1Ek2C7T-Oe65PvQmZrXZ7WbD04hw9gehF" },
   { slug:"brunch",    src:galleryBrunch,    title:"Meet the Girls Brunch", date:"04/18/26", album:"1IQuG4fJZrYNIPRVvNqwuPpbYDAFBOfO2" },
@@ -1180,9 +1203,10 @@ function AlbumPage({ slug, setPage }) {
 }
 
 // ── DONATE PAGE ──
-// To accept live payments: set DONATE_URL to your Stripe Payment Link / Donorbox
-// URL. When set, the Donate button opens it (passing ?amount=). Leave "" to disable.
-const DONATE_URL = "";
+// Zeffy donation form. The Donate button opens it in a new tab. ?amount= is
+// appended, but Zeffy doesn't currently pre-fill from it, so donors re-pick the
+// amount there. Set to "" to disable.
+const DONATE_URL = "https://www.zeffy.com/en-CA/donation-form/thegirlswalk-community-donations-campaign";
 
 const DONATE_PILLARS = [
   { icon:"book", title:"Develop Resources", desc:"We create tools and resources that support women at every stage." },
@@ -1207,7 +1231,7 @@ function DonatePage() {
         console.error("Shopify checkout failed:", err);
       }
     }
-    // Fallback: external donate link (Donorbox/Stripe) if one is configured.
+    // Fallback: external donate link (Zeffy) if one is configured.
     if (!DONATE_URL) return;
     const sep = DONATE_URL.includes("?") ? "&" : "?";
     window.open(`${DONATE_URL}${amount ? `${sep}amount=${amount}` : ""}`, "_blank", "noopener,noreferrer");
