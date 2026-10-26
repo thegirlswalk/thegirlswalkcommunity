@@ -972,11 +972,12 @@ function AboutPage({ setPage }) {
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="split-grid about-split" style={{display:"grid",gridTemplateColumns:"minmax(320px,1fr) 3fr",minHeight:600}}>
-        <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 2.5rem",display:"flex",flexDirection:"column",justifyContent:"center"}}>
+        <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 2.5rem",display:"flex",flexDirection:"column",justifyContent:"center",position:"relative"}}>
           <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1,whiteSpace:"nowrap"}}><Words>ABOUT <Mark delay={300}>US</Mark></Words></h1>
+          <span className="about-split-dot" aria-hidden="true"/>
         </div>
         <div className="about-photo" style={{position:"relative"}}>
-          <div className="about-photo-frame" style={{position:"absolute",inset:"2rem 2rem 2rem 0",overflow:"hidden",borderRadius:24,border:BORDER,boxShadow:"0 18px 40px rgba(70,23,44,0.16)"}}>
+          <div className="about-photo-frame" style={{position:"absolute",inset:"2rem",overflow:"hidden",borderRadius:24,border:BORDER,boxShadow:"0 18px 40px rgba(70,23,44,0.16)"}}>
             <img ref={photoRef} src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 45%",scale:"1.15"}}/>
           </div>
         </div>
