@@ -971,11 +971,11 @@ function AboutPage({ setPage }) {
   const photoRef = useParallax(0.1, 0.12);
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
-      <div className="split-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",minHeight:480,borderBottom:BORDER}}>
+      <div className="split-grid about-split" style={{display:"grid",gridTemplateColumns:"2fr 1fr",minHeight:560,borderBottom:BORDER}}>
         <div className="about-photo" style={{overflow:"hidden",position:"relative"}}>
-          <img ref={photoRef} src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 58%",scale:"1.3"}}/>
+          <img ref={photoRef} src={galleryWalks} alt="The Girls Walk Community members together on a waterfront walk" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 35%",scale:"1.15"}}/>
         </div>
-        <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 4rem",display:"flex",flexDirection:"column",justifyContent:"center",borderLeft:BORDER}}>
+        <div className="section-padding split-content" style={{background:C.cream,padding:"5rem 3rem",display:"flex",flexDirection:"column",justifyContent:"center",borderLeft:BORDER}}>
           <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}><Words>ABOUT <Mark delay={300}>US</Mark></Words></h1>
         </div>
       </div>
