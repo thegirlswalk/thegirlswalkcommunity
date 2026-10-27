@@ -1270,6 +1270,11 @@ function Footer({ setPage, bg = C.cream }) {
     <footer className="footer section-padding" style={{background:bg,padding:"3rem 4rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem",borderTop:BORDER}}>
       <div>
         <div style={{fontSize:"0.72rem",color:C.dark,letterSpacing:"0.05em"}}>© 2026 TGW Community</div>
+        <div className="footer-legal" style={{display:"flex",gap:"0.9rem",marginTop:"0.4rem"}}>
+          {[["Privacy","/privacy"],["Support","/support"],["Delete account","/delete-account"]].map(([label,href])=>(
+            <a key={href} href={href} style={{fontSize:"0.68rem",color:C.dark,opacity:0.75,textDecoration:"none",letterSpacing:"0.05em"}}>{label}</a>
+          ))}
+        </div>
       </div>
       <div className="footer-links" style={{display:"flex",gap:"1.25rem"}}>
         {["Home","About","Events","Gallery","Donate"].map(p=>(
