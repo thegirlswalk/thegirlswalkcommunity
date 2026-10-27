@@ -99,7 +99,7 @@ handles amounts, payment and receipts. The iframe height follows Zeffy's
 (`DONATE_URL`). On phones the form sits right under the heading and intro, above
 the three pillars (`.donate-grid` / `.donate-pillars` order in `src/App.css`). `src/shopify.js` is no longer used by the Donate page.
 
-**App store pages.** `/privacy`, `/support` and `/delete-account` are plain
+**App store pages.** `/privacy`, `/support`, `/community-guidelines` and `/delete-account` are plain
 static pages in `public/<page>/index.html`, styled by `public/legal/legal.css`
 (not part of the React app, so store reviewers and crawlers can read them
 without JavaScript). The footer links to them. Google Play Console uses

@@ -1271,7 +1271,7 @@ function Footer({ setPage, bg = C.cream }) {
       <div>
         <div style={{fontSize:"0.72rem",color:C.dark,letterSpacing:"0.05em"}}>© 2026 TGW Community</div>
         <div className="footer-legal" style={{display:"flex",gap:"0.9rem",marginTop:"0.4rem"}}>
-          {[["Privacy","/privacy"],["Support","/support"],["Delete account","/delete-account"]].map(([label,href])=>(
+          {[["Privacy","/privacy"],["Support","/support"],["Guidelines","/community-guidelines"],["Delete account","/delete-account"]].map(([label,href])=>(
             <a key={href} href={href} style={{fontSize:"0.68rem",color:C.dark,opacity:0.75,textDecoration:"none",letterSpacing:"0.05em"}}>{label}</a>
           ))}
         </div>
