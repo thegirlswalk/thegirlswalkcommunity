@@ -11,7 +11,7 @@ muted, looping background video that fills the whole first screen, running
 under the nav: on Home the nav is see-through (same logo with a soft cream glow,
 cream links, soft dark fade) until the visitor scrolls or opens the phone menu, then it turns
 cream again (min 560px, 520px on phones). The hero heading is solid white with
-"COMMUNITY" beneath it in spaced peach italics (`.home-hero-sub`), and
+"COMMUNITY" beneath it in spaced, upright peach capitals (`.home-hero-sub`), and
 the typed blurb (`HERO_BLURB`) is all white, with its key phrases in bold.
 The video is TGW's walks & events recap (portrait source), trimmed to 98.2s to drop
 its black ending, muted, 24fps (`src/assets/hero-reel-wide.mp4` 720×405
@@ -89,8 +89,7 @@ Home (and the end of About) has an "Our Partners" white section (on Home, betwee
 and colours its shadow and name tag with the brand `accent`. It shares the
 `useAutoScroll` hook with the About `PhotoStrip`.
 
-The Events page has a short intro blurb, white November 2026 and March 2027
-event cards, and a Past Events polaroid grid. Shop is intentionally absent until merch is
+The Events page has a short intro blurb, white event cards (Daughters in Thought, Nov 25 2026, with Eventbrite tickets via `ticketUrl`; March 2027 walk), and a Past Events polaroid grid. Shop is intentionally absent until merch is
 available. The Donate page embeds the Zeffy donation form inline
 (`DONATE_EMBED_URL` in `src/App.jsx`, `.donate-embed` in `src/App.css`); Zeffy
 handles amounts, payment and receipts. The iframe height follows Zeffy's
@@ -98,6 +97,11 @@ handles amounts, payment and receipts. The iframe height follows Zeffy's
 `payment` step), and a "Form not loading?" link opens the public form
 (`DONATE_URL`). On phones the form sits right under the heading and intro, above
 the three pillars (`.donate-grid` / `.donate-pillars` order in `src/App.css`). `src/shopify.js` is no longer used by the Donate page.
+
+**Newsletter.** The homepage form (`NewsletterForm`) posts the email to the same Kit
+form as the Kit landing page (`KIT_FORM_ACTION`, form 10145312), so signups land in
+Kit and get its confirmation email. If Kit asks for a security check it shows a link
+to Kit's check page; if the request fails it links to the landing page (`NEWSLETTER_URL`).
 
 **App store pages.** `/privacy`, `/support`, `/community-guidelines` and `/delete-account` are plain
 static pages in `public/<page>/index.html`, styled by `public/legal/legal.css`

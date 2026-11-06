@@ -51,6 +51,9 @@ const COMMUNITY_STRIP = (() => {
 })();
 // Main community chat (the old link went to the marketplace chat).
 const WHATSAPP_URL = "https://chat.whatsapp.com/EY9clAx7vAF51UyoZl3Ww1?s=cl&p=i&mlu=4&ilr=4";
+// Newsletter: the homepage form posts to the same Kit form as the Kit landing page.
+const NEWSLETTER_URL = "https://the-girls-walk-community.kit.com/1a26eecea3";
+const KIT_FORM_ACTION = "https://app.kit.com/forms/10145312/subscriptions";
 
 // ── COLOUR PALETTE ─────────────────────────────────────────────
 // Official TGW brand palette (Brand Guide, Aug 2026)
@@ -443,14 +446,19 @@ const events = [
   {
     id: 2,
     type: "Next Event",
-    title: "November Event",
-    date: "November 2026 · Details TBA",
-    location: "Location TBA",
-    desc: "We have an event coming up in November 2026 — details are being finalised. Join our WhatsApp group to be the first to hear the date, location and how to sign up.",
+    title: "Daughters in Thought",
+    date: "November 25, 2026 · 6–10 PM",
+    location: "152 Augusta Ave, Toronto",
+    desc: "An evening of good company, interesting perspectives, a few hot takes, and plenty of food for thought.",
+    // Detail page copy; the card shows the one-line desc above.
+    about: [
+      "An evening of good company, interesting perspectives, a few hot takes, and plenty of food for thought. Daughters in Thought is an experience created to bring women together through meaningful conversations, interesting perspectives, and a little friendly debate ;) Featuring PowerPoint presentations from selected speakers on a range of interesting topics, this is a space to explore ideas, exchange opinions, challenge perspectives, and have conversations that go beyond your usual small talk.",
+      "From unpopular opinions and hot takes to personal interests and thought-provoking discussions, expect to learn something new, discover different perspectives, and see the world through someone else’s lens. Come curious, come open-minded, and most importantly, come ready to challenge your thinking!",
+    ],
     rsvp: false,
     color: C.pink,
-    tag: "Details coming soon",
-    joinUrl: WHATSAPP_URL,
+    tag: "Tickets on Eventbrite",
+    ticketUrl: "https://www.eventbrite.ca/e/daughters-in-thought-tickets-2004455370973?aff=oddtdtcreator",
   },
   {
     id: 1,
@@ -808,10 +816,7 @@ function HomePage({ setPage }) {
           <p style={{fontSize:"1.05rem",color:C.dark,lineHeight:1.6,margin:"0 auto 2rem",maxWidth:520}}>
             Get updates on upcoming walks, events, and community stories — straight to your inbox.
           </p>
-          <form className="newsletter-form" onSubmit={e=>e.preventDefault()}>
-            <input type="email" aria-label="Email address" placeholder="Enter your email" required/>
-            <button type="submit" className="lift">Subscribe</button>
-          </form>
+          <NewsletterForm/>
           <p style={{fontSize:"0.95rem",color:C.dark,marginTop:"1.5rem"}}>
             Or join our WhatsApp group for live updates:{" "}
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{color:C.dark,fontWeight:800,textDecoration:"underline",textDecorationColor:C.orange,textDecorationThickness:2,textUnderlineOffset:4}}>
@@ -822,6 +827,46 @@ function HomePage({ setPage }) {
         </Reveal>
       </div>
     </div>
+  );
+}
+
+// Kit replies "success" (confirmation email sent), "quarantined" (Kit wants a quick
+// security check on its own page first) or an error list.
+function NewsletterForm() {
+  const [status, setStatus] = useState("idle");
+  const [guardUrl, setGuardUrl] = useState(null);
+
+  const onSubmit = async e => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const body = new FormData(form);
+    body.append("referrer", document.referrer);
+    body.append("host", window.location.href);
+    setStatus("sending");
+    try {
+      const res = await fetch(KIT_FORM_ACTION, { method:"POST", body, headers:{ Accept:"application/json" } });
+      const json = res.ok ? await res.json() : null;
+      if (json?.status === "success") { setStatus("success"); form.reset(); }
+      else if (json?.status === "quarantined" && json.url) { setGuardUrl(json.url); setStatus("guard"); }
+      else setStatus("error");
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const linkStyle = {color:C.dark,fontWeight:800,textDecoration:"underline",textDecorationColor:C.orange,textDecorationThickness:2,textUnderlineOffset:4};
+  return (
+    <>
+      <form className="newsletter-form" onSubmit={onSubmit}>
+        <input type="email" name="email_address" aria-label="Email address" placeholder="Enter your email" required autoComplete="email"/>
+        <button type="submit" className="lift" disabled={status === "sending"}>{status === "sending" ? "Subscribing…" : "Subscribe"}</button>
+      </form>
+      <p role="status" aria-live="polite" style={{fontSize:"0.95rem",color:C.dark,fontWeight:600,margin:status === "idle" || status === "sending" ? 0 : "1rem 0 0"}}>
+        {status === "success" && "Almost there! Check your inbox to confirm your subscription."}
+        {status === "guard" && <>One more step: <a href={guardUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>complete a quick security check →</a></>}
+        {status === "error" && <>That didn’t go through. Check your email address, or <a href={NEWSLETTER_URL} target="_blank" rel="noopener noreferrer" style={linkStyle}>sign up here →</a></>}
+      </p>
+    </>
   );
 }
 
@@ -878,7 +923,9 @@ function EventDetailPage({ eventId, setPage }) {
           ))}
         </div>
         <h3 style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"1.6rem",color:C.dark,letterSpacing:"0.02em",marginBottom:"0.75rem"}}>About This Event</h3>
-        <p style={{fontSize:"0.95rem",color:C.muted,lineHeight:1.8,marginBottom:"2rem"}}>{event.desc}</p>
+        {(event.about || [event.desc]).map((para, i, all) => (
+          <p key={i} style={{fontSize:"0.95rem",color:C.muted,lineHeight:1.8,marginBottom:i === all.length - 1 ? "2rem" : "1rem"}}>{para}</p>
+        ))}
         {event.ticketUrl || event.joinUrl ? (
           <a href={event.ticketUrl || event.joinUrl} target="_blank" rel="noopener noreferrer" style={{
             display:"inline-block",
