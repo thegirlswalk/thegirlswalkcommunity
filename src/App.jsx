@@ -1,6 +1,7 @@
 import { Children, useEffect, useRef, useState } from "react";
 import tgwLogo from "./assets/tgw-logo-burgundy-glow.png";
 import { EVENT_STORIES } from "./eventStories";
+import { useEvents } from "./liveEvents";
 import "./App.css";
 
 // ── IMAGES ─── Change these to update photos on the site ───
@@ -442,37 +443,7 @@ function PhotoStrip({ photos, label }) {
   );
 }
 
-const events = [
-  {
-    id: 2,
-    type: "Next Event",
-    title: "Daughters in Thought",
-    date: "November 25, 2026 · 6–10 PM",
-    location: "152 Augusta Ave, Toronto",
-    desc: "An evening of good company, interesting perspectives, a few hot takes, and plenty of food for thought.",
-    // Detail page copy; the card shows the one-line desc above.
-    about: [
-      "An evening of good company, interesting perspectives, a few hot takes, and plenty of food for thought. Daughters in Thought is an experience created to bring women together through meaningful conversations, interesting perspectives, and a little friendly debate ;) Featuring PowerPoint presentations from selected speakers on a range of interesting topics, this is a space to explore ideas, exchange opinions, challenge perspectives, and have conversations that go beyond your usual small talk.",
-      "From unpopular opinions and hot takes to personal interests and thought-provoking discussions, expect to learn something new, discover different perspectives, and see the world through someone else’s lens. Come curious, come open-minded, and most importantly, come ready to challenge your thinking!",
-    ],
-    rsvp: false,
-    color: C.pink,
-    tag: "Tickets on Eventbrite",
-    ticketUrl: "https://www.eventbrite.ca/e/daughters-in-thought-tickets-2004455370973?aff=oddtdtcreator",
-  },
-  {
-    id: 1,
-    type: "Upcoming Walk",
-    title: "March Walk",
-    date: "March 2027 · Stay updated",
-    location: "Toronto & GTA",
-    desc: "Our next walk is in March 2027. It’s free and all paces are welcome — this is about connection, fresh air, and showing up for yourself and each other. Join our WhatsApp group for updates about this event.",
-    rsvp: false,
-    color: C.pink,
-    tag: "Free · All paces welcome",
-    joinUrl: WHATSAPP_URL,
-  },
-];
+// Upcoming events live in the app database; see useEvents() in liveEvents.js.
 
 const PILL_CTA = {
   background:C.yellow,color:C.dark,border:`1px solid ${C.dark}`,borderRadius:99,
@@ -754,6 +725,7 @@ function PastEventCards({ setPage }) {
 
 // ── HOME PAGE ──
 function HomePage({ setPage }) {
+  const events = useEvents();
   return (
     <div>
       <HomeHero setPage={setPage}/>
@@ -776,7 +748,7 @@ function HomePage({ setPage }) {
           }}>View All →</button>
         </div>
         <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.25rem"}}>
-          {events.map(e=>(
+          {events.slice(0,2).map(e=>(
             <Reveal fill key={e.id}><EventCard event={e} setPage={setPage}/></Reveal>
           ))}
           <Reveal fill delay={120}>
@@ -877,7 +849,7 @@ function EventCard({ event, setPage }) {
       border:BORDER,height:"100%",display:"flex",flexDirection:"column",
     }}>
       <div style={{padding:"1.5rem",display:"flex",flexDirection:"column",flex:1}}>
-        <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:event.color,textTransform:"uppercase",marginBottom:"0.35rem"}}>{event.date}</div>
+        <div style={{fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",color:C.pink,textTransform:"uppercase",marginBottom:"0.35rem"}}>{event.date}</div>
         <div style={{fontFamily:"'Bebas Neue','Impact',sans-serif",fontSize:"2rem",color:C.dark,letterSpacing:"0.02em",lineHeight:1,marginBottom:"0.75rem"}}>{event.title}</div>
         <p style={{fontSize:"0.9rem",color:C.dark,lineHeight:1.65,marginBottom:"1.25rem",flex:1}}>{event.desc}</p>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:"0.75rem",flexWrap:"wrap"}}>
@@ -890,8 +862,9 @@ function EventCard({ event, setPage }) {
 }
 
 function EventDetailPage({ eventId, setPage }) {
+  const events = useEvents();
   const event = events.find(e=>e.id===eventId);
-  if (!event) return null;
+  if (!event) return <EventsPage setPage={setPage}/>;
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="event-detail-banner" style={{
@@ -933,7 +906,9 @@ function EventDetailPage({ eventId, setPage }) {
             padding:"1rem 2.5rem",borderRadius:99,fontWeight:800,fontSize:"1rem",
             letterSpacing:"0.05em",textTransform:"uppercase",fontFamily:"inherit",
             textDecoration:"none",
-          }}>{event.ticketUrl ? "Get Tickets on Eventbrite →" : "Join the Walk →"}</a>
+          }}>{event.ticketUrl
+            ? (/eventbrite\./i.test(event.ticketUrl) ? "Get Tickets on Eventbrite →" : "Get Tickets →")
+            : event.kind === "walk" ? "Join the Walk →" : "Get Updates on WhatsApp →"}</a>
         ) : (
           <button style={{
             background:C.yellow,color:C.dark,border:BORDER,cursor:"pointer",
@@ -948,6 +923,7 @@ function EventDetailPage({ eventId, setPage }) {
 
 // ── EVENTS PAGE ──
 function EventsPage({ setPage }) {
+  const events = useEvents();
   return (
     <div style={{paddingTop:64,minHeight:"100vh",background:C.cream}}>
       <div className="wave-page" style={{position:"relative",isolation:"isolate",overflow:"hidden"}}>
@@ -959,6 +935,11 @@ function EventsPage({ setPage }) {
         <div className="section-padding" style={{padding:"0 4rem 4rem"}}>
           <div className="cards-grid-3" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"1.5rem"}}>
             {events.map(e=><Reveal fill key={e.id}><EventCard event={e} setPage={setPage}/></Reveal>)}
+            {events.length === 0 && (
+              <InfoCard eyebrow="Coming Soon" title="New Dates on the Way"
+                desc="We’re planning the next walk and event now. Join our WhatsApp group to hear first when dates drop."
+                cta="Join the WhatsApp →" href={WHATSAPP_URL}/>
+            )}
           </div>
         </div>
       </div>
@@ -1375,7 +1356,7 @@ export default function App() {
   }, []);
 
   const eventDetailMatch = page.startsWith("EventDetail_");
-  const eventId = eventDetailMatch ? parseInt(page.split("_")[1]) : null;
+  const eventId = eventDetailMatch ? page.slice("EventDetail_".length) : null;
   // Sections alternate cream/peach at every divider line, so the footer takes
   // the opposite colour of the page's last section.
   const endsOnPeach = ["Home","Events"].includes(page) || page.startsWith("Album_");

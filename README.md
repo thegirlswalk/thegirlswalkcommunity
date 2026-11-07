@@ -89,7 +89,7 @@ Home (and the end of About) has an "Our Partners" white section (on Home, betwee
 and colours its shadow and name tag with the brand `accent`. It shares the
 `useAutoScroll` hook with the About `PhotoStrip`.
 
-The Events page has a short intro blurb, white event cards (Daughters in Thought, Nov 25 2026, with Eventbrite tickets via `ticketUrl`; March 2027 walk), and a Past Events polaroid grid. Shop is intentionally absent until merch is
+The Events page has a short intro blurb, white event cards, and a Past Events polaroid grid. Upcoming events come live from the TGW app's database: admins add, edit and hide them in the app (Me → Admin → Events), and the site reads published, upcoming ones through the `website_events()` Supabase function (`useEvents()` in `src/liveEvents.js`, using the browser-safe publishable key). Times show in Toronto time; Home shows the first two. `FALLBACK_ROWS` in that file is shown until the live list loads or if it can't be reached, so refresh it now and then. Shop is intentionally absent until merch is
 available. The Donate page embeds the Zeffy donation form inline
 (`DONATE_EMBED_URL` in `src/App.jsx`, `.donate-embed` in `src/App.css`); Zeffy
 handles amounts, payment and receipts. The iframe height follows Zeffy's
