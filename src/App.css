@@ -587,15 +587,6 @@ a:focus-visible {
   --from: translateX(-40%);
 }
 
-.waves-mid-left {
-  top: 50%;
-  left: 0;
-  width: clamp(110px, 13vw, 200px);
-  height: clamp(220px, 26vw, 400px);
-  margin-top: calc(clamp(220px, 26vw, 400px) / -2);
-  --from: translateX(-50%);
-}
-
 .waves-corner {
   top: 0;
   right: 0;
@@ -642,11 +633,6 @@ a:focus-visible {
 .waves-sway .wave-band {
   transform-origin: 300px 0;
   animation-name: wave-ripple;
-}
-
-.waves-sway-mid,
-.waves-sway-mid .wave-band {
-  transform-origin: 0 150px;
 }
 
 @keyframes waves-sway {
@@ -1133,12 +1119,6 @@ a:focus-visible {
 
   .waves-left {
     width: 26px;
-  }
-
-  .waves-mid-left {
-    width: 56px;
-    height: 112px;
-    margin-top: -56px;
   }
 
   .waves-corner {

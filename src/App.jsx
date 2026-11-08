@@ -216,24 +216,11 @@ const CORNER_BAND = WAVE_COLORS.map((_, i) => {
   return `M340 -40 L${pts.join(" L")} L340 ${(r + 40).toFixed(0)}Z`;
 });
 
-// Half-circle bands that bulge out from the middle of the left edge (Community Archives
-// trial for "waves come out in the middle of the left side" instead of full height).
-const MID_LEFT_BAND = WAVE_COLORS.map((_, i) => {
-  const r = 140 - i * 19;
-  const pts = [];
-  for (let t = -102; t <= 102; t += 3) {
-    const a = (t * Math.PI) / 180;
-    const rr = r + 10 * Math.sin(a * 5 + i * 0.5);
-    pts.push(`${(rr * Math.cos(a)).toFixed(1)} ${(150 + rr * Math.sin(a)).toFixed(1)}`);
-  }
-  return `M-40 ${(110 - r).toFixed(0)} L${pts.join(" L")} L-40 ${(190 + r).toFixed(0)}Z`;
-});
-
 const bandPaths = (shapes) => shapes.map((d, i) => (
   <path key={i} className="wave-band" d={d} fill={WAVE_COLORS[i]} style={{"--i": i}}/>
 ));
 
-function WaveBands({ left = true, midLeft = false, right = false, corner = true, onScroll = false }) {
+function WaveBands({ left = true, right = false, corner = true, onScroll = false }) {
   const [ref, seen] = useInView();
   const cls = "waves-layer" + (onScroll ? " waves-on-scroll" + (seen ? " is-visible" : "") : "");
   return (
@@ -241,11 +228,6 @@ function WaveBands({ left = true, midLeft = false, right = false, corner = true,
       {left && (
         <svg className="waves waves-left" viewBox="0 0 170 1000" preserveAspectRatio="none">
           <g className="waves-flow">{bandPaths(LEFT_BAND)}</g>
-        </svg>
-      )}
-      {midLeft && (
-        <svg className="waves waves-mid-left" viewBox="0 0 150 300" preserveAspectRatio="xMinYMid meet">
-          <g className="waves-sway waves-sway-mid">{bandPaths(MID_LEFT_BAND)}</g>
         </svg>
       )}
       {right && (
@@ -1126,7 +1108,7 @@ function EventGalleryGrid({ setPage }) {
 function GalleryPage({ setPage }) {
   return (
     <div className="wave-page" style={{paddingTop:68,minHeight:"100vh",background:C.cream,position:"relative",isolation:"isolate",overflow:"hidden"}}>
-      <WaveBands left={false} midLeft/>
+      <WaveBands/>
       <div className="section-padding page-banner" style={{padding:"4rem 4rem 1.5rem"}}>
         <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}><Words>COMMUNITY <Mark>ARCHIVES</Mark></Words></h1>
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem",maxWidth:640}}>A collection of walks, events, and moments that bring our community together.</p>
