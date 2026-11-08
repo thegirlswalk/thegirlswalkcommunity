@@ -49,7 +49,8 @@ with 2+ people; no solo, founder/exec, scenery, object, or near-duplicate shots.
 Albums include all Drive photos that show people, excluding scenery/object-only
 shots (food, products, signs, empty rooms, landscapes), exact duplicates, and
 `IMG_5069` (swan), `IMG_5071` (founder), and `IMG_5042` (exec), which are never
-used anywhere.
+used anywhere. Three more were removed at Dorothy's request (Nov 2026): two from
+"She's the Room" and one from May Flower.
 
 The About page (`AboutPage` in `src/App.jsx`, `.about-*` styles at the end of
 `src/App.css`) opens with the original split top: the parallaxing 2026 Walk Dump group

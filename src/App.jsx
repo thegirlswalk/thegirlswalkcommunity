@@ -42,7 +42,7 @@ const ALBUM_PHOTOS = {
 // About page photo strip: hand-picked group shots (2+ people) — indices into each sorted album.
 // Near-duplicate shots are left out, and events are interleaved so neighbours differ.
 const ALBUM_NAMES = { room:"She’s the Room", pilates:"The Pilates Picnic", mayflower:"May Flowers", brunch:"Meet the Girls Brunch", walks:"a community walk" };
-const STRIP_PICKS = { room:[25, 27], pilates:[18, 35], mayflower:[2, 13, 21], brunch:[0, 84], walks:[0, 24] };
+const STRIP_PICKS = { room:[23, 25], pilates:[18, 35], mayflower:[2, 13, 20], brunch:[0, 84], walks:[0, 24] };
 const COMMUNITY_STRIP = (() => {
   const lists = Object.entries(STRIP_PICKS).map(([slug, picks]) =>
     picks.map((idx, i) => ({ src: ALBUM_PHOTOS[slug][idx], alt: `Community moment ${i + 1} from ${ALBUM_NAMES[slug]}` })));
@@ -216,11 +216,24 @@ const CORNER_BAND = WAVE_COLORS.map((_, i) => {
   return `M340 -40 L${pts.join(" L")} L340 ${(r + 40).toFixed(0)}Z`;
 });
 
+// Half-circle bands that bulge out from the middle of the left edge (Community Archives
+// trial for "waves come out in the middle of the left side" instead of full height).
+const MID_LEFT_BAND = WAVE_COLORS.map((_, i) => {
+  const r = 140 - i * 19;
+  const pts = [];
+  for (let t = -102; t <= 102; t += 3) {
+    const a = (t * Math.PI) / 180;
+    const rr = r + 10 * Math.sin(a * 5 + i * 0.5);
+    pts.push(`${(rr * Math.cos(a)).toFixed(1)} ${(150 + rr * Math.sin(a)).toFixed(1)}`);
+  }
+  return `M-40 ${(110 - r).toFixed(0)} L${pts.join(" L")} L-40 ${(190 + r).toFixed(0)}Z`;
+});
+
 const bandPaths = (shapes) => shapes.map((d, i) => (
   <path key={i} className="wave-band" d={d} fill={WAVE_COLORS[i]} style={{"--i": i}}/>
 ));
 
-function WaveBands({ left = true, right = false, corner = true, onScroll = false }) {
+function WaveBands({ left = true, midLeft = false, right = false, corner = true, onScroll = false }) {
   const [ref, seen] = useInView();
   const cls = "waves-layer" + (onScroll ? " waves-on-scroll" + (seen ? " is-visible" : "") : "");
   return (
@@ -228,6 +241,11 @@ function WaveBands({ left = true, right = false, corner = true, onScroll = false
       {left && (
         <svg className="waves waves-left" viewBox="0 0 170 1000" preserveAspectRatio="none">
           <g className="waves-flow">{bandPaths(LEFT_BAND)}</g>
+        </svg>
+      )}
+      {midLeft && (
+        <svg className="waves waves-mid-left" viewBox="0 0 150 300" preserveAspectRatio="xMinYMid meet">
+          <g className="waves-sway waves-sway-mid">{bandPaths(MID_LEFT_BAND)}</g>
         </svg>
       )}
       {right && (
@@ -243,29 +261,6 @@ function WaveBands({ left = true, right = false, corner = true, onScroll = false
         </svg>
       )}
     </div>
-  );
-}
-
-// Wavy orange edge + retro bands where the About "Who We Are" (orange) section
-// meets the plum section. The group drifts sideways one wave period on a loop.
-const DIVIDER_PERIOD = 300;
-function wavePath(y, amp, width) {
-  let d = `M0 ${y} Q${DIVIDER_PERIOD / 4} ${y - amp} ${DIVIDER_PERIOD / 2} ${y}`;
-  for (let x = DIVIDER_PERIOD; x <= width; x += DIVIDER_PERIOD / 2) d += ` T${x} ${y}`;
-  return d;
-}
-const DIVIDER_W = 1500;
-const DIVIDER_BANDS = ["#D9B45E", "#C97D93", "#A04C6E"];
-function AboutWaveDivider() {
-  return (
-    <svg className="about-wave-divider" viewBox="0 0 1200 64" preserveAspectRatio="none" aria-hidden="true">
-      <g className="about-wave-drift">
-        {DIVIDER_BANDS.map((c, i) => (
-          <path key={c} d={wavePath(25.5 + i * 7, 12, DIVIDER_W)} fill="none" stroke={c} strokeWidth="7"/>
-        ))}
-        <path d={`${wavePath(22, 12, DIVIDER_W)} L${DIVIDER_W} 0 L0 0 Z`} fill="#FF8944"/>
-      </g>
-    </svg>
   );
 }
 
@@ -1036,7 +1031,6 @@ function AboutPage({ setPage }) {
       </section>
 
       <section className="about-intent">
-        <AboutWaveDivider/>
         <div className="about-intent-grid">
           <div className="about-intent-head">
             <h2 className="about-intent-title about-serif"><Words>Built for women who move with <em>intention.</em></Words></h2>
@@ -1132,7 +1126,7 @@ function EventGalleryGrid({ setPage }) {
 function GalleryPage({ setPage }) {
   return (
     <div className="wave-page" style={{paddingTop:68,minHeight:"100vh",background:C.cream,position:"relative",isolation:"isolate",overflow:"hidden"}}>
-      <WaveBands/>
+      <WaveBands left={false} midLeft/>
       <div className="section-padding page-banner" style={{padding:"4rem 4rem 1.5rem"}}>
         <h1 className="page-heading" style={{fontFamily:DISPLAY,fontSize:"4rem",color:C.dark,letterSpacing:"0.02em",margin:0,lineHeight:1}}><Words>COMMUNITY <Mark>ARCHIVES</Mark></Words></h1>
         <p style={{fontSize:"1.2rem",color:C.orchid,marginTop:"0.75rem",maxWidth:640}}>A collection of walks, events, and moments that bring our community together.</p>
